@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KinoPoisk.DomainLayer.Entities
+﻿namespace KinoPoisk.DomainLayer.Entities
 {
-    internal class Creator_Movie
+    public class Creator_Movie
     {
+        public Creator_Movie()
+        {
+            Roles = new HashSet<MovieRole>(); 
+        }
+
+        public uint CreatorId { get; set; }
+        public uint MovieId { get; set; }
+        public ICollection<MovieRole> Roles { get; set; }
     }
 }

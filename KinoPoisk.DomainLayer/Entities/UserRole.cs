@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KinoPoisk.DomainLayer.Entities
+﻿namespace KinoPoisk.DomainLayer.Entities
 {
-    internal class UserRole
+    public class UserRole
     {
+        public UserRole() 
+        {
+            Users = new HashSet<User>();
+        }
+
+        public Guid Id { get; set; } = Guid.Empty;
+        public string Name { get; set; }
+
+        public ICollection<User> Users { get; set; }
     }
 }

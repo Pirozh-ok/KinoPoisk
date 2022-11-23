@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KinoPoisk.DomainLayer.Entities
+﻿namespace KinoPoisk.DomainLayer.Entities
 {
-    internal class Country
+    public class Country
     {
+        public Country()
+        { 
+            Movies = new HashSet<Movie>();
+        }
+
+        public uint Id { get; set; }
+        public string Name { get; set; }
+
+        public ICollection<Movie> Movies { get; set; }
     }
 }
