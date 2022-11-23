@@ -7,8 +7,8 @@
             Roles = new HashSet<MovieRole>(); 
         }
 
-        public uint CreatorId { get; set; }
-        public uint MovieId { get; set; }
+        public Guid CreatorId { get; set; } = Guid.Empty; 
+        public Guid MovieId { get; set; } = Guid.Empty;
         public ICollection<MovieRole> Roles { get; set; }
     }
 }

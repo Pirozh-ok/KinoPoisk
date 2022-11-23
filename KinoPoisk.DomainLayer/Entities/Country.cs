@@ -7,7 +7,7 @@
             Movies = new HashSet<Movie>();
         }
 
-        public uint Id { get; set; }
+        public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; }
 
         public ICollection<Movie> Movies { get; set; }
