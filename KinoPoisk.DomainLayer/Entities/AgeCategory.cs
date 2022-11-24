@@ -1,14 +1,13 @@
-﻿namespace KinoPoisk.DomainLayer.Entities
-{
-    public class AgeCategory
-    {
-        public AgeCategory()
-        {
+﻿namespace KinoPoisk.DomainLayer.Entities {
+    public class AgeCategory {
+        public AgeCategory() {
             Movies = new HashSet<Movie>();
         }
 
-        public Guid Id { get; set; } = Guid.Empty; 
+        public Guid Id { get; set; } = Guid.Empty;
         public string Value { get; set; }
-        public ICollection<Movie> Movies { get; set; }
+        public uint MinAge { get; set; }
+
+        public virtual ICollection<Movie> Movies { get; set; }
     }
 }

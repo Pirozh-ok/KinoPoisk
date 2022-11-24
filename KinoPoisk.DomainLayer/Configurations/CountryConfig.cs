@@ -2,17 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations
-{
-    internal class CountryConfig : IEntityTypeConfiguration<Country>
-    {
-        public void Configure(EntityTypeBuilder<Country> builder)
-        {
+namespace KinoPoisk.DomainLayer.Configurations {
+    internal class CountryConfig : IEntityTypeConfiguration<Country> {
+        public void Configure(EntityTypeBuilder<Country> builder) {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
                 .ValueGeneratedOnAdd()
-                .IsRequired(); 
+                .IsRequired();
 
             builder.Property(x => x.Name)
                 .IsRequired()
@@ -21,7 +18,7 @@ namespace KinoPoisk.DomainLayer.Configurations
             builder
                 .HasMany(x => x.Users)
                 .WithOne(x => x.Country)
-                .HasForeignKey(x => x.CountryId); 
+                .HasForeignKey(x => x.CountryId);
         }
     }
 }

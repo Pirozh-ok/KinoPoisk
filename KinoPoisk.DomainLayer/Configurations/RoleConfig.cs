@@ -2,12 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations
-{
-    internal class UserRoleConfig : IEntityTypeConfiguration<UserRole>
-    {
-        public void Configure(EntityTypeBuilder<UserRole> builder)
-        {
+namespace KinoPoisk.DomainLayer.Configurations {
+    internal class RoleConfig : IEntityTypeConfiguration<ApplicationRole> {
+        public void Configure(EntityTypeBuilder<ApplicationRole> builder) {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
@@ -18,9 +15,9 @@ namespace KinoPoisk.DomainLayer.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.HasMany(x => x.Users)
+            builder.HasMany(x => x.UserRoles)
                 .WithOne(x => x.Role)
-                .HasForeignKey(x => x.RoleId); 
+                .HasForeignKey(x => x.RoleId);
         }
     }
 }

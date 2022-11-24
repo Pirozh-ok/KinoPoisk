@@ -2,19 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations
-{
-    internal class UserConfig : IEntityTypeConfiguration<User>
-    {
-        public void Configure(EntityTypeBuilder<User> builder)
-        {
+namespace KinoPoisk.DomainLayer.Configurations {
+    internal class UserConfig : IEntityTypeConfiguration<ApplicationUser> {
+        public void Configure(EntityTypeBuilder<ApplicationUser> builder) {
             builder.HasKey(x => x.Id);
 
             builder.HasIndex(x => x.Email)
                 .IsUnique();
 
             builder.HasIndex(x => x.PhoneNumber)
-                .IsUnique(); 
+                .IsUnique();
 
             builder.Property(x => x.Id)
                 .IsRequired()
@@ -46,14 +43,15 @@ namespace KinoPoisk.DomainLayer.Configurations
                 .IsRequired()
                 .HasMaxLength(12);
 
-            builder.Property(x => x.Password)
-                .IsRequired()
-                .HasMaxLength(30);
-
             builder
                 .HasMany(x => x.MovieRatings)
                 .WithOne(x => x.User)
-                .HasForeignKey(x => x.User.Id); 
+                .HasForeignKey(x => x.User.Id);
+
+            builder
+                .HasMany(x => x.UserRoles)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

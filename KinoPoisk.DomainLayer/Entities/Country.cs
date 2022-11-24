@@ -1,17 +1,14 @@
-﻿namespace KinoPoisk.DomainLayer.Entities
-{
-    public class Country
-    {
-        public Country()
-        { 
+﻿namespace KinoPoisk.DomainLayer.Entities {
+    public class Country {
+        public Country() {
             Movies = new HashSet<Movie>();
-            Users = new HashSet<User>();
+            Users = new HashSet<ApplicationUser>();
         }
 
         public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; }
 
-        public ICollection<Movie> Movies { get; set; }
-        public ICollection<User> Users { get; set; }
+        public virtual ICollection<Movie> Movies { get; set; }
+        public virtual ICollection<ApplicationUser> Users { get; set; }
     }
 }

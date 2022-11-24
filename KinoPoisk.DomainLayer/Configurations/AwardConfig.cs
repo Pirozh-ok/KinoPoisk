@@ -2,12 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations
-{
-    internal class AwardConfig : IEntityTypeConfiguration<Award>
-    {
-        public void Configure(EntityTypeBuilder<Award> builder)
-        {
+namespace KinoPoisk.DomainLayer.Configurations {
+    internal class AwardConfig : IEntityTypeConfiguration<Award> {
+        public void Configure(EntityTypeBuilder<Award> builder) {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
@@ -19,7 +16,7 @@ namespace KinoPoisk.DomainLayer.Configurations
                 .HasMaxLength(100);
 
             builder.Property(x => x.DateOfAward)
-                .IsRequired(); 
+                .IsRequired();
         }
     }
 }

@@ -2,12 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations
-{
-    internal class ContentConfig : IEntityTypeConfiguration<Content>
-    {
-        public void Configure(EntityTypeBuilder<Content> builder)
-        {
+namespace KinoPoisk.DomainLayer.Configurations {
+    internal class ContentConfig : IEntityTypeConfiguration<Content> {
+        public void Configure(EntityTypeBuilder<Content> builder) {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
@@ -23,7 +20,7 @@ namespace KinoPoisk.DomainLayer.Configurations
 
             builder.Property(x => x.Path)
                 .IsRequired()
-                .HasMaxLength(100); 
+                .HasMaxLength(100);
         }
     }
 }

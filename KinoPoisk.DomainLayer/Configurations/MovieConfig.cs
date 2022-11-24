@@ -3,12 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Identity.Client;
 
-namespace KinoPoisk.DomainLayer.Configurations
-{
-    internal class MovieConfig : IEntityTypeConfiguration<Movie>
-    {
-        public void Configure(EntityTypeBuilder<Movie> builder)
-        {
+namespace KinoPoisk.DomainLayer.Configurations {
+    internal class MovieConfig : IEntityTypeConfiguration<Movie> {
+        public void Configure(EntityTypeBuilder<Movie> builder) {
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
@@ -27,7 +24,7 @@ namespace KinoPoisk.DomainLayer.Configurations
                 .IsRequired();
 
             builder.Property(x => x.BudgetInDollars)
-                .IsRequired(); 
+                .IsRequired();
 
             builder.Property(x => x.WorldFeesInDollars)
                 .IsRequired();
@@ -43,7 +40,7 @@ namespace KinoPoisk.DomainLayer.Configurations
             builder
                 .HasMany(x => x.Creators_Movies)
                 .WithOne(x => x.Movie)
-                .HasForeignKey(x => x.MovieId); 
+                .HasForeignKey(x => x.MovieId);
 
             builder
                 .HasMany(x => x.Content)
@@ -53,7 +50,7 @@ namespace KinoPoisk.DomainLayer.Configurations
             builder
                 .HasMany(x => x.Ratings)
                 .WithOne(x => x.Movie)
-                .HasForeignKey(x => x.MovieId); 
+                .HasForeignKey(x => x.MovieId);
         }
     }
 }

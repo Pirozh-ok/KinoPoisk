@@ -9,7 +9,7 @@
             AgeCategories = new HashSet<AgeCategory>();
             Genres = new HashSet<Genre>();
             Awards = new HashSet<Award>();
-            Creators_Movies = new HashSet<Creator_Movie>();
+            Creators_Movies = new HashSet<CreatorMovie>();
             Content = new HashSet<Content>();
             Ratings = new HashSet<Rating>(); 
         }
@@ -22,12 +22,12 @@
         public decimal WorldFeesInDollars { get; set; }
         public DateTime PremiereDate { get; set; }
 
-        public ICollection<Country> Countries { get; set; }
-        public ICollection<AgeCategory> AgeCategories { get; set; }
-        public ICollection<Genre> Genres { get; set; }
-        public ICollection<Award> Awards { get; set; }
-        public ICollection<Creator_Movie> Creators_Movies { get; set; }
-        public ICollection<Content> Content { get; set; }
-        public ICollection<Rating> Ratings { get; set; }
+        public virtual ICollection<Country> Countries { get; set; }
+        public virtual ICollection<AgeCategory> AgeCategories { get; set; }
+        public virtual ICollection<Genre> Genres { get; set; }
+        public virtual ICollection<Award> Awards { get; set; }
+        public virtual ICollection<CreatorMovie> Creators_Movies { get; set; }
+        public virtual ICollection<Content> Content { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; }
     }
 }
