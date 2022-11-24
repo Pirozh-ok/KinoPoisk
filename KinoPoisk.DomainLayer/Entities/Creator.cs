@@ -4,7 +4,7 @@
     {
         public Creator() 
         {
-            Movies = new HashSet<Creator_Movie>();
+            Creators_Movies = new HashSet<Creator_Movie>();
         }
 
         public Guid Id { get; set; } = Guid.Empty;
@@ -13,6 +13,6 @@
         public string Patronymic { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public ICollection<Creator_Movie> Movies { get; set; } 
+        public ICollection<Creator_Movie> Creators_Movies { get; set; } 
     }
 }

@@ -17,6 +17,11 @@ namespace KinoPoisk.DomainLayer.Configurations
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder
+                .HasMany(x => x.Users)
+                .WithOne(x => x.Country)
+                .HasForeignKey(x => x.CountryId); 
         }
     }
 }
