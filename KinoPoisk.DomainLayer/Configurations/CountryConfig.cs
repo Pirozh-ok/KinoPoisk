@@ -19,6 +19,48 @@ namespace KinoPoisk.DomainLayer.Configurations {
                 .HasMany(x => x.Users)
                 .WithOne(x => x.Country)
                 .HasForeignKey(x => x.CountryId);
+
+            builder.HasData(
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "Russia"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "USA"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "England"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "France"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "Germany"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "China"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "Japan"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "Canada"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "Finlyadnia"
+                },
+                new Country {
+                    Id = Guid.NewGuid(),
+                    Name = "Sweden"
+                });
         }
     }
 }

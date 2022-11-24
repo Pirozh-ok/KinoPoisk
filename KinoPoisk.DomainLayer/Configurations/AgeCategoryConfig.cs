@@ -16,6 +16,33 @@ namespace KinoPoisk.DomainLayer.Configurations {
 
             builder.Property(x => x.MinAge)
                 .IsRequired();
+
+            builder.HasData(
+                new AgeCategory {
+                    Id = Guid.NewGuid(),
+                    Value = "0+ - All ages are allowed",
+                    MinAge = 0
+                },
+                new AgeCategory {
+                    Id = Guid.NewGuid(),
+                    Value = "6+ - For children over 6 years",
+                    MinAge = 6
+                },
+                new AgeCategory {
+                    Id = Guid.NewGuid(),
+                    Value = "12+ - For children over 12 years",
+                    MinAge = 12
+                },
+                new AgeCategory {
+                    Id = Guid.NewGuid(),
+                    Value = "16+ - For children over 16 years",
+                    MinAge = 16
+                },
+                new AgeCategory {
+                    Id = Guid.NewGuid(),
+                    Value = "18+ - Prohibited for children",
+                    MinAge = 18
+                }); 
         }
     }
 }

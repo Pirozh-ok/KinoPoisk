@@ -18,6 +18,16 @@ namespace KinoPoisk.DomainLayer.Configurations {
             builder.HasMany(x => x.UserRoles)
                 .WithOne(x => x.Role)
                 .HasForeignKey(x => x.RoleId);
+
+            builder.HasData(
+                new ApplicationRole {
+                    Id = Guid.NewGuid(),
+                    Name = "Administrator"
+                },
+                new ApplicationRole {
+                    Id = Guid.NewGuid(),
+                    Name = "User"
+                });
         }
     }
 }

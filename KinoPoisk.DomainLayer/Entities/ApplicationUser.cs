@@ -13,6 +13,7 @@ namespace KinoPoisk.DomainLayer.Entities {
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfRegistration { get; set; }
         public Guid CountryId { get; set; }
+
         public Country Country { get; set; }
         public virtual ICollection<Rating> MovieRatings { get; set; }
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
