@@ -11,7 +11,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         where TEntity : IEntity
         where TGetDto : IGetDto<TTypeId>
         where TCreateOrUpdateDto : IUpdateOrCreateDto{
-        private TService _service;
+        protected TService _service;
 
         public CrudControllerBase(TService service) {
             _service = service;
@@ -40,8 +40,8 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] TCreateOrUpdateDto updateDto) {
-            await _service.UpdateAsync(updateDto);
+        public async Task<IActionResult> UpdateAsync([FromQuery] TTypeId id, [FromBody] TCreateOrUpdateDto updateDto) {
+            await _service.UpdateAsync(id, updateDto);
             return StatusCode(204); 
         }
     }

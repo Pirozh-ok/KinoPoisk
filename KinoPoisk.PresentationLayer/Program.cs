@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbConnection(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddUserServices();
 
 var app = builder.Build();
 
