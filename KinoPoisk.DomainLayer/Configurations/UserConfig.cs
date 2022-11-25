@@ -46,8 +46,8 @@ namespace KinoPoisk.DomainLayer.Configurations {
             builder
                 .HasMany(x => x.MovieRatings)
                 .WithOne(x => x.User)
-                .HasForeignKey(x => x.User.Id);
-
+                .HasForeignKey(x => x.UserId);
+            
             builder
                 .HasMany(x => x.UserRoles)
                 .WithOne(x => x.User)

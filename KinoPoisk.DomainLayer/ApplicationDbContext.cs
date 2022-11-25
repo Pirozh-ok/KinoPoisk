@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace KinoPoisk.DataAccess {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid> {
+        public ApplicationDbContext() {
+
+        }
+        
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) {
         }
