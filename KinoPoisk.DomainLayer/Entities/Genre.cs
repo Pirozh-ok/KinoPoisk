@@ -1,5 +1,8 @@
-﻿namespace KinoPoisk.DomainLayer.Entities {
-    public class Genre {
+﻿using KinoPoisk.DataAccessLayer;
+
+namespace KinoPoisk.DomainLayer.Entities
+{
+    public class Genre : IEntity{
         public Genre() {
             Movies = new HashSet<Movie>();
         }

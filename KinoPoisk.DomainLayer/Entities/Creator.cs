@@ -1,5 +1,8 @@
-﻿namespace KinoPoisk.DomainLayer.Entities {
-    public class Creator {
+﻿using KinoPoisk.DataAccessLayer;
+
+namespace KinoPoisk.DomainLayer.Entities
+{
+    public class Creator : IEntity{
         public Creator() {
             CreatorsMovies = new HashSet<CreatorMovie>();
         }

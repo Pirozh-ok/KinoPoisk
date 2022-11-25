@@ -1,6 +1,8 @@
-﻿namespace KinoPoisk.DomainLayer.Entities
+﻿using KinoPoisk.DataAccessLayer;
+
+namespace KinoPoisk.DomainLayer.Entities
 {
-    public class Movie
+    public class Movie : IEntity
     {
         public Movie()
         {

@@ -1,5 +1,8 @@
-﻿namespace KinoPoisk.DomainLayer.Entities {
-    public class Country {
+﻿using KinoPoisk.DataAccessLayer;
+
+namespace KinoPoisk.DomainLayer.Entities
+{
+    public class Country : IEntity {
         public Country() {
             Movies = new HashSet<Movie>();
             Users = new HashSet<ApplicationUser>();

@@ -1,8 +1,10 @@
 ﻿using KinoPoisk.DataAccess.Entities;
+using KinoPoisk.DataAccessLayer;
 using Microsoft.AspNetCore.Identity;
 
-namespace KinoPoisk.DomainLayer.Entities {
-    public class ApplicationUser : IdentityUser<Guid> {
+namespace KinoPoisk.DomainLayer.Entities
+{
+    public class ApplicationUser : IdentityUser<Guid>, IEntity {
         public ApplicationUser() : base() {
             MovieRatings = new HashSet<Rating>();
         }
