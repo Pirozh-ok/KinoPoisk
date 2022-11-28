@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class RatingConfig : IEntityTypeConfiguration<Rating> {
         public void Configure(EntityTypeBuilder<Rating> builder) {
             builder.HasKey(x => new { x.UserId, x.MovieId });

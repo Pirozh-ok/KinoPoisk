@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class UserConfig : IEntityTypeConfiguration<ApplicationUser> {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder) {
             builder.HasKey(x => x.Id);
@@ -47,7 +47,7 @@ namespace KinoPoisk.DomainLayer.Configurations {
                 .HasMany(x => x.MovieRatings)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
-            
+
             builder
                 .HasMany(x => x.UserRoles)
                 .WithOne(x => x.User)

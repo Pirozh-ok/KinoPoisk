@@ -6,7 +6,7 @@ namespace KinoPoisk.PresentationLayer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : CrudControllerBase<IGenreService, CreateGenreDto, UpdateGenreDTO<Guid>, GetGenreDTO, Guid> {
+    public abstract class GenreController : CrudControllerBase<IGenreService, CreateGenreDto, UpdateGenreDTO<Guid>, GetGenreDTO, Guid> {
         public GenreController(IGenreService service) : base(service) {
         }
     }

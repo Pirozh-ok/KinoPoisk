@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class AgeCategoryConfig : IEntityTypeConfiguration<AgeCategory> {
         public void Configure(EntityTypeBuilder<AgeCategory> builder) {
             builder.HasKey(x => x.Id);
@@ -42,7 +42,7 @@ namespace KinoPoisk.DomainLayer.Configurations {
                     Id = Guid.NewGuid(),
                     Value = "18+ - Prohibited for children",
                     MinAge = 18
-                }); 
+                });
         }
     }
 }

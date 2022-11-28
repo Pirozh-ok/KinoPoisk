@@ -7,6 +7,6 @@ namespace KinoPoisk.DomainLayer.Interfaces {
         public Task<Result> DeleteAsync(TTypeId id);
         public Task<Result> UpdateAsync(IUpdateDTO<TTypeId> updateDto);
         public Task<Result> GetAllAsync();
-        public Task<Result> GetByIdAsync(TTypeId  Id); 
+        public Task<Result> GetByIdAsync(TTypeId  id); 
     }
 }

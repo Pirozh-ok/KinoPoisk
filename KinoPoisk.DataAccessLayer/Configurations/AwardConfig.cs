@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class AwardConfig : IEntityTypeConfiguration<Award> {
         public void Configure(EntityTypeBuilder<Award> builder) {
             builder.HasKey(x => x.Id);

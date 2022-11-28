@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class RoleConfig : IEntityTypeConfiguration<ApplicationRole> {
         public void Configure(EntityTypeBuilder<ApplicationRole> builder) {
             builder.HasKey(x => x.Id);

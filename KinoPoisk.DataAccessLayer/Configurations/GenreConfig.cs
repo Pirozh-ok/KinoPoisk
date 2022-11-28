@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class GenreConfig : IEntityTypeConfiguration<Genre> {
         public void Configure(EntityTypeBuilder<Genre> builder) {
             builder.HasKey(x => x.Id);

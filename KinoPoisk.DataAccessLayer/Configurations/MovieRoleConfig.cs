@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class MovieRoleConfig : IEntityTypeConfiguration<MovieRole> {
         public void Configure(EntityTypeBuilder<MovieRole> builder) {
             builder.HasKey(x => x.Id);
@@ -39,11 +39,11 @@ namespace KinoPoisk.DomainLayer.Configurations {
                 new MovieRole {
                     Id = Guid.NewGuid(),
                     Name = "Artists"
-                }, 
+                },
                 new MovieRole {
                     Id = Guid.NewGuid(),
                     Name = "Operators"
-                }, 
+                },
                 new MovieRole {
                     Id = Guid.NewGuid(),
                     Name = "Director"

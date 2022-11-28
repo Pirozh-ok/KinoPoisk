@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Identity.Client;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class MovieConfig : IEntityTypeConfiguration<Movie> {
         public void Configure(EntityTypeBuilder<Movie> builder) {
             builder.HasKey(x => x.Id);

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace KinoPoisk.DomainLayer.Configurations {
+namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class CountryConfig : IEntityTypeConfiguration<Country> {
         public void Configure(EntityTypeBuilder<Country> builder) {
             builder.HasKey(x => x.Id);
