@@ -1,4 +1,4 @@
-﻿namespace KinoPoisk.DataAccessLayerLayer
+﻿namespace KinoPoisk.DomainLayer.Interfaces
 {
     public interface IEntity
     {

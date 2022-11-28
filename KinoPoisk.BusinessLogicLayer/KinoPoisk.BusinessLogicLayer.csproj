@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KinoPoisk.DataAccessLayer\KinoPoisk.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\KinoPoisk.DomainLayer\KinoPoisk.DomainLayer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,15 +1,14 @@
-﻿using KinoPoisk.BusinessLogicLayer.DTOs;
-using KinoPoisk.BusinessLogicLayer.Services.Interfaces;
-using KinoPoisk.DataAccessLayerLayer;
+﻿using KinoPoisk.DomainLayer.DTOs;
+using KinoPoisk.DomainLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/[controller]/")]
     [ApiController]
-    public class CrudControllerBase<TService, TCreateOrUpdateDto , TGetDto, TTypeId>: ControllerBase 
-        where TService : IService<TTypeId>
-        where TGetDto : IGetDto<TTypeId>
-        where TCreateOrUpdateDto : IUpdateOrCreateDto{
+    public class CrudControllerBase<TService, TCreateDto, TUpdateDto , TGetDto, TTypeId>: ControllerBase 
+        where TService : IService<TTypeId, TGetDto>
+        where TCreateDto : ICreateDTO
+        where TUpdateDto : IUpdateDTO<TTypeId> {
         protected TService _service;
 
         public CrudControllerBase(TService service) {
@@ -27,7 +26,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] TCreateOrUpdateDto createDto) {
+        public async Task<IActionResult> CreateAsync([FromBody] TCreateDto createDto) {
             await _service.CreateAsync(createDto);
             return StatusCode(201); 
         }
@@ -39,8 +38,8 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromQuery] TTypeId id, [FromBody] TCreateOrUpdateDto updateDto) {
-            await _service.UpdateAsync(id, updateDto);
+        public async Task<IActionResult> UpdateAsync([FromBody] TUpdateDto updateDto) {
+            await _service.UpdateAsync(updateDto);
             return StatusCode(204); 
         }
     }

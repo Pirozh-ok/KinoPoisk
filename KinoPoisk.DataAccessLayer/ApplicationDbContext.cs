@@ -1,12 +1,11 @@
 ﻿using KinoPoisk.DomainLayer.Configurations;
-using KinoPoisk.DomainLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using KinoPoisk.DomainLayer.Entities;
 
 namespace KinoPoisk.DataAccessLayer {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid> {
         public ApplicationDbContext() {
-
         }
         
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

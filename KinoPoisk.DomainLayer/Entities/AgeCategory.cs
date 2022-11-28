@@ -1,4 +1,4 @@
-﻿using KinoPoisk.DataAccessLayerLayer;
+﻿using KinoPoisk.DomainLayer.Interfaces;
 
 namespace KinoPoisk.DomainLayer.Entities
 {
