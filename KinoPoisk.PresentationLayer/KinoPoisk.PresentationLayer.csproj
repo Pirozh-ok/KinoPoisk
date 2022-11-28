@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KinoPoisk.BusinessLogicLayer\KinoPoisk.BusinessLogicLayer.csproj" />
-    <ProjectReference Include="..\KinoPoisk.DomainLayer\KinoPoisk.DataAccessLayer.csproj" />
   </ItemGroup>
 
 </Project>

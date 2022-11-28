@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenreController : CrudControllerBase<IGenreService, Genre, CreateUpdateGenreDTO, GetGenreDTO, Guid> {
+    public class GenreController : CrudControllerBase<IGenreService, CreateUpdateGenreDTO, GetGenreDTO, Guid> {
         public GenreController(IGenreService service) : base(service) {
         }
     }

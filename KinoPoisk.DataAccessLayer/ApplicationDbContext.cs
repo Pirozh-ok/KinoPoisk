@@ -3,7 +3,7 @@ using KinoPoisk.DomainLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace KinoPoisk.DataAccess {
+namespace KinoPoisk.DataAccessLayer {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid> {
         public ApplicationDbContext() {
 

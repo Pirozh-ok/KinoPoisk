@@ -1,4 +1,4 @@
-﻿using KinoPoisk.DataAccess;
+﻿using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

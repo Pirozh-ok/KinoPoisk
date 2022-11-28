@@ -1,5 +1,5 @@
-﻿using KinoPoisk.DataAccess.Entities;
-using KinoPoisk.DataAccessLayer;
+﻿using KinoPoisk.DataAccessLayer.Entities;
+using KinoPoisk.DataAccessLayerLayer;
 using Microsoft.AspNetCore.Identity;
 
 namespace KinoPoisk.DomainLayer.Entities

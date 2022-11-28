@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.DataAccessLayer", "KinoPoisk.DomainLayer\KinoPoisk.DataAccessLayer.csproj", "{B88956FA-B984-4BB9-AFED-FD23E77677E2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.PresentationLayer", "KinoPoisk.PresentationLayer\KinoPoisk.PresentationLayer.csproj", "{E8491E96-E996-4371-918E-4599CC69218A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinoPoisk.BusinessLogicLayer", "KinoPoisk.BusinessLogicLayer\KinoPoisk.BusinessLogicLayer.csproj", "{7C56ADF2-2473-45DA-A824-BBC70DFADEC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.BusinessLogicLayer", "KinoPoisk.BusinessLogicLayer\KinoPoisk.BusinessLogicLayer.csproj", "{7C56ADF2-2473-45DA-A824-BBC70DFADEC8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.DataAccessLayer", "KinoPoisk.DataAccessLayer\KinoPoisk.DataAccessLayer.csproj", "{EC5DA57B-7638-45A1-8235-520B44161439}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B88956FA-B984-4BB9-AFED-FD23E77677E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B88956FA-B984-4BB9-AFED-FD23E77677E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B88956FA-B984-4BB9-AFED-FD23E77677E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B88956FA-B984-4BB9-AFED-FD23E77677E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E8491E96-E996-4371-918E-4599CC69218A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E8491E96-E996-4371-918E-4599CC69218A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8491E96-E996-4371-918E-4599CC69218A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{7C56ADF2-2473-45DA-A824-BBC70DFADEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C56ADF2-2473-45DA-A824-BBC70DFADEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C56ADF2-2473-45DA-A824-BBC70DFADEC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC5DA57B-7638-45A1-8235-520B44161439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC5DA57B-7638-45A1-8235-520B44161439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC5DA57B-7638-45A1-8235-520B44161439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC5DA57B-7638-45A1-8235-520B44161439}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

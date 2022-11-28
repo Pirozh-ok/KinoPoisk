@@ -1,14 +1,13 @@
 ﻿using KinoPoisk.BusinessLogicLayer.DTOs;
 using KinoPoisk.BusinessLogicLayer.Services.Interfaces;
-using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DataAccessLayerLayer;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/[controller]/")]
     [ApiController]
-    public class CrudControllerBase<TService, TEntity, TCreateOrUpdateDto , TGetDto, TTypeId>: ControllerBase 
+    public class CrudControllerBase<TService, TCreateOrUpdateDto , TGetDto, TTypeId>: ControllerBase 
         where TService : IService<TTypeId>
-        where TEntity : IEntity
         where TGetDto : IGetDto<TTypeId>
         where TCreateOrUpdateDto : IUpdateOrCreateDto{
         protected TService _service;

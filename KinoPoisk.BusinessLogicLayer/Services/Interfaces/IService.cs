@@ -1,5 +1,5 @@
 ﻿using KinoPoisk.BusinessLogicLayer.DTOs;
-using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DataAccessLayerLayer;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Interfaces
 {

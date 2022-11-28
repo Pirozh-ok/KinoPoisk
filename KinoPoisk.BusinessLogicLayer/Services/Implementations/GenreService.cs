@@ -1,7 +1,7 @@
 ﻿using KinoPoisk.BusinessLogicLayer.DTOs;
 using KinoPoisk.BusinessLogicLayer.DTOs.GenreDTOs;
 using KinoPoisk.BusinessLogicLayer.Services.Interfaces;
-using KinoPoisk.DataAccess;
+using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +21,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                     Name = dto.Name,
                 }); 
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id) {
