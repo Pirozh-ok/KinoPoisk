@@ -731,7 +731,7 @@ namespace KinoPoisk.DataAccessLayerLayer.Migrations
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<Guid>");
 
-                    b.UseTphMappingStrategy();
+                    //b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>

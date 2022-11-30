@@ -1,18 +1,15 @@
-﻿using KinoPoisk.DataAccessLayer;
-using KinoPoisk.DomainLayer;
+﻿using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs;
-using KinoPoisk.DomainLayer.DTOs.GenreDTOs;
 using KinoPoisk.DomainLayer.Entities;
-using KinoPoisk.DomainLayer.Interfaces.Services;
-using KinoPoisk.DataAccessLayer.Repositories;
+using KinoPoisk.DomainLayer.Intarfaces.Services;
+using KinoPoisk.DomainLayer.DTOs.GenreDTO;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
-{
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class GenreService : IGenreService {
-        private readonly GenreRepository _repository; 
+        private readonly IUnitOfWork _unitOfWork; 
 
-        public GenreService(GenreRepository repository) {
-            _repository = repository;
+        public GenreService(IUnitOfWork unitOfWork) {
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> CreateAsync(ICreateDTO createDto) {
@@ -28,28 +25,29 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 return new ErrorResult(errors);
             }
 
-            await _repository.CreateAsync(
+            _unitOfWork.GetRepository<Genre>().Create(
                 new Genre {
                     Name = dto.Name,
-                }); 
-
+                });
+            await _unitOfWork.CommitAsync(); 
             return new SuccessResult<string>("Genre is created");
         }
 
         public async Task<Result> DeleteAsync(Guid id) {
-            var genre = await _repository.GetByIdAsync(id);
+            var genre = _unitOfWork.GetRepository<Genre>().GetById(id);
 
             if(genre is null) {
                 return new ErrorResult(new List<string> { "Genre no found" }); 
             }
 
-            await _repository.DeleteAsync(genre);
+            _unitOfWork.GetRepository<Genre>().Delete(genre);
+            await _unitOfWork.CommitAsync(); 
             return new SuccessResult<string>("Genre is deleted");
         }
 
         public async Task<Result> GetAllAsync() {
             var dtoList = new List<GetGenreDTO>();
-            var genres = await _repository.GetAllAsync(); 
+            var genres = _unitOfWork.GetRepository<Genre>().GetAll(); 
 
             foreach(var genre in genres) {
                 dtoList.Add(
@@ -63,7 +61,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
         }
 
         public async Task<Result> GetByIdAsync(Guid id) {
-            var genre = await _repository.GetByIdAsync(id);
+            var genre = _unitOfWork.GetRepository<Genre>().GetById(id);
 
             return new SuccessResult<GetGenreDTO>(
                 new GetGenreDTO() {
@@ -85,14 +83,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 return new ErrorResult(errors); 
             }
 
-            var genre = await _repository.GetByIdAsync(dto.Id);
+            var genre = _unitOfWork.GetRepository<Genre>().GetById(dto.Id);
 
             if(genre is null) {
                 return new ErrorResult(new List<string> { "Genre not found"});
             }
 
             genre.Name = dto.Name;
-            await _repository.UpdateAsync(genre); 
+            _unitOfWork.GetRepository<Genre>().Update(genre); 
             return new SuccessResult<string>("Genre updated"); 
         }
     }

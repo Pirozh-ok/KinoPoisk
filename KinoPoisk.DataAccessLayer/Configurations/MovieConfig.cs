@@ -1,7 +1,6 @@
 ﻿using KinoPoisk.DomainLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Identity.Client;
 
 namespace KinoPoisk.DataAccessLayer.Configurations {
     internal class MovieConfig : IEntityTypeConfiguration<Movie> {

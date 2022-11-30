@@ -1,10 +1,11 @@
 ﻿namespace KinoPoisk.DomainLayer.Intarfaces {
-    public interface IRepository<TEntity, TTypeId>
+    public interface IRepository<TEntity>
         where TEntity : class {
-        Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<TEntity> GetByIdAsync(TTypeId id);
-        Task CreateAsync(TEntity item);
-        Task UpdateAsync(TEntity item);
-        Task DeleteAsync(TEntity item);
+        IEnumerable<TEntity> GetAll();
+        TEntity GetById<TTypeId>(TTypeId id);
+        void Create(TEntity item);
+        void Update(TEntity item);
+        void Delete(TEntity item);
     }
 }
+

@@ -1,12 +1,13 @@
 ﻿using KinoPoisk.DomainLayer.DTOs;
-using KinoPoisk.DomainLayer.Interfaces;
+using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/[controller]/")]
     [ApiController]
     public class CrudControllerBase<TService, TCreateDto, TUpdateDto , TGetDto, TTypeId>: ControllerBase 
-        where TService : IService<TTypeId, TGetDto>
+        where TService : IService<TTypeId>
         where TCreateDto : ICreateDTO
         where TUpdateDto : IUpdateDTO<TTypeId> {
         protected TService _service;
@@ -28,19 +29,19 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] TCreateDto createDto) {
             await _service.CreateAsync(createDto);
-            return StatusCode(201); 
+            return StatusCode((int)HttpStatusCode.Created); 
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(TTypeId id) {
             await _service.DeleteAsync(id);
-            return StatusCode(204); 
+            return StatusCode((int)HttpStatusCode.NoContent); 
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] TUpdateDto updateDto) {
             await _service.UpdateAsync(updateDto);
-            return StatusCode(204); 
+            return StatusCode((int)HttpStatusCode.NoContent); 
         }
     }
 }
