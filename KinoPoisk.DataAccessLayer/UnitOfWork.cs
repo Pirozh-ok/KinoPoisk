@@ -1,6 +1,7 @@
 ﻿using KinoPoisk.DataAccessLayer.Repositories;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace KinoPoisk.DataAccessLayer {
     public class UnitOfWork : IUnitOfWork { 
@@ -8,18 +9,18 @@ namespace KinoPoisk.DataAccessLayer {
         private ApplicationDbContext _context;
 
         public UnitOfWork(ApplicationDbContext context) {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _repositories = new Dictionary<string, object>(); 
         }
 
         public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class {
-            string name = typeof(TEntity).GetType().Name;
+            string nameType = typeof(TEntity).GetType().Name;
 
-            if (!_repositories.ContainsKey(name)) {
-                _repositories[name] = new GenericRepository<TEntity>(_context.Set<TEntity>());
+            if (!_repositories.ContainsKey(nameType)) {
+                _repositories[nameType] = new GenericRepository<TEntity>(_context.Set<TEntity>());
             }
 
-            return (IRepository<TEntity>)_repositories[name];
+            return (IRepository<TEntity>)_repositories[nameType];
         }
 
         public async Task CommitAsync() {

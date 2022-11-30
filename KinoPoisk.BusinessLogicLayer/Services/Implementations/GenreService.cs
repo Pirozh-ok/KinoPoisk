@@ -13,10 +13,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> CreateAsync(ICreateDTO createDto) {
-            var dto = createDto as UpdateGenreDTO<Guid>;
+            var dto = createDto as CreateGenreDto;
 
             if(dto is null) {
-                new ErrorResult(new List<string> { "Argument null" });
+                return new ErrorResult(new List<string> { "Argument null" });
             }
 
             var errors = createDto.ValidateData(); 
@@ -29,7 +29,9 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 new Genre {
                     Name = dto.Name,
                 });
+
             await _unitOfWork.CommitAsync(); 
+
             return new SuccessResult<string>("Genre is created");
         }
 
@@ -63,15 +65,17 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         public async Task<Result> GetByIdAsync(Guid id) {
             var genre = _unitOfWork.GetRepository<Genre>().GetById(id);
 
-            return new SuccessResult<GetGenreDTO>(
-                new GetGenreDTO() {
-                    Id = genre.Id,
-                    Name = genre.Name
-                });
+            return genre is null ?
+                new ErrorResult(new List<string>() { "Genre not found!" }) :
+                new SuccessResult<GetGenreDTO>(
+                    new GetGenreDTO() {
+                        Id = genre.Id,
+                        Name = genre.Name
+                    });
         }
 
         public async Task<Result> UpdateAsync(IUpdateDTO<Guid> updateDto) {
-            var dto = updateDto as UpdateGenreDTO<Guid>;
+            var dto = updateDto as UpdateGenreDTO;
 
             if (dto is null) {
                 new ErrorResult(new List<string> { "Argument null" });
@@ -90,7 +94,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             genre.Name = dto.Name;
-            _unitOfWork.GetRepository<Genre>().Update(genre); 
+            _unitOfWork.GetRepository<Genre>().Update(genre);
+            await _unitOfWork.CommitAsync(); 
             return new SuccessResult<string>("Genre updated"); 
         }
     }

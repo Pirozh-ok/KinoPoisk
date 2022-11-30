@@ -1,10 +1,9 @@
-﻿using KinoPoisk.DomainLayer.DTOs.GenreDTO;
-using KinoPoisk.DomainLayer.Intarfaces.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿//using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+//using KinoPoisk.DomainLayer.DTOs.GenreDTO;
 
-namespace KinoPoisk.PresentationLayer.Controllers {
-    public class GenreController : CrudControllerBase<IGenreService, CreateGenreDto, UpdateGenreDTO<Guid>, GetGenreDTO, Guid> {
-        public GenreController(IGenreService service) : base(service) {
-        }
-    }
-}
+//namespace KinoPoisk.PresentationLayer.Controllers {
+//    public class GenreController : CrudControllerBase<GenreService, CreateGenreDto, UpdateGenreDTO, GetGenreDTO, Guid?> {
+//        public GenreController(GenreService service) : base(service) {
+//        }
+//    }
+//}

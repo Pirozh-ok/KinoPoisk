@@ -1,5 +1,5 @@
-﻿namespace KinoPoisk.DomainLayer.DTOs.GenreDTO {
-    public class UpdateGenreDTO : IUpdateDTO<Guid?> {
+﻿namespace KinoPoisk.DomainLayer.DTOs.CountryDTO {
+    public class UpdateCountryDTO : IUpdateDTO<Guid?>{
         public Guid? Id { get; set; }
         public string Name { get; set; }
 
@@ -11,11 +11,11 @@
             }
 
             if (string.IsNullOrEmpty(Name) || Name.Length < 3) {
-                errors.Add("Invalid name value. The minimum length of the genre name is 3");
+                errors.Add("Invalid name value. The minimum length of the country name is 3");
             }
 
-            if (Name.Length > 100) {
-                errors.Add("Invalid name value. The length of the genre name should not exceed 100 characters");
+            if (Name.Length > 50) {
+                errors.Add("Invalid name value. The length of the country name should not exceed 50 characters");
             }
 
             return errors;
