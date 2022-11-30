@@ -1,19 +1,16 @@
-﻿using KinoPoisk.DomainLayer.Interfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
 
-namespace KinoPoisk.DomainLayer.Entities
-{
-    public class Movie : IEntity
-    {
-        public Movie()
-        {
-            Id = Guid.Empty; 
+namespace KinoPoisk.DomainLayer.Entities {
+    public class Movie : IEntity {
+        public Movie() {
+            Id = Guid.Empty;
             Countries = new HashSet<Country>();
             AgeCategories = new HashSet<AgeCategory>();
             Genres = new HashSet<Genre>();
             Awards = new HashSet<Award>();
             Creators_Movies = new HashSet<CreatorMovie>();
             Content = new HashSet<Content>();
-            Ratings = new HashSet<Rating>(); 
+            Ratings = new HashSet<Rating>();
         }
 
         public Guid Id { get; set; } = Guid.Empty;

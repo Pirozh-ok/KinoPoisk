@@ -1,8 +1,8 @@
-﻿using KinoPoisk.DomainLayer.Interfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
+using System.Security.Principal;
 
-namespace KinoPoisk.DomainLayer.Entities
-{
-    public class Award : IEntity{
+namespace KinoPoisk.DomainLayer.Entities {
+    public class Award : IEntity {
         public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; }
         public DateTime DateOfAward { get; set; }

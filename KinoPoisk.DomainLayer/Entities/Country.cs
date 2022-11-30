@@ -1,7 +1,6 @@
-﻿using KinoPoisk.DomainLayer.Interfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
 
-namespace KinoPoisk.DomainLayer.Entities
-{
+namespace KinoPoisk.DomainLayer.Entities {
     public class Country : IEntity {
         public Country() {
             Movies = new HashSet<Movie>();

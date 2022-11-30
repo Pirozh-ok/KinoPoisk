@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.BusinessLogicLaye
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.DataAccessLayer", "KinoPoisk.DataAccessLayer\KinoPoisk.DataAccessLayer.csproj", "{EC5DA57B-7638-45A1-8235-520B44161439}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinoPoisk.DomainLayer", "KinoPoisk.DomainLayer\KinoPoisk.DomainLayer.csproj", "{1FAE9E46-A46B-4959-9A1F-5B934ED39A2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KinoPoisk.DomainLayer", "KinoPoisk.DomainLayer\KinoPoisk.DomainLayer.csproj", "{EAF014A1-6D0D-4C55-9F7C-1E2703521322}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{EC5DA57B-7638-45A1-8235-520B44161439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC5DA57B-7638-45A1-8235-520B44161439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC5DA57B-7638-45A1-8235-520B44161439}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FAE9E46-A46B-4959-9A1F-5B934ED39A2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FAE9E46-A46B-4959-9A1F-5B934ED39A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FAE9E46-A46B-4959-9A1F-5B934ED39A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FAE9E46-A46B-4959-9A1F-5B934ED39A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF014A1-6D0D-4C55-9F7C-1E2703521322}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF014A1-6D0D-4C55-9F7C-1E2703521322}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF014A1-6D0D-4C55-9F7C-1E2703521322}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF014A1-6D0D-4C55-9F7C-1E2703521322}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

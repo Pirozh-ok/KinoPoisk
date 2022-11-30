@@ -1,7 +1,5 @@
-﻿namespace KinoPoisk.DomainLayer.DTOs.GenreDTOs
-{
-    public class CreateGenreDto : ICreateDTO
-    {
+﻿namespace KinoPoisk.DomainLayer.DTOs.GenreDTO {
+    public class CreateGenreDto : ICreateDTO {
         public string Name { get; set; }
 
         public IEnumerable<string> ValidateData() {

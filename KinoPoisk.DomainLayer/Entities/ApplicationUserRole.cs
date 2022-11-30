@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace KinoPoisk.DomainLayer.Entities {
     public class ApplicationUserRole : IdentityUserRole<Guid> {

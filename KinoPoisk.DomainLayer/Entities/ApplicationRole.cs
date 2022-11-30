@@ -1,4 +1,4 @@
-﻿using KinoPoisk.DomainLayer.Interfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace KinoPoisk.DomainLayer.Entities {

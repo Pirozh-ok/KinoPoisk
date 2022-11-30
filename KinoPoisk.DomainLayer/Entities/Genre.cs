@@ -1,8 +1,8 @@
-﻿using KinoPoisk.DomainLayer.Interfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
+using System.Security.Principal;
 
-namespace KinoPoisk.DomainLayer.Entities
-{
-    public class Genre : IEntity{
+namespace KinoPoisk.DomainLayer.Entities {
+    public class Genre : IEntity {
         public Genre() {
             Movies = new HashSet<Movie>();
         }
