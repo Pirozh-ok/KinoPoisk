@@ -1,11 +1,10 @@
-﻿using KinoPoisk.DomainLayer.DTOs.GenreDTO;
-using KinoPoisk.DomainLayer.DTOs;
-using KinoPoisk.DomainLayer.Entities;
+﻿using KinoPoisk.DomainLayer.DTOs;
 using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class GenericService<TEntity, TTypeId, TCreateDto, TUpdateDto, TGetDto> : IService<TTypeId>
@@ -24,7 +23,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var dto = createDto as TCreateDto;
 
             if (dto is null) {
-                return new ErrorResult(new List<string> { "Argument null" });
+                return new ErrorResult(new List<string> { GenericServiceResource.NullArgument });
             }
 
             var errors = createDto.ValidateData();
@@ -36,19 +35,19 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _unitOfWork.GetRepository<TEntity>().Create(_mapper.Map<TEntity>(dto));
             await _unitOfWork.CommitAsync();
 
-            return new SuccessResult<string>("Entity is created");
+            return new SuccessResult<string>(GenericServiceResource.Created);
         }
 
         public async Task<Result> DeleteAsync(TTypeId id) {
             var obj = _unitOfWork.GetRepository<TEntity>().GetById(id);
 
             if (obj is null) {
-                return new ErrorResult(new List<string> { "Entity not found" });
+                return new ErrorResult(new List<string> { GenericServiceResource.NotFound });
             }
 
             _unitOfWork.GetRepository<TEntity>().Delete(obj);
             await _unitOfWork.CommitAsync();
-            return new SuccessResult<string>("Entity is deleted");
+            return new SuccessResult<string>(GenericServiceResource.Deleted);
         }
 
         public async Task<Result> GetAllAsync() {
@@ -64,7 +63,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var obj = _unitOfWork.GetRepository<TEntity>().GetById(id);
 
             return obj is null ?
-                new ErrorResult(new List<string>() { "Not found!" }) :
+                new ErrorResult(new List<string>() { GenericServiceResource.NotFound }) :
                 new SuccessResult<TGetDto>(_mapper.Map<TGetDto>(obj));
         }
 
@@ -72,7 +71,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var dto = updateDto as TUpdateDto;
 
             if (dto is null) {
-                new ErrorResult(new List<string> { "Argument null" });
+                new ErrorResult(new List<string> { GenericServiceResource.NullArgument });
             }
 
             var errors = dto.ValidateData();
@@ -81,15 +80,15 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return new ErrorResult(errors);
             }
 
-            if (_unitOfWork.GetRepository<TEntity>().Contains(dto.Id)) {
-                return new ErrorResult(new List<string> { "Not found" });
+            var mapObj = _mapper.Map<TEntity>(dto);
+
+            if (!_unitOfWork.GetRepository<TEntity>().Contains(mapObj)) {
+                return new ErrorResult(new List<string> { GenericServiceResource.NotFound });
             }
 
-            var map = _mapper.Map<TEntity>(dto); 
-            _unitOfWork.GetRepository<TEntity>().Update(map);
+            _unitOfWork.GetRepository<TEntity>().Update(mapObj);
             await _unitOfWork.CommitAsync();
-            return new SuccessResult<string>("Entity is updated");
+            return new SuccessResult<string>(GenericServiceResource.Updated);
         }
     }
-
 }

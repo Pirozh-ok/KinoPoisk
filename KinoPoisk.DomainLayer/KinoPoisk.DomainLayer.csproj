@@ -12,4 +12,37 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\CountryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CountryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\GenericServiceResource.Designer.cs">
+      <DependentUpon>GenericServiceResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\GenreResource.Designer.cs">
+      <DependentUpon>GenreResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\CountryResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CountryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\GenericServiceResource.resx">
+      <LastGenOutput>GenericServiceResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\GenreResource.resx">
+      <LastGenOutput>GenreResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

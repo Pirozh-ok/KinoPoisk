@@ -6,7 +6,7 @@
         void Create(TEntity item);
         void Update(TEntity item);
         void Delete(TEntity item);
-        bool Contains<TTypeId>(TTypeId id); 
+        bool Contains(TEntity item); 
     }
 }
 

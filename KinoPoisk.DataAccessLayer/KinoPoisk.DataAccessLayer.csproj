@@ -26,8 +26,4 @@
     <ProjectReference Include="..\KinoPoisk.DomainLayer\KinoPoisk.DomainLayer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Automapper\" />
-  </ItemGroup>
-
 </Project>

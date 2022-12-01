@@ -1,4 +1,6 @@
-﻿namespace KinoPoisk.DomainLayer.DTOs.CountryDTO {
+﻿using KinoPoisk.DomainLayer.Resources;
+
+namespace KinoPoisk.DomainLayer.DTOs.CountryDTO {
     public class CreateCountryDTO : ICreateDTO {
         public string Name { get; set; }
 
@@ -6,11 +8,11 @@
             var errors = new List<string>();
 
             if (string.IsNullOrEmpty(Name) || Name.Length < 3) {
-                errors.Add("Invalid name value. The minimum length of the country name is 3");
+                errors.Add(CountryResource.NameLessMinLen);
             }
 
             if (Name.Length > 50) {
-                errors.Add("Invalid name value. The length of the country name should not exceed 50 characters");
+                errors.Add(CountryResource.NameExceedsMaxLen);
             }
 
             return errors;

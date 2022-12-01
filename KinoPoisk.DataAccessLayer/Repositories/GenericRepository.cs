@@ -10,8 +10,8 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
             _dbSet = dbSet;
         }
 
-        public bool Contains<TTypeId>(TTypeId id) {
-            return _dbSet.Find(id) == null; 
+        public bool Contains(TEntity item) {
+            return _dbSet.Contains(item);
         }
 
         public void Create(TEntity item) {
@@ -23,7 +23,8 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
         }
 
         public IQueryable<TEntity> GetAll() {
-            return _dbSet.AsNoTracking();
+            return _dbSet
+                .AsNoTracking(); 
         }
 
         public TEntity GetById<TTypeId>(TTypeId id) {

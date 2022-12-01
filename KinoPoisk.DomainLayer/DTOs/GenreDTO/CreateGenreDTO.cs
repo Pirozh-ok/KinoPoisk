@@ -1,4 +1,6 @@
-﻿namespace KinoPoisk.DomainLayer.DTOs.GenreDTO {
+﻿using KinoPoisk.DomainLayer.Resources;
+
+namespace KinoPoisk.DomainLayer.DTOs.GenreDTO {
     public class CreateGenreDto : ICreateDTO {
         public string Name { get; set; }
 
@@ -6,11 +8,11 @@
             var errors = new List<string>();
 
             if (string.IsNullOrEmpty(Name) || Name.Length < 3) {
-                errors.Add("Invalid name value. The minimum length of the genre name is 3");
+                errors.Add(GenreResource.NameLessMinLen);
             }
 
             if (Name.Length > 100) {
-                errors.Add("Invalid name value. The length of the genre name should not exceed 100 characters");
+                errors.Add(GenreResource.NameExceedsMaxLen);
             }
 
             return errors;
