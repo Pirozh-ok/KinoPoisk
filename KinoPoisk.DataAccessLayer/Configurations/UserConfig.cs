@@ -10,9 +10,6 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
             builder.HasIndex(x => x.Email)
                 .IsUnique();
 
-            builder.HasIndex(x => x.PhoneNumber)
-                .IsUnique();
-
             builder.Property(x => x.Id)
                 .IsRequired()
                 .ValueGeneratedOnAdd();
@@ -38,10 +35,6 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.DateOfRegistration)
                 .HasDefaultValueSql("getdate()");
-
-            builder.Property(x => x.PhoneNumber)
-                .IsRequired()
-                .HasMaxLength(12);
 
             builder
                 .HasMany(x => x.MovieRatings)

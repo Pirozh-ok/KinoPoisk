@@ -1,6 +1,5 @@
 ﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
 using KinoPoisk.DataAccessLayer;
-using KinoPoisk.DataAccessLayer.Repositories;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 
 namespace KinoPoisk.PresentationLayer.Extensions {
@@ -9,6 +8,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
             services.AddScoped<GenreService>();
             services.AddScoped<CountryService>(); 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserService, UserService>(); 
         }
     }
 }
