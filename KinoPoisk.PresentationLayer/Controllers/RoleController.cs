@@ -63,8 +63,6 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         public async Task<IActionResult> Seed() {
             var seed = new SeedData(_userManager, _roleManager);
             return Ok(); 
-        }
-
-        
+        }  
     }
 }

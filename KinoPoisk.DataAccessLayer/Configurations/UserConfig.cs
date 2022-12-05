@@ -7,9 +7,6 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder) {
             builder.HasKey(x => x.Id);
 
-            builder.HasIndex(x => x.Email)
-                .IsUnique();
-
             builder.Property(x => x.Id)
                 .IsRequired()
                 .ValueGeneratedOnAdd();
@@ -24,10 +21,6 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.Patronymic)
                 .HasDefaultValue(string.Empty)
-                .HasMaxLength(50);
-
-            builder.Property(x => x.Email)
-                .IsRequired()
                 .HasMaxLength(50);
 
             builder.Property(x => x.DateOfBirth)

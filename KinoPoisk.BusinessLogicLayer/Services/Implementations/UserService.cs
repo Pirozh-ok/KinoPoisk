@@ -66,10 +66,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             // проверка почты на корректность и принадлежность пользователю?? 
 
             var user = _mapper.Map<ApplicationUser>(dto);
-            user.PhoneNumber = Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (result.Succeeded) {
+                //роль не добавляется ???
                 var role = await _roleManager.FindByNameAsync("User");
                 _userManager.AddToRoleAsync(user, role.Name); 
 
