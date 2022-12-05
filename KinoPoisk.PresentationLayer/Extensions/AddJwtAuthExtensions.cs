@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -6,7 +7,11 @@ namespace KinoPoisk.PresentationLayer.Extensions {
     public static class AddAuthExtensions {
         public static void AddJwtAuth(this IServiceCollection services, IConfiguration configuration) {
             {
-                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                services.AddAuthentication(config => {
+                    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    config.DefaultScheme= JwtBearerDefaults.AuthenticationScheme;
+                })
                     .AddJwtBearer(config => {
                         config.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters {
                             ValidIssuer = configuration["JwtBearer:Issuer"],

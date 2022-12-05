@@ -1,15 +1,17 @@
 ﻿using KinoPoisk.DomainLayer.DTOs.UserDTO;
+using KinoPoisk.PresentationLayer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace KinoPoisk.PresentationLayer {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations{
     public class JwtService : IAuthService {
         private string _key;
         private string _issuer;
         private string _audience;
-        private string _tokenValidityInSecond; 
+        private string _tokenValidityInSecond;
 
         public JwtService(IConfiguration configuration) {
             _key = configuration["JwtBearer:Key"];
@@ -18,14 +20,8 @@ namespace KinoPoisk.PresentationLayer {
             _tokenValidityInSecond = configuration["JwtBearer:TokenValidityInSecond"];
         }
 
-        public string GenerateToken(JwtGenerateDTO userData) {
+        public string GenerateToken(List<Claim> claims) {
             var tokenHandler = new JwtSecurityTokenHandler();
-
-            var claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.Jti, userData.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, userData.Email),
-                new Claim(JwtRegisteredClaimNames.Name, userData.UserName)
-                };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
 
@@ -39,7 +35,7 @@ namespace KinoPoisk.PresentationLayer {
 
             var token = tokenHandler.CreateToken(tokenDescription);
 
-            return tokenHandler.WriteToken(token); 
+            return tokenHandler.WriteToken(token);
         }
     }
 }

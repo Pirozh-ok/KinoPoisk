@@ -1,4 +1,3 @@
-using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.PresentationLayer.Extensions;
 using System.Text.Json.Serialization;
 
@@ -15,7 +14,7 @@ builder.Services.AddDbConnection(builder.Configuration.GetConnectionString("Defa
 builder.Services.AddIdentitySettings();
 builder.Services.AddUserServices();
 builder.Services.AddAutoMapper();
-builder.Services.AddJwtAuth(builder.Configuration); 
+builder.Services.AddJwtAuth(builder.Configuration);
 
 var app = builder.Build();
 
