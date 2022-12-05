@@ -60,12 +60,9 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             // проверка почты на корректность и принадлежность пользователю?? 
-            // проверка Id страны
 
             var user = _mapper.Map<ApplicationUser>(dto);
-
-            user.PhoneNumber = "12345678910";
-
+            user.PhoneNumber = string.Empty;
             var result = await _userManager.CreateAsync(user, dto.Password);
  
             if (result.Succeeded) {

@@ -15,6 +15,7 @@ builder.Services.AddDbConnection(builder.Configuration.GetConnectionString("Defa
 builder.Services.AddIdentitySettings();
 builder.Services.AddUserServices();
 builder.Services.AddAutoMapper();
+builder.Services.AddJwtAuth(builder.Configuration); 
 
 var app = builder.Build();
 

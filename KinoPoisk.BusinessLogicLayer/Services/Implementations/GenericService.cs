@@ -7,7 +7,7 @@ using AutoMapper.QueryableExtensions;
 using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class GenericService<TEntity, TTypeId, TCreateDto, TUpdateDto, TGetDto> : IService<TTypeId>
+    public class GenericService<TEntity, TTypeId, TCreateDto, TUpdateDto, TGetDto> : IService<TTypeId, TCreateDto, TUpdateDto>
         where TEntity : class
         where TCreateDto : class, ICreateDTO
         where TUpdateDto : class, IUpdateDTO<TTypeId>{
@@ -19,14 +19,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _mapper = mapper;
         }
 
-        public async Task<Result> CreateAsync(ICreateDTO createDto) {
-            var dto = createDto as TCreateDto;
+        public async Task<Result> CreateAsync(TCreateDto dto) {
 
             if (dto is null) {
                 return new ErrorResult(new List<string> { GenericServiceResource.NullArgument });
             }
 
-            var errors = createDto.ValidateData();
+            var errors = dto.ValidateData();
 
             if (errors.Count() > 0) {
                 return new ErrorResult(errors);
@@ -67,9 +66,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 new SuccessResult<TGetDto>(_mapper.Map<TGetDto>(obj));
         }
 
-        public async Task<Result> UpdateAsync(IUpdateDTO<TTypeId> updateDto) {
-            var dto = updateDto as TUpdateDto;
-
+        public async Task<Result> UpdateAsync(TUpdateDto dto) {
             if (dto is null) {
                 new ErrorResult(new List<string> { GenericServiceResource.NullArgument });
             }

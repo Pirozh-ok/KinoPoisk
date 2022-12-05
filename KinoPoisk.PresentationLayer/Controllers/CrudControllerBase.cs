@@ -8,7 +8,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/[controller]/")]
     [ApiController]
     public class CrudControllerBase<TService, TCreateDto, TUpdateDto , TGetDto, TTypeId>: ControllerBase 
-        where TService : IService<TTypeId>
+        where TService : IService<TTypeId, TCreateDto, TUpdateDto>
         where TCreateDto : ICreateDTO
         where TUpdateDto : IUpdateDTO<TTypeId> {
         protected TService _service;
