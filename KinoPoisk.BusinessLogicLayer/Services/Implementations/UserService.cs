@@ -8,14 +8,9 @@ using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using System;
+using Microsoft.AspNetCore.Routing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Policy;
-using System.Security.Principal;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -25,34 +20,40 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
+        private readonly IHttpContextAccessor _accessor;
+        private readonly LinkGenerator _generator;
 
         public UserService(UserManager<ApplicationUser> userManager,
             IAuthService jwtService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            IEmailService emailService) {
+            IEmailService emailService,
+            IHttpContextAccessor accessor,
+            LinkGenerator generator) {
             _userManager = userManager;
             _jwtService = jwtService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _emailService = emailService;
+            _accessor = accessor;
+            _generator = generator;
         }
 
         public async Task<Result> LoginAsync(LoginDTO dto) {
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user is null) {
-                return new ErrorResult(new List<string>() { UserResource.InvalidEmail });
+                return new ErrorResult(new List<string>() { UserResource.InvalidEmailOrPassword });
             }
 
             if (await _userManager.CheckPasswordAsync(user, dto.Password)) {
                 return new SuccessResult<AuthResponseDTO<GetUserDTO>>(await GetAuthResult(user));
             }
 
-            return new ErrorResult(new List<string>() { UserResource.InvalidPassword });
+            return new ErrorResult(new List<string>() { UserResource.InvalidEmailOrPassword });
         }
 
-        public async Task<Result> RegisterAsync(CreateUserDTO dto, IUrlHelper url, string scheme) {
+        public async Task<Result> RegisterAsync(CreateUserDTO dto) {
             if (dto is null) {
                 return new ErrorResult(new List<string> { UserResource.NullArgument });
             }
@@ -72,7 +73,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (result.Succeeded) {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
-                await SendConfirmationEmail(user, url, scheme);
+                await SendConfirmationEmail(user);
                 return new SuccessResult<AuthResponseDTO<GetUserDTO>>(await GetAuthResult(user));
             }
 
@@ -85,14 +86,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return new ErrorResult(errors);
         }
 
-        public async Task ConfirmEmailAsync(string userEmail, IUrlHelper url, string scheme) {
+        public async Task ConfirmEmailAsync(string userEmail) {
             var user = await _userManager.FindByEmailAsync(userEmail);
 
             if (user.EmailConfirmed) {
                 return; 
             }
 
-            await SendConfirmationEmail(user, url, scheme);
+            await SendConfirmationEmail(user);
         }
 
         public async Task<Result> VerificationConfirmationToken(string token, string email) {
@@ -138,19 +139,25 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             };
         }
 
-        private async Task SendConfirmationEmail(ApplicationUser user, IUrlHelper url, string scheme) {
+        private async Task SendConfirmationEmail(ApplicationUser user) {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            token = HttpUtility.UrlEncode(token); 
-            //var callbackUrl = url.Action(
-            //            action: "Confirm-email",
-            //            controller: "Account",
-            //            values: new { token, email = user.Email },
-            //            protocol: scheme,
-            //            host : "localhost:7143"
-            //            );
-            var callbackUrl = $"{scheme}://localhost:7143/api/account/confirm-email?token={token}&email={user.Email}";
+            token = HttpUtility.UrlEncode(token);
+
+            var callbackUrl = $"https://localhost:7143/api/account/confirm-email?token={token}&email={user.Email}";
+            //var callbackUrl = _generator.GetUriByPage(_accessor.HttpContext,
+            //    page: "/Account/Confirm-Email",
+            //    handler: null,
+            //    values: new { token, email = user.Email });
+
+            //var callbackUrl = _generator.GetUriByAction(_accessor.HttpContext,
+            //    controller: "Account",
+            //    action: "Confirm-Email",
+            //    values: new { token, email = user.Email },
+            //    scheme: _accessor.HttpContext.Request.Scheme,
+            //    host: _accessor.HttpContext.Request.Host);
+
             await _emailService.SendEmailAsync(user.Email, "Confirm your account",
-                $"Hi {user.UserName}\n. You have been sent this email because you created an account on kinopoisk. \nPlease confirm your account by clicking this link: <a href=\"{callbackUrl}\">link</a>");
+                $"Hi {user.UserName}!<br>You have been sent this email because you created an account on kinopoisk.<br>Please confirm your account by clicking this link: <a href=\"{callbackUrl}\">link</a>");
         }
     }
 }

@@ -141,11 +141,8 @@
   <data name="IncorrectDateOfBirth" xml:space="preserve">
     <value>Incorrect date of birth value</value>
   </data>
-  <data name="InvalidEmail" xml:space="preserve">
-    <value>Invalid email address</value>
-  </data>
-  <data name="InvalidPassword" xml:space="preserve">
-    <value>Invalid password</value>
+  <data name="InvalidEmailOrPassword" xml:space="preserve">
+    <value>Invalid email address or password</value>
   </data>
   <data name="LastNameExceedsMaxLen" xml:space="preserve">
     <value>Invalid last name value. The length of the user last name should not exceed 50 characters</value>

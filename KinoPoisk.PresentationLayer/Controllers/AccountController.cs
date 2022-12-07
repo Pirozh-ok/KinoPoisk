@@ -23,7 +23,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] CreateUserDTO userDto) {
-            var result = await _userService.RegisterAsync(userDto, Url, Request.Scheme);
+            var result = await _userService.RegisterAsync(userDto);
             return result is ErrorResult ? BadRequest(result) : Ok(result);
         }
 
@@ -37,13 +37,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPut("confirm-email")]
         public async Task<IActionResult> ConfirmEmail() {
             var userEmail = User.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
-            //var callbackUrl = Url.Action(
-            //            action: "Confirm-email",
-            //            controller: "Account",
-            //            values: new { token = "wewwew", email = userEmail },
-            //            protocol: Request.Scheme
-            //            ); 
-            await _userService.ConfirmEmailAsync(userEmail, Url, Request.Scheme);
+            await _userService.ConfirmEmailAsync(userEmail);
             return Ok(); 
         }
 

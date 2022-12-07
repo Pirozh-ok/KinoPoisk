@@ -133,20 +133,11 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid email address.
+        ///   Looks up a localized string similar to Invalid email address or password.
         /// </summary>
-        public static string InvalidEmail {
+        public static string InvalidEmailOrPassword {
             get {
-                return ResourceManager.GetString("InvalidEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid password.
-        /// </summary>
-        public static string InvalidPassword {
-            get {
-                return ResourceManager.GetString("InvalidPassword", resourceCulture);
+                return ResourceManager.GetString("InvalidEmailOrPassword", resourceCulture);
             }
         }
         
