@@ -70,6 +70,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email confirmed.
+        /// </summary>
+        public static string EmailConfirmed {
+            get {
+                return ResourceManager.GetString("EmailConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid email value. The length of the email should not exceed 50 characters.
         /// </summary>
         public static string EmailExceedsMaxLen {
@@ -156,6 +165,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string LastNameLessMinLen {
             get {
                 return ResourceManager.GetString("LastNameLessMinLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User not found.
+        /// </summary>
+        public static string NotFound {
+            get {
+                return ResourceManager.GetString("NotFound", resourceCulture);
             }
         }
         

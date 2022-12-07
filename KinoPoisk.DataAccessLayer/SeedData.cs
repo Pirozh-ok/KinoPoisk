@@ -15,23 +15,23 @@ namespace KinoPoisk.DataAccessLayer {
         }
 
         private void SeedRoles() {
-            if (!_roleManager.RoleExistsAsync("Admin").Result) {
+            if (!_roleManager.RoleExistsAsync(Constants.NameRoleAdmin).Result) {
                 _roleManager.CreateAsync(
                     new ApplicationRole() {
-                        Name = "Admin"
+                        Name = Constants.NameRoleAdmin
                     });
             }
 
-            if (!_roleManager.RoleExistsAsync("User").Result) {
+            if (!_roleManager.RoleExistsAsync(Constants.NameRoleUser).Result) {
                 _roleManager.CreateAsync(
                     new ApplicationRole() {
-                        Name = "User"
+                        Name = Constants.NameRoleUser
                     });
             }
         }
 
         private void SeedUsers() {
-            if(_userManager.FindByNameAsync("Admin").Result is null) {
+            if(_userManager.FindByEmailAsync("applicationadmin@gmail.com").Result is null) {
                 var user = new ApplicationUser() {
                     UserName = "Admin",
                     Email = "applicationadmin@gmail.com",
@@ -47,7 +47,7 @@ namespace KinoPoisk.DataAccessLayer {
                 var result = _userManager.CreateAsync(user, "adminsecretkey");
 
                 if (result.Result.Succeeded) {
-                    _userManager.AddToRoleAsync(user, "Admin"); 
+                    _userManager.AddToRoleAsync(user, Constants.NameRoleUser); 
                 }
             }
         }

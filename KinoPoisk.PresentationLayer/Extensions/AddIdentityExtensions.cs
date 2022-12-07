@@ -1,5 +1,6 @@
 ﻿using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace KinoPoisk.PresentationLayer.Extensions {
     public static class AddIdentityExtensions{
@@ -12,7 +13,8 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
         }
     }
 }

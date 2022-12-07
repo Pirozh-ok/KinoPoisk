@@ -120,6 +120,9 @@
   <data name="CouldntLogIn" xml:space="preserve">
     <value>Couldn't log in, try again later</value>
   </data>
+  <data name="EmailConfirmed" xml:space="preserve">
+    <value>Email confirmed</value>
+  </data>
   <data name="EmailExceedsMaxLen" xml:space="preserve">
     <value>Invalid email value. The length of the email should not exceed 50 characters</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="LastNameLessMinLen" xml:space="preserve">
     <value>Invalid last name value. The minimum length of the lastname  is 2</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>User not found</value>
   </data>
   <data name="NotFoundUserCountry" xml:space="preserve">
     <value>The country with the specified id was not found</value>

@@ -22,13 +22,13 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
             builder.HasData(
                 new ApplicationRole {
                     Id = Guid.NewGuid(),
-                    Name = "Admin",
-                    NormalizedName = "ADMIN".ToUpper()
+                    Name = Constants.NameRoleAdmin,
+                    NormalizedName = Constants.NameRoleAdmin.ToUpper()
                 },
                 new ApplicationRole {
                     Id = Guid.NewGuid(),
-                    Name = "User",
-                    NormalizedName = "USER".ToUpper()
+                    Name = Constants.NameRoleUser,
+                    NormalizedName = Constants.NameRoleUser.ToUpper()
                 });
         }
     }
