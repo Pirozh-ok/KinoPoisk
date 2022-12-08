@@ -259,6 +259,24 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm your account.
+        /// </summary>
+        public static string SubjectConfirmEmail {
+            get {
+                return ResourceManager.GetString("SubjectConfirmEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hi {0}!&lt;br&gt;You have been sent this email because you created an account on kinopoisk.&lt;br&gt;Please confirm your account by clicking this link: {1}.
+        /// </summary>
+        public static string TextConfirmEmail {
+            get {
+                return ResourceManager.GetString("TextConfirmEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid username value. The length of the username should not exceed 50 characters.
         /// </summary>
         public static string UserNameExceedsMaxLen {

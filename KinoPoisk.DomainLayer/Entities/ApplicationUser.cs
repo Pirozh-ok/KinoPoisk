@@ -12,7 +12,7 @@ namespace KinoPoisk.DomainLayer.Entities {
         public string Patronymic { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfRegistration { get; set; }
-        public Guid CountryId { get; set; }
+        public Guid? CountryId { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryDate { get; set; }
 

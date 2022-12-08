@@ -183,6 +183,12 @@
   <data name="PatronymicLessMinLen" xml:space="preserve">
     <value>Invalid patronymic value. The minimum length of the patronymic is 2</value>
   </data>
+  <data name="SubjectConfirmEmail" xml:space="preserve">
+    <value>Confirm your account</value>
+  </data>
+  <data name="TextConfirmEmail" xml:space="preserve">
+    <value>Hi {0}!&lt;br&gt;You have been sent this email because you created an account on kinopoisk.&lt;br&gt;Please confirm your account by clicking this link: {1}</value>
+  </data>
   <data name="UserNameExceedsMaxLen" xml:space="preserve">
     <value>Invalid username value. The length of the username should not exceed 50 characters</value>
   </data>

@@ -31,20 +31,19 @@ namespace KinoPoisk.DataAccessLayer {
         }
 
         private void SeedUsers() {
-            if(_userManager.FindByEmailAsync("applicationadmin@gmail.com").Result is null) {
+            var adminEmail = "ivan.vorotnikov.2002@mail.ru"; 
+            if(_userManager.FindByEmailAsync(adminEmail).Result is null) {
                 var user = new ApplicationUser() {
                     UserName = "Admin",
-                    Email = "applicationadmin@gmail.com",
+                    Email = adminEmail,
                     FirstName = "Ivan",
                     LastName = "Vorotnikov",
                     Patronymic = "Sergeevich",
                     DateOfBirth = new DateTime(2002, 1, 20),
                     DateOfRegistration = DateTime.Now,
-                    CountryId = Guid.Parse("3823CDD1-7D87-4F58-AFF6-5795B75E0BB0"),
-                    PhoneNumber = "" 
                 };
 
-                var result = _userManager.CreateAsync(user, "adminsecretkey");
+                var result = _userManager.CreateAsync(user, "password");
 
                 if (result.Result.Succeeded) {
                     _userManager.AddToRoleAsync(user, Constants.NameRoleUser); 

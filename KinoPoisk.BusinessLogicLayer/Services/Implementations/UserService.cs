@@ -9,6 +9,7 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using System.Text.Encodings.Web;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -144,10 +145,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             //    values: new { token, email = user.Email });
             var scheme = _accessor.HttpContext.Request.Scheme;
             var host = _accessor.HttpContext.Request.Host;
-            var callbackUrl = $"{scheme}://{host}/api/account/confirm-email?token={token}&email={user.Email}"; 
+            var callbackUrl = $"{scheme}://{host}/api/account/confirm-email?token={token}&email={user.Email}";
 
-            await _emailService.SendEmailAsync(user.Email, "Confirm your account",
-                $"Hi {user.UserName}!<br>You have been sent this email because you created an account on kinopoisk.<br>Please confirm your account by clicking this link: <a href=\"{callbackUrl}\">link</a>");
+            await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail, 
+                string.Format(UserResource.TextConfirmEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
         }
 
         private IEnumerable<string> ValidateData(CreateUserDTO user) {

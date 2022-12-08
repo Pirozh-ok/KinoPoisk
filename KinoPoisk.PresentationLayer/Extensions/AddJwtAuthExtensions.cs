@@ -16,6 +16,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                         config.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters {
                             ValidIssuer = configuration["JwtBearer:Issuer"],
                             ValidAudience = configuration["JwtBearer:Audience"],
+                            ClockSkew = TimeSpan.Zero,
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtBearer:Key"]))
                         }; 
                     });

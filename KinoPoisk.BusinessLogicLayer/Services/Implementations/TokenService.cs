@@ -6,13 +6,11 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
-{
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class TokenService : ITokenService {
         private string _key;
         private string _issuer;
@@ -55,6 +53,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
             }
 
             var id = GetUserIdByJwt(jwtToken);
+
+            if (string.IsNullOrEmpty(id)) {
+                return new ErrorResult(new List<string> { UserResource.InvalidAccessOrRefreshToken });
+            }
+
             var user = await _userManager.FindByIdAsync(id);
 
             if(user is null || user.RefreshToken != refresh || user.RefreshTokenExpiryDate < DateTime.Now ) {
@@ -98,27 +101,15 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
         }
 
         private string GetUserIdByJwt(string jwtToken) {
-
-            var tokenValidationParameters = new TokenValidationParameters {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key)),
-                ValidateLifetime = false
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(jwtToken, tokenValidationParameters, out SecurityToken securityToken);
-            
-            if (securityToken is not JwtSecurityToken jwtSecurityToken 
-                || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
-
-            if (principal is null) {
-                throw new Exception();
+            try {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtSecurityToken = handler.ReadJwtToken(jwtToken);
+                var claim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti);
+                return claim?.Value;
             }
-
-            return principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value; 
+            catch {
+                return string.Empty; 
+            }
         }
     }
 }
