@@ -160,6 +160,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid access or refresh token.
+        /// </summary>
+        public static string InvalidAccessOrRefreshToken {
+            get {
+                return ResourceManager.GetString("InvalidAccessOrRefreshToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid email address or password.
         /// </summary>
         public static string InvalidEmailOrPassword {

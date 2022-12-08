@@ -150,6 +150,9 @@
   <data name="IncorrectDateOfBirth" xml:space="preserve">
     <value>Incorrect date of birth value</value>
   </data>
+  <data name="InvalidAccessOrRefreshToken" xml:space="preserve">
+    <value>Invalid access or refresh token</value>
+  </data>
   <data name="InvalidEmailOrPassword" xml:space="preserve">
     <value>Invalid email address or password</value>
   </data>

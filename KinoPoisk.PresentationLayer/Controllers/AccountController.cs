@@ -41,13 +41,13 @@ namespace KinoPoisk.PresentationLayer.Controllers {
                 return NotFound(new ErrorResult(new List<string>() { UserResource.NotFound })); 
             }
 
-            await _userService.ConfirmEmailAsync(userEmail);
-            return Ok(); 
+            var result = await _userService.ConfirmEmailAsync(userEmail);
+            return Ok(result); 
         }
 
         [HttpGet("confirm-email")]
         [AllowAnonymous]
-        public async Task<IActionResult> Test([FromQuery] string token, string email) {
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token, string email) {
             var result = await _userService.VerificationConfirmationToken(token, email);
             return result is ErrorResult ? BadRequest(result) : Ok(result);
         }

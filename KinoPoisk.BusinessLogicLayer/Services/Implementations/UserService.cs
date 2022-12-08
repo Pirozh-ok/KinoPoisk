@@ -9,14 +9,12 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class UserService : IUserService {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ITokenService _jwtService;
+        private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
@@ -24,14 +22,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         private readonly LinkGenerator _generator;
 
         public UserService(UserManager<ApplicationUser> userManager,
-            ITokenService jwtService,
+            ITokenService tokenService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IEmailService emailService,
             IHttpContextAccessor accessor,
             LinkGenerator generator) {
             _userManager = userManager;
-            _jwtService = jwtService;
+            _tokenService = tokenService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _emailService = emailService;
@@ -47,7 +45,17 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             if (await _userManager.CheckPasswordAsync(user, dto.Password)) {
-                return new SuccessResult<AuthResponseDTO<GetUserDTO>>(await GetAuthResult(user));
+                var refreshToken = _tokenService.GenerateRefreshToken();
+                user.RefreshToken = refreshToken.Token;
+                user.RefreshTokenExpiryDate = refreshToken.ExpirationDate;
+                await _userManager.UpdateAsync(user);
+
+                return new SuccessResult<AuthResponseDTO<GetUserDTO>>(
+                    new AuthResponseDTO<GetUserDTO> {
+                        Data = _mapper.Map<GetUserDTO>(user),
+                        AccessToken = await _tokenService.GenerateAccessToken(user),
+                        RefreshToken = refreshToken.Token
+                    });
             }
 
             return new ErrorResult(new List<string>() { UserResource.InvalidEmailOrPassword });
@@ -61,12 +69,23 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
+
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            user.RefreshToken = refreshToken.Token;
+            user.RefreshTokenExpiryDate = refreshToken.ExpirationDate; 
+
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (result.Succeeded) {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
                 await SendConfirmationEmail(user);
-                return new SuccessResult<AuthResponseDTO<GetUserDTO>>(await GetAuthResult(user));
+
+                return new SuccessResult<AuthResponseDTO<GetUserDTO>>(
+                    new AuthResponseDTO<GetUserDTO> {
+                        Data = _mapper.Map<GetUserDTO>(user),
+                        AccessToken = await _tokenService.GenerateAccessToken(user),
+                        RefreshToken = refreshToken.Token
+                    });
             }
 
             var errors = new List<string>();
@@ -111,27 +130,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return new ErrorResult(errors);
         }
 
-        private async Task<AuthResponseDTO<GetUserDTO>> GetAuthResult(ApplicationUser user) {
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var authClaims = new List<Claim> {
-                    new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
-             };
-
-            foreach (var userRole in userRoles) {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var token = _jwtService.GenerateToken(authClaims);
-
-            return new AuthResponseDTO<GetUserDTO> {
-                Data = _mapper.Map<GetUserDTO>(user),
-                AccessToken = token
-            };
-        }
-
         private async Task SendConfirmationEmail(ApplicationUser user) {
             if(user is null) {
                 return; 
@@ -146,8 +144,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             //    values: new { token, email = user.Email });
             var scheme = _accessor.HttpContext.Request.Scheme;
             var host = _accessor.HttpContext.Request.Host;
-            var path = _accessor.HttpContext.Request.Path;
-            var callbackUrl = $"{scheme}://{host}{path}?token={token}&email={user.Email}"; 
+            var callbackUrl = $"{scheme}://{host}/api/account/confirm-email?token={token}&email={user.Email}"; 
 
             await _emailService.SendEmailAsync(user.Email, "Confirm your account",
                 $"Hi {user.UserName}!<br>You have been sent this email because you created an account on kinopoisk.<br>Please confirm your account by clicking this link: <a href=\"{callbackUrl}\">link</a>");
