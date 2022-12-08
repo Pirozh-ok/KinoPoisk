@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KinoPoisk.DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221208084437_Added columns for refresh token")]
-    partial class Addedcolumnsforrefreshtoken
+    [Migration("20221208120318_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,31 +107,31 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("65fdddb2-3dcc-4fac-9556-78378f426008"),
+                            Id = new Guid("80f5f8df-03b8-4820-b1ee-bb97b4a02b4a"),
                             MinAge = 0L,
                             Value = "0+ - All ages are allowed"
                         },
                         new
                         {
-                            Id = new Guid("c1df7a0b-aba7-4a2e-95b2-ad9ceef6e560"),
+                            Id = new Guid("96ebcf82-1371-463a-8462-8eb9dff5b09f"),
                             MinAge = 6L,
                             Value = "6+ - For children over 6 years"
                         },
                         new
                         {
-                            Id = new Guid("38d6fec5-be63-4af3-8418-b50d51d2cd67"),
+                            Id = new Guid("f7cd4e41-3cc8-4eb9-b323-3ae2b090e882"),
                             MinAge = 12L,
                             Value = "12+ - For children over 12 years"
                         },
                         new
                         {
-                            Id = new Guid("d1fce3be-d391-4cb4-9db4-63daee28e4c7"),
+                            Id = new Guid("e0ff79a5-4618-41d9-a173-2aa09d7c313a"),
                             MinAge = 16L,
                             Value = "16+ - For children over 16 years"
                         },
                         new
                         {
-                            Id = new Guid("fcfc9660-4dbc-446a-84fd-20037cbce02f"),
+                            Id = new Guid("818b1891-a714-4e27-a433-327334bef0f8"),
                             MinAge = 18L,
                             Value = "18+ - Prohibited for children"
                         });
@@ -168,15 +168,15 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("170595fd-351f-4dce-8853-509d80583bab"),
-                            ConcurrencyStamp = "8d63b8b7-894a-4048-a192-35096b0fda55",
+                            Id = new Guid("692208a2-6c52-41fa-9db7-24ee68cec1b4"),
+                            ConcurrencyStamp = "80c1593b-9abd-49a1-b5cf-81e330fc136c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("725f57ea-80d1-442a-882b-ad071939a180"),
-                            ConcurrencyStamp = "e53b8cce-bc10-41ef-a5da-d1da2953d735",
+                            Id = new Guid("64b46c5a-0923-4942-bde5-59d2d05538fa"),
+                            ConcurrencyStamp = "fbd41a4c-b447-4470-b6f7-492087aa6fd8",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -195,7 +195,7 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CountryId")
+                    b.Property<Guid?>("CountryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateOfBirth")
@@ -355,52 +355,52 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d5c29296-0529-4370-8a9a-57fccbf90552"),
+                            Id = new Guid("8dd8d11e-261e-439e-8007-3b815257f3cd"),
                             Name = "Russia"
                         },
                         new
                         {
-                            Id = new Guid("d627d876-d9e0-4ccd-94f8-49f97648500d"),
+                            Id = new Guid("8285b35d-9290-472d-962a-c5c738a00849"),
                             Name = "USA"
                         },
                         new
                         {
-                            Id = new Guid("cde0253c-6c99-4be0-8285-c40315ba6064"),
+                            Id = new Guid("23075e0f-1d6d-4774-aa3f-ca5ef54f9ea5"),
                             Name = "England"
                         },
                         new
                         {
-                            Id = new Guid("d0688d74-3ce5-457d-a998-f109868cf76d"),
+                            Id = new Guid("69409d70-bc32-484b-b99b-74a50091c8df"),
                             Name = "France"
                         },
                         new
                         {
-                            Id = new Guid("045f432e-d5d7-4f94-8db4-770bce355500"),
+                            Id = new Guid("307810ea-f450-40d1-a97b-ea19f68ca871"),
                             Name = "Germany"
                         },
                         new
                         {
-                            Id = new Guid("7898f2fc-8646-465a-8739-4d2f6ccf870d"),
+                            Id = new Guid("e4d95efc-4434-4471-a0eb-d3ccbf181e1a"),
                             Name = "China"
                         },
                         new
                         {
-                            Id = new Guid("aeb1d392-9b9a-46ef-a900-c26f9a4af3c3"),
+                            Id = new Guid("714cebff-1a3c-4d19-b92e-a6a34301bc77"),
                             Name = "Japan"
                         },
                         new
                         {
-                            Id = new Guid("0b14d538-d52a-48c9-b1d9-89fc6ca3b748"),
+                            Id = new Guid("2731d6a4-7324-40d4-8cb0-6f16014f6cbe"),
                             Name = "Canada"
                         },
                         new
                         {
-                            Id = new Guid("a7c45f5b-0e6a-4700-a52f-ad948230deda"),
+                            Id = new Guid("f48264a7-769c-4c9c-90ab-93fd36c30b67"),
                             Name = "Finlyadnia"
                         },
                         new
                         {
-                            Id = new Guid("e861cd7b-a863-41e3-b3e0-d59b3825f09e"),
+                            Id = new Guid("4f1cab76-1277-4236-84d2-74cfcb7eea07"),
                             Name = "Sweden"
                         });
                 });
@@ -469,57 +469,57 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d795da17-4f24-4a5f-852c-af9aa9647779"),
+                            Id = new Guid("0405452a-3dba-4984-ac07-de012aafa696"),
                             Name = "Horror movie"
                         },
                         new
                         {
-                            Id = new Guid("5b8cc811-55d1-4a96-ae15-2ae40999c386"),
+                            Id = new Guid("f45aefc0-cbbc-443f-9ef5-f107e28b8e28"),
                             Name = "Action movie"
                         },
                         new
                         {
-                            Id = new Guid("de8fd322-0882-49a4-b234-d7ad72509ce1"),
+                            Id = new Guid("b623d720-396a-4610-8766-e124f59e4f9a"),
                             Name = "Fantasy"
                         },
                         new
                         {
-                            Id = new Guid("4d018027-18dd-48e6-af0f-8471b0bcae22"),
+                            Id = new Guid("8ae29546-1098-4f94-9537-19cf4219d768"),
                             Name = "Thriller"
                         },
                         new
                         {
-                            Id = new Guid("6b644c48-b296-42e6-b455-7a9bcc052019"),
+                            Id = new Guid("f07879ec-b07f-4931-a4d2-646462d8c0c3"),
                             Name = "Detective"
                         },
                         new
                         {
-                            Id = new Guid("dc493bb6-d591-4603-bce7-b6b7687233be"),
+                            Id = new Guid("f10466d6-20fd-4a36-8a77-09850d35ba38"),
                             Name = "Drama"
                         },
                         new
                         {
-                            Id = new Guid("0642d454-0cb4-4442-9dee-22ca75927679"),
+                            Id = new Guid("d4b943e8-22bc-4c4e-8bcc-ecff39e5a71b"),
                             Name = "Kids"
                         },
                         new
                         {
-                            Id = new Guid("196bcf84-d8e5-4349-bcae-f91f499c6ecf"),
+                            Id = new Guid("6fefb7f4-ebd2-40f9-a8b3-993c75c7d4c2"),
                             Name = "Comedy"
                         },
                         new
                         {
-                            Id = new Guid("b2d87c91-fdc3-4911-bfbb-3349ab29dc81"),
+                            Id = new Guid("296c41d7-b1c3-47be-b9ac-442da2a728d2"),
                             Name = "Adventures"
                         },
                         new
                         {
-                            Id = new Guid("babd7e13-e056-49df-b291-e6c1d03a59f4"),
+                            Id = new Guid("8afa1a48-e53f-484d-add8-1c1347d3eb0f"),
                             Name = "War Film"
                         },
                         new
                         {
-                            Id = new Guid("620618ad-89ad-4f5c-ad0e-e09dfe12bc20"),
+                            Id = new Guid("1fa3cc8a-b94e-49f7-8168-bef6ccb9da87"),
                             Name = "Musical"
                         });
                 });
@@ -577,42 +577,42 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("09ddb2aa-6b25-4dd6-9bd3-6733932f7eef"),
+                            Id = new Guid("6cefb5bb-9f53-4b79-a8a8-0459be12e1d2"),
                             Name = "Director"
                         },
                         new
                         {
-                            Id = new Guid("4e9a40b6-96e5-4de7-a244-40774d4f657b"),
+                            Id = new Guid("7ff95043-8af8-48c3-b9f1-7035662c1b2e"),
                             Name = "Actors"
                         },
                         new
                         {
-                            Id = new Guid("23db4b99-25be-4af5-a606-26d923e9f782"),
+                            Id = new Guid("a4340769-f79f-48e5-aea0-09164a113a13"),
                             Name = "Composer"
                         },
                         new
                         {
-                            Id = new Guid("8de2cc72-4a24-418b-b7d0-0efb5e446623"),
+                            Id = new Guid("dcd5644c-f38b-4326-bdeb-a9b42589e5fe"),
                             Name = "ScreenWriters"
                         },
                         new
                         {
-                            Id = new Guid("3d563182-85b9-4699-90d7-28aa9cb1e376"),
+                            Id = new Guid("8b0aa46d-bde2-4fcd-9141-d5771b6c25bb"),
                             Name = "Producers"
                         },
                         new
                         {
-                            Id = new Guid("efaa5603-7345-45d4-a04c-049d059d77dd"),
+                            Id = new Guid("157cf1a4-b8bd-46f2-ae61-fd84510ea3e5"),
                             Name = "Artists"
                         },
                         new
                         {
-                            Id = new Guid("faaf0f5f-7df8-43ce-ab46-eedf178d8737"),
+                            Id = new Guid("12875772-dbe6-4c28-b267-59e1fed704fb"),
                             Name = "Operators"
                         },
                         new
                         {
-                            Id = new Guid("c989e28f-8492-499a-9d9c-ba2785a1294f"),
+                            Id = new Guid("2613f867-6c1c-4e5a-8a56-04e9e11e2c38"),
                             Name = "Director"
                         });
                 });
@@ -824,9 +824,7 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                 {
                     b.HasOne("KinoPoisk.DomainLayer.Entities.Country", "Country")
                         .WithMany("Users")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CountryId");
 
                     b.Navigation("Country");
                 });

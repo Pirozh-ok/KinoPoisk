@@ -10,6 +10,6 @@ namespace KinoPoisk.DomainLayer.DTOs.UserDTO {
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
         public DateTime DateOfRegistration { get; set; }
-        public Guid CountryId{ get; set; }
+        public Guid? CountryId{ get; set; }
     }
 }

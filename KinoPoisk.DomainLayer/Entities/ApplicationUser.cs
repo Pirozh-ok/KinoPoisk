@@ -16,7 +16,7 @@ namespace KinoPoisk.DomainLayer.Entities {
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryDate { get; set; }
 
-        public Country Country { get; set; }
+        public Country? Country { get; set; }
         public virtual ICollection<Rating> MovieRatings { get; set; }
         public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
     }

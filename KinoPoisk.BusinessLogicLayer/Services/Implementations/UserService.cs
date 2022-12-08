@@ -211,7 +211,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(UserResource.IncorrectDateOfBirth);
             }
 
-            if (_unitOfWork.GetRepository<Country>().GetById(user.CountryId) is null) {
+            if (user.CountryId is not null && _unitOfWork.GetRepository<Country>().GetById(user.CountryId) is null) {
                 errors.Add(UserResource.NotFoundUserCountry);
             }
 

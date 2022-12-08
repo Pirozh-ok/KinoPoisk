@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace KinoPoisk.DataAccessLayer.Migrations
 {
-    public partial class InitMigration : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -135,7 +135,9 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                     Patronymic = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: ""),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateOfRegistration = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "getdate()"),
-                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -158,8 +160,7 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                         name: "FK_AspNetUsers_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -441,11 +442,11 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                 columns: new[] { "Id", "MinAge", "Value" },
                 values: new object[,]
                 {
-                    { new Guid("0a98ce7f-6ef6-4fab-bbc6-225387b883be"), 12L, "12+ - For children over 12 years" },
-                    { new Guid("251a718f-4bef-481b-89c4-e2093030d142"), 0L, "0+ - All ages are allowed" },
-                    { new Guid("94c0fe0e-eb9b-4e95-83c1-971f707e873e"), 18L, "18+ - Prohibited for children" },
-                    { new Guid("b13a83d8-553f-4f4a-a429-304517e7710a"), 16L, "16+ - For children over 16 years" },
-                    { new Guid("eaa6833b-4aa9-4c18-9f9a-bf3380658606"), 6L, "6+ - For children over 6 years" }
+                    { new Guid("80f5f8df-03b8-4820-b1ee-bb97b4a02b4a"), 0L, "0+ - All ages are allowed" },
+                    { new Guid("818b1891-a714-4e27-a433-327334bef0f8"), 18L, "18+ - Prohibited for children" },
+                    { new Guid("96ebcf82-1371-463a-8462-8eb9dff5b09f"), 6L, "6+ - For children over 6 years" },
+                    { new Guid("e0ff79a5-4618-41d9-a173-2aa09d7c313a"), 16L, "16+ - For children over 16 years" },
+                    { new Guid("f7cd4e41-3cc8-4eb9-b323-3ae2b090e882"), 12L, "12+ - For children over 12 years" }
                 });
 
             migrationBuilder.InsertData(
@@ -453,8 +454,8 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("20864e9c-a5ee-45a2-84a9-8a7101adf6fb"), "8d632565-bdc3-47e4-be4f-aedc3e087aa4", "Admin", "ADMIN" },
-                    { new Guid("640e42be-3780-49c8-9770-1d4c11157c35"), "10f3c1dc-8a9b-458f-990d-d19fea9dbd0c", "User", "USER" }
+                    { new Guid("64b46c5a-0923-4942-bde5-59d2d05538fa"), "fbd41a4c-b447-4470-b6f7-492087aa6fd8", "User", "USER" },
+                    { new Guid("692208a2-6c52-41fa-9db7-24ee68cec1b4"), "80c1593b-9abd-49a1-b5cf-81e330fc136c", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -462,16 +463,16 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0c1ddc4c-479c-4ac5-a3f3-12f5e2920958"), "Japan" },
-                    { new Guid("243890f0-5c40-458d-b0c5-2c879b157e1a"), "China" },
-                    { new Guid("45247b2e-ac4d-4687-92e3-20844991183c"), "USA" },
-                    { new Guid("4b5ea6ae-033e-4b2c-9b7d-79fc48065d2f"), "Finlyadnia" },
-                    { new Guid("87b545b1-9b6f-4060-8c76-e198be91e794"), "Canada" },
-                    { new Guid("a9300d50-bc04-44c6-9df7-b081a710a785"), "England" },
-                    { new Guid("b86e95ba-d651-4bd6-90e6-25c0283e8962"), "Russia" },
-                    { new Guid("bb4fbba6-e41d-4c68-beb1-e2ce6a114db6"), "France" },
-                    { new Guid("cbaeacef-09ea-49c7-9bd3-34f86a94d448"), "Sweden" },
-                    { new Guid("d64fb6b6-6ea3-4bf7-a160-9014980e0fec"), "Germany" }
+                    { new Guid("23075e0f-1d6d-4774-aa3f-ca5ef54f9ea5"), "England" },
+                    { new Guid("2731d6a4-7324-40d4-8cb0-6f16014f6cbe"), "Canada" },
+                    { new Guid("307810ea-f450-40d1-a97b-ea19f68ca871"), "Germany" },
+                    { new Guid("4f1cab76-1277-4236-84d2-74cfcb7eea07"), "Sweden" },
+                    { new Guid("69409d70-bc32-484b-b99b-74a50091c8df"), "France" },
+                    { new Guid("714cebff-1a3c-4d19-b92e-a6a34301bc77"), "Japan" },
+                    { new Guid("8285b35d-9290-472d-962a-c5c738a00849"), "USA" },
+                    { new Guid("8dd8d11e-261e-439e-8007-3b815257f3cd"), "Russia" },
+                    { new Guid("e4d95efc-4434-4471-a0eb-d3ccbf181e1a"), "China" },
+                    { new Guid("f48264a7-769c-4c9c-90ab-93fd36c30b67"), "Finlyadnia" }
                 });
 
             migrationBuilder.InsertData(
@@ -479,17 +480,17 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("09332cfb-3be1-4960-97c1-9307e76a2f68"), "War Film" },
-                    { new Guid("1f95b0b9-9222-468e-809c-e9d8da0fc4ab"), "Comedy" },
-                    { new Guid("38e7f467-e824-4468-b9d7-e81a9dcb9f36"), "Musical" },
-                    { new Guid("45eaee16-19eb-438d-b875-7026734170f8"), "Action movie" },
-                    { new Guid("55ca4556-bde1-43b8-8bcd-14ab0f147b1c"), "Drama" },
-                    { new Guid("89c89f2d-6d53-4def-8d22-08d3dd610d81"), "Horror movie" },
-                    { new Guid("9e044226-d12a-49da-b88c-3a8352102b9e"), "Detective" },
-                    { new Guid("a43bcc7f-9140-48d2-b0bc-1d61cb4e4e7e"), "Kids" },
-                    { new Guid("ac62cd3e-f26b-4097-bf4a-eb95c8b2e75b"), "Fantasy" },
-                    { new Guid("bb1da9dd-ef28-4303-845d-7f8e3fea431d"), "Thriller" },
-                    { new Guid("f4adef93-0c35-4cb7-8c7b-5b6e76bfdeb0"), "Adventures" }
+                    { new Guid("0405452a-3dba-4984-ac07-de012aafa696"), "Horror movie" },
+                    { new Guid("1fa3cc8a-b94e-49f7-8168-bef6ccb9da87"), "Musical" },
+                    { new Guid("296c41d7-b1c3-47be-b9ac-442da2a728d2"), "Adventures" },
+                    { new Guid("6fefb7f4-ebd2-40f9-a8b3-993c75c7d4c2"), "Comedy" },
+                    { new Guid("8ae29546-1098-4f94-9537-19cf4219d768"), "Thriller" },
+                    { new Guid("8afa1a48-e53f-484d-add8-1c1347d3eb0f"), "War Film" },
+                    { new Guid("b623d720-396a-4610-8766-e124f59e4f9a"), "Fantasy" },
+                    { new Guid("d4b943e8-22bc-4c4e-8bcc-ecff39e5a71b"), "Kids" },
+                    { new Guid("f07879ec-b07f-4931-a4d2-646462d8c0c3"), "Detective" },
+                    { new Guid("f10466d6-20fd-4a36-8a77-09850d35ba38"), "Drama" },
+                    { new Guid("f45aefc0-cbbc-443f-9ef5-f107e28b8e28"), "Action movie" }
                 });
 
             migrationBuilder.InsertData(
@@ -497,14 +498,14 @@ namespace KinoPoisk.DataAccessLayer.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("4af1ef6a-f14c-4b60-be43-b0e6d2702f23"), "Director" },
-                    { new Guid("7237d50b-fccf-470b-8bc8-39d18b0c9769"), "Artists" },
-                    { new Guid("a561ccde-0a78-4d27-b257-3bd4cde46465"), "ScreenWriters" },
-                    { new Guid("b1594ccf-8957-4b2f-a86e-1a1dc90d3779"), "Actors" },
-                    { new Guid("c8c0f355-683e-464a-90a3-d8e2ef8a6d5b"), "Director" },
-                    { new Guid("ce0e23e3-70d5-4643-ad93-85204885ee39"), "Composer" },
-                    { new Guid("dc7a4fb2-fbc0-4d43-b5eb-18c5d43fbb48"), "Producers" },
-                    { new Guid("e76692d7-83a8-484e-a775-929dbaf855c3"), "Operators" }
+                    { new Guid("12875772-dbe6-4c28-b267-59e1fed704fb"), "Operators" },
+                    { new Guid("157cf1a4-b8bd-46f2-ae61-fd84510ea3e5"), "Artists" },
+                    { new Guid("2613f867-6c1c-4e5a-8a56-04e9e11e2c38"), "Director" },
+                    { new Guid("6cefb5bb-9f53-4b79-a8a8-0459be12e1d2"), "Director" },
+                    { new Guid("7ff95043-8af8-48c3-b9f1-7035662c1b2e"), "Actors" },
+                    { new Guid("8b0aa46d-bde2-4fcd-9141-d5771b6c25bb"), "Producers" },
+                    { new Guid("a4340769-f79f-48e5-aea0-09164a113a13"), "Composer" },
+                    { new Guid("dcd5644c-f38b-4326-bdeb-a9b42589e5fe"), "ScreenWriters" }
                 });
 
             migrationBuilder.CreateIndex(
