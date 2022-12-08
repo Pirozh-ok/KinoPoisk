@@ -61,6 +61,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please check your email for the verification action.
+        /// </summary>
+        public static string ChechkEmail {
+            get {
+                return ResourceManager.GetString("ChechkEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t log in, try again later.
         /// </summary>
         public static string CouldntLogIn {
@@ -70,7 +79,16 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email confirmed.
+        ///   Looks up a localized string similar to The user&apos;s email has already been confirmed.
+        /// </summary>
+        public static string EmailAlreadyConfirmed {
+            get {
+                return ResourceManager.GetString("EmailAlreadyConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thank you for confirming your email.
         /// </summary>
         public static string EmailConfirmed {
             get {
@@ -93,6 +111,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string EmailLessMinLen {
             get {
                 return ResourceManager.GetString("EmailLessMinLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user&apos;s email was not found.
+        /// </summary>
+        public static string EmailNotFound {
+            get {
+                return ResourceManager.GetString("EmailNotFound", resourceCulture);
             }
         }
         
@@ -219,15 +246,6 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string PatronymicLessMinLen {
             get {
                 return ResourceManager.GetString("PatronymicLessMinLen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User logged out.
-        /// </summary>
-        public static string UserLogout {
-            get {
-                return ResourceManager.GetString("UserLogout", resourceCulture);
             }
         }
         

@@ -16,7 +16,7 @@ using System.Web;
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class UserService : IUserService {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IAuthService _jwtService;
+        private readonly ITokenService _jwtService;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
@@ -24,7 +24,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         private readonly LinkGenerator _generator;
 
         public UserService(UserManager<ApplicationUser> userManager,
-            IAuthService jwtService,
+            ITokenService jwtService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IEmailService emailService,
@@ -54,18 +54,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> RegisterAsync(CreateUserDTO dto) {
-            if (dto is null) {
-                return new ErrorResult(new List<string> { UserResource.NullArgument });
-            }
-
-            var validatedErrors = dto.ValidateData();
+            var validatedErrors = ValidateData(dto);
 
             if (validatedErrors.Count() > 0) {
                 return new ErrorResult(validatedErrors);
-            }
-
-            if (_unitOfWork.GetRepository<Country>().GetById(dto.CountryId) is null) {
-                return new ErrorResult(new List<string> { UserResource.NotFoundUserCountry });
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
@@ -86,14 +78,15 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return new ErrorResult(errors);
         }
 
-        public async Task ConfirmEmailAsync(string userEmail) {
+        public async Task<Result> ConfirmEmailAsync(string? userEmail) {
             var user = await _userManager.FindByEmailAsync(userEmail);
 
             if (user.EmailConfirmed) {
-                return; 
+                return new SuccessResult<string>(UserResource.EmailAlreadyConfirmed); 
             }
 
             await SendConfirmationEmail(user);
+            return new SuccessResult<string>(UserResource.ChechkEmail);
         }
 
         public async Task<Result> VerificationConfirmationToken(string token, string email) {
@@ -140,24 +133,91 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         private async Task SendConfirmationEmail(ApplicationUser user) {
+            if(user is null) {
+                return; 
+            }
+
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = HttpUtility.UrlEncode(token);
 
-            var callbackUrl = $"https://localhost:7143/api/account/confirm-email?token={token}&email={user.Email}";
-            //var callbackUrl = _generator.GetUriByPage(_accessor.HttpContext,
-            //    page: "/Account/Confirm-Email",
-            //    handler: null,
-            //    values: new { token, email = user.Email });
-
             //var callbackUrl = _generator.GetUriByAction(_accessor.HttpContext,
-            //    controller: "Account",
             //    action: "Confirm-Email",
-            //    values: new { token, email = user.Email },
-            //    scheme: _accessor.HttpContext.Request.Scheme,
-            //    host: _accessor.HttpContext.Request.Host);
+            //    controller: "Account",
+            //    values: new { token, email = user.Email });
+            var scheme = _accessor.HttpContext.Request.Scheme;
+            var host = _accessor.HttpContext.Request.Host;
+            var path = _accessor.HttpContext.Request.Path;
+            var callbackUrl = $"{scheme}://{host}{path}?token={token}&email={user.Email}"; 
 
             await _emailService.SendEmailAsync(user.Email, "Confirm your account",
                 $"Hi {user.UserName}!<br>You have been sent this email because you created an account on kinopoisk.<br>Please confirm your account by clicking this link: <a href=\"{callbackUrl}\">link</a>");
+        }
+
+        private IEnumerable<string> ValidateData(CreateUserDTO user) {
+            var errors = new List<string>();
+
+            if (user is null) {
+                errors.Add(UserResource.NullArgument);
+                return errors; 
+            }
+
+            if (string.IsNullOrEmpty(user.UserName) || user.UserName.Length < 2) {
+                errors.Add(UserResource.UserNameLessMinLen);
+            }
+
+            if (user.UserName.Length > 50) {
+                errors.Add(UserResource.UserNameExceedsMaxLen);
+            }
+
+            if (string.IsNullOrEmpty(user.FirstName) || user.FirstName.Length < 2) {
+                errors.Add(UserResource.FirstNameLessMinLen);
+            }
+
+            if (user.FirstName.Length > 50) {
+                errors.Add(UserResource.FirstNameExceedsMaxLen);
+            }
+
+            if (string.IsNullOrEmpty(user.LastName) || user.LastName.Length < 2) {
+                errors.Add(UserResource.LastNameLessMinLen);
+            }
+
+            if (user.LastName.Length > 50) {
+                errors.Add(UserResource.LastNameExceedsMaxLen);
+            }
+
+            if (user.Patronymic is not null && user.Patronymic.Length < 2) {
+                errors.Add(UserResource.PatronymicLessMinLen);
+            }
+
+            if (user.Patronymic is not null && user.Patronymic.Length > 50) {
+                errors.Add(UserResource.PatronymicExceedsMaxLen);
+            }
+
+            if (string.IsNullOrEmpty(user.Email) || user.Email.Length < 2) {
+                errors.Add(UserResource.EmailLessMinLen);
+            }
+
+            if (user.Email.Length > 50) {
+                errors.Add(UserResource.EmailExceedsMaxLen);
+            }
+
+            if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 6) {
+                errors.Add(UserResource.PasswordLessMinLen);
+            }
+
+            if (string.IsNullOrEmpty(user.Password) || user.Password.Length > 30) {
+                errors.Add(UserResource.PasswordExceedsMaxLen);
+            }
+
+            if (user.DateOfBirth < DateTime.UtcNow.AddYears(-100) || user.DateOfBirth > DateTime.UtcNow) {
+                errors.Add(UserResource.IncorrectDateOfBirth);
+            }
+
+            if (_unitOfWork.GetRepository<Country>().GetById(user.CountryId) is null) {
+                errors.Add(UserResource.NotFoundUserCountry);
+            }
+
+            return errors;
         }
     }
 }

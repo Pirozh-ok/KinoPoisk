@@ -1,11 +1,10 @@
 ﻿using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
+using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System.Security.Policy;
+using System.Security.Claims;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/[controller]/")]
@@ -20,7 +19,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
             _emailService = emailService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] CreateUserDTO userDto) {
             var result = await _userService.RegisterAsync(userDto);
@@ -36,7 +35,12 @@ namespace KinoPoisk.PresentationLayer.Controllers {
 
         [HttpPut("confirm-email")]
         public async Task<IActionResult> ConfirmEmail() {
-            var userEmail = User.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").Value;
+            var userEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail)) {
+                return NotFound(new ErrorResult(new List<string>() { UserResource.NotFound })); 
+            }
+
             await _userService.ConfirmEmailAsync(userEmail);
             return Ok(); 
         }

@@ -7,13 +7,13 @@ using System.Security.Claims;
 using System.Text;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations{
-    public class JwtService : IAuthService {
+    public class TokenService : ITokenService {
         private string _key;
         private string _issuer;
         private string _audience;
         private string _tokenValidityInSecond;
 
-        public JwtService(IConfiguration configuration) {
+        public TokenService(IConfiguration configuration) {
             _key = configuration["JwtBearer:Key"];
             _issuer = configuration["JwtBearer:Issuer"];
             _audience = configuration["JwtBearer:Audience"];

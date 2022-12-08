@@ -2,7 +2,7 @@
 using System.Security.Claims;
 
 namespace KinoPoisk.PresentationLayer {
-    public interface IAuthService {
+    public interface ITokenService {
         string GenerateToken(List<Claim> claims); 
     }
 }

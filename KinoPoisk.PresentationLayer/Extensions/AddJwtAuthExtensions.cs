@@ -20,7 +20,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                         }; 
                     });
 
-                services.AddScoped<IAuthService, JwtService>(); 
+                services.AddScoped<ITokenService, TokenService>(); 
             }
         }
     }

@@ -117,17 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChechkEmail" xml:space="preserve">
+    <value>Please check your email for the verification action</value>
+  </data>
   <data name="CouldntLogIn" xml:space="preserve">
     <value>Couldn't log in, try again later</value>
   </data>
+  <data name="EmailAlreadyConfirmed" xml:space="preserve">
+    <value>The user's email has already been confirmed</value>
+  </data>
   <data name="EmailConfirmed" xml:space="preserve">
-    <value>Email confirmed</value>
+    <value>Thank you for confirming your email</value>
   </data>
   <data name="EmailExceedsMaxLen" xml:space="preserve">
     <value>Invalid email value. The length of the email should not exceed 50 characters</value>
   </data>
   <data name="EmailLessMinLen" xml:space="preserve">
     <value>Invalid email value. The minimum length of the email is 2</value>
+  </data>
+  <data name="EmailNotFound" xml:space="preserve">
+    <value>The user's email was not found</value>
   </data>
   <data name="FailedRegister" xml:space="preserve">
     <value>Failed to register, try again later</value>
@@ -170,9 +179,6 @@
   </data>
   <data name="PatronymicLessMinLen" xml:space="preserve">
     <value>Invalid patronymic value. The minimum length of the patronymic is 2</value>
-  </data>
-  <data name="UserLogout" xml:space="preserve">
-    <value>User logged out</value>
   </data>
   <data name="UserNameExceedsMaxLen" xml:space="preserve">
     <value>Invalid username value. The length of the username should not exceed 50 characters</value>
