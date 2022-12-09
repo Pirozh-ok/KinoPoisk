@@ -17,7 +17,7 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.Description)
                 .HasDefaultValue(string.Empty)
-                .HasMaxLength(MaxLenOfDecriptionMovie);
+                .HasMaxLength(Constants.MaxLenOfDecriptionMovie);
 
             builder.Property(x => x.DurationInMinutes)
                 .IsRequired();

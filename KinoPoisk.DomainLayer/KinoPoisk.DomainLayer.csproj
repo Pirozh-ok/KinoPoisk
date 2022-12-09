@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KinoPoisk.DataAccessLayer\KinoPoisk.DataAccessLayer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Resources\CountryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
