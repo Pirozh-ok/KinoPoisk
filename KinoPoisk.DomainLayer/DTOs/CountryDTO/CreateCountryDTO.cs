@@ -1,7 +1,7 @@
 ﻿using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.DomainLayer.DTOs.CountryDTO {
-    public class CreateCountryDTO : ICreateDTO {
+    public class CreateCountryDTO : IValidate {
         public string Name { get; set; }
 
         public IEnumerable<string> ValidateData() {

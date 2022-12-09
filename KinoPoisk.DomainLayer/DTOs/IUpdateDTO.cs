@@ -1,7 +1,5 @@
 ﻿namespace KinoPoisk.DomainLayer.DTOs {
-    public interface IUpdateDTO<TTypeId> {
+    public interface IUpdateDTO<TTypeId> : IValidate {
         public TTypeId Id { get; set; }
-
-        public IEnumerable<string> ValidateData();
     }
 }

@@ -9,7 +9,6 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
-using System.Text.Encodings.Web;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -142,7 +141,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             //var callbackUrl = _generator.GetUriByAction(_accessor.HttpContext,
             //    action: "Confirm-Email",
             //    controller: "Account",
-            //    values: new { token, email = user.Email });
+            //    values: new { token = token, email = user.Email });
             var scheme = _accessor.HttpContext.Request.Scheme;
             var host = _accessor.HttpContext.Request.Host;
             var callbackUrl = $"{scheme}://{host}/api/account/confirm-email?token={token}&email={user.Email}";

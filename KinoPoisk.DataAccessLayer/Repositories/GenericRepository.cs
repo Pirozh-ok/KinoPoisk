@@ -1,5 +1,8 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KinoPoisk.DataAccessLayer.Repositories {
     public class GenericRepository<TEntity> : IRepository<TEntity>
@@ -7,7 +10,7 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
         private DbSet<TEntity> _dbSet;
 
         public GenericRepository(DbSet<TEntity> dbSet) {
-            _dbSet = dbSet;
+            _dbSet = dbSet; 
         }
 
         public bool Contains(TEntity item) {

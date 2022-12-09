@@ -1,7 +1,7 @@
 ﻿using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.DomainLayer.DTOs.GenreDTO {
-    public class CreateGenreDto : ICreateDTO {
+    public class CreateGenreDto : IValidate {
         public string Name { get; set; }
 
         public IEnumerable<string> ValidateData() {
