@@ -7,7 +7,7 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class GenericService<TEntity, TTypeId> : IService<TTypeId>
-        where TEntity : class{
+        where TEntity : class, IEntity<TTypeId>{
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -47,7 +47,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> GetByIdAsync<T>(TTypeId id) {
-            var obj = _unitOfWork.GetRepository<TEntity>().GetById(id);
+            var obj = _unitOfWork.GetRepository<TEntity>()
+                .GetAll()
+                .Where(x => Equals(x.Id,id)) 
+                .ProjectTo<T>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
 
             return obj is null ?
                 new ErrorResult(new List<string>() { GenericServiceResource.NotFound }) :

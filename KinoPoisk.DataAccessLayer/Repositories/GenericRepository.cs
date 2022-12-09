@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace KinoPoisk.DataAccessLayer.Repositories {
     public class GenericRepository<TEntity> : IRepository<TEntity>
@@ -30,7 +27,7 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
                 .AsNoTracking(); 
         }
 
-        public TEntity GetById<TTypeId>(TTypeId id) {
+        public TEntity? GetById<TTypeId>(TTypeId id) {
             return _dbSet.Find(id);
         }
 

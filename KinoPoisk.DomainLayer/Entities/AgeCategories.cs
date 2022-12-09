@@ -1,7 +1,7 @@
 ﻿using KinoPoisk.DomainLayer.Intarfaces;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class AgeCategory : IEntity {
+    public class AgeCategory : IEntity<Guid> {
         public AgeCategory() {
             Movies = new HashSet<Movie>();
         }

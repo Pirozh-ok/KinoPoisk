@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class ApplicationRole : IdentityRole<Guid>, IEntity {
+    public class ApplicationRole : IdentityRole<Guid>, IEntity<Guid> {
         public ApplicationRole() : base() {
         }
 

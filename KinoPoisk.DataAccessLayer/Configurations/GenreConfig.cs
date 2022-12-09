@@ -13,7 +13,7 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(Constants.MaxLenOfName);
 
             builder.HasData(
                 new Genre {

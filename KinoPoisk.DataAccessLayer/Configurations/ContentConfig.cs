@@ -16,11 +16,11 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(Constants.MaxLenOfName);
 
             builder.Property(x => x.Path)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(Constants.MaxLenOfPath);
         }
     }
 }

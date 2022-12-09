@@ -158,51 +158,51 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return errors; 
             }
 
-            if (string.IsNullOrEmpty(user.UserName) || user.UserName.Length < 2) {
+            if (string.IsNullOrEmpty(user.UserName) || user.UserName.Length < Constants.MinLenOfName) {
                 errors.Add(UserResource.UserNameLessMinLen);
             }
 
-            if (user.UserName.Length > 50) {
+            if (user.UserName.Length > Constants.MaxLenOfName) {
                 errors.Add(UserResource.UserNameExceedsMaxLen);
             }
 
-            if (string.IsNullOrEmpty(user.FirstName) || user.FirstName.Length < 2) {
+            if (string.IsNullOrEmpty(user.FirstName) || user.FirstName.Length < Constants.MinLenOfName) {
                 errors.Add(UserResource.FirstNameLessMinLen);
             }
 
-            if (user.FirstName.Length > 50) {
+            if (user.FirstName.Length > Constants.MaxLenOfName) {
                 errors.Add(UserResource.FirstNameExceedsMaxLen);
             }
 
-            if (string.IsNullOrEmpty(user.LastName) || user.LastName.Length < 2) {
+            if (string.IsNullOrEmpty(user.LastName) || user.LastName.Length < Constants.MinLenOfName) {
                 errors.Add(UserResource.LastNameLessMinLen);
             }
 
-            if (user.LastName.Length > 50) {
+            if (user.LastName.Length > Constants.MaxLenOfName) {
                 errors.Add(UserResource.LastNameExceedsMaxLen);
             }
 
-            if (user.Patronymic is not null && user.Patronymic.Length < 2) {
+            if (user.Patronymic is not null && user.Patronymic.Length < Constants.MinLenOfName) {
                 errors.Add(UserResource.PatronymicLessMinLen);
             }
 
-            if (user.Patronymic is not null && user.Patronymic.Length > 50) {
+            if (user.Patronymic is not null && user.Patronymic.Length > Constants.MaxLenOfName) {
                 errors.Add(UserResource.PatronymicExceedsMaxLen);
             }
 
-            if (string.IsNullOrEmpty(user.Email) || user.Email.Length < 2) {
+            if (string.IsNullOrEmpty(user.Email) || user.Email.Length < Constants.MinLenOfEmail) {
                 errors.Add(UserResource.EmailLessMinLen);
             }
 
-            if (user.Email.Length > 50) {
+            if (user.Email.Length > Constants.MaxLenOfEmail) {
                 errors.Add(UserResource.EmailExceedsMaxLen);
             }
 
-            if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 6) {
+            if (string.IsNullOrEmpty(user.Password) || user.Password.Length < Constants.MinLenOfPassword) {
                 errors.Add(UserResource.PasswordLessMinLen);
             }
 
-            if (string.IsNullOrEmpty(user.Password) || user.Password.Length > 30) {
+            if (string.IsNullOrEmpty(user.Password) || user.Password.Length > Constants.MaxLenOfPassword) {
                 errors.Add(UserResource.PasswordExceedsMaxLen);
             }
 

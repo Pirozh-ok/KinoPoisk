@@ -8,7 +8,7 @@ namespace KinoPoisk.DomainLayer.Entities {
         Movie
     }
 
-    public class Content : IEntity {
+    public class Content : IEntity<Guid> {
         public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; }
         public string Path { get; set; }

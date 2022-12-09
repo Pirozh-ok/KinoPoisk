@@ -13,11 +13,11 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.Title)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(Constants.MaxLenOfTitleMovie);
 
             builder.Property(x => x.Description)
                 .HasDefaultValue(string.Empty)
-                .HasMaxLength(500);
+                .HasMaxLength(MaxLenOfDecriptionMovie);
 
             builder.Property(x => x.DurationInMinutes)
                 .IsRequired();

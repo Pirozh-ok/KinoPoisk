@@ -12,7 +12,7 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.Comment)
                 .HasDefaultValue(string.Empty)
-                .HasMaxLength(200);
+                .HasMaxLength(Constants.MaxLenOfComment);
         }
     }
 }

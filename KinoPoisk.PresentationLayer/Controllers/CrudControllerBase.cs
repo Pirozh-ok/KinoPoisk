@@ -5,7 +5,8 @@ using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace KinoPoisk.PresentationLayer.Controllers {
+namespace KinoPoisk.PresentationLayer.Controllers
+{
     [Route("api/[controller]/")]
     [ApiController]
     public class CrudControllerBase<TService, TCreateDto, TUpdateDto , TGetDto, TTypeId>: ControllerBase 

@@ -13,15 +13,15 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
 
             builder.Property(x => x.FirstName)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(Constants.MaxLenOfName);
 
             builder.Property(x => x.LastName)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(Constants.MaxLenOfName);
 
             builder.Property(x => x.Patronymic)
                 .HasDefaultValue(string.Empty)
-                .HasMaxLength(50);
+                .HasMaxLength(Constants.MaxLenOfName);
 
             builder.Property(x => x.DateOfBirth)
                 .IsRequired();

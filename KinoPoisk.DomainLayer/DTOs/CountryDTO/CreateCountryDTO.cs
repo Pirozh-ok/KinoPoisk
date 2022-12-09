@@ -1,6 +1,8 @@
-﻿using KinoPoisk.DomainLayer.Resources;
+﻿using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DomainLayer.Resources;
 
-namespace KinoPoisk.DomainLayer.DTOs.CountryDTO {
+namespace KinoPoisk.DomainLayer.DTOs.CountryDTO
+{
     public class CreateCountryDTO : IValidate {
         public string Name { get; set; }
 
@@ -11,7 +13,7 @@ namespace KinoPoisk.DomainLayer.DTOs.CountryDTO {
                 errors.Add(CountryResource.NameLessMinLen);
             }
 
-            if (Name.Length > 50) {
+            if (Name.Length > Constants.MaxLenOfName) {
                 errors.Add(CountryResource.NameExceedsMaxLen);
             }
 

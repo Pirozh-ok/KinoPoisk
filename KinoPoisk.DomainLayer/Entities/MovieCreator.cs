@@ -1,7 +1,7 @@
 ﻿using KinoPoisk.DomainLayer.Intarfaces;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class Creator : IEntity {
+    public class Creator : IEntity<Guid> {
         public Creator() {
             CreatorsMovies = new HashSet<CreatorMovie>();
         }

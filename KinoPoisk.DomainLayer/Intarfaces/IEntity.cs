@@ -1,5 +1,5 @@
 ﻿namespace KinoPoisk.DomainLayer.Intarfaces {
-    public interface IEntity {
-        public Guid Id { get; set; }
+    public interface IEntity<TTypeId> {
+        public TTypeId Id { get; set; }
     }
 }

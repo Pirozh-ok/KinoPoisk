@@ -2,7 +2,7 @@
 using System.Security.Principal;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class Genre : IEntity {
+    public class Genre : IEntity<Guid> {
         public Genre() {
             Movies = new HashSet<Movie>();
         }
