@@ -21,7 +21,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] CreateUserDTO userDto) {
+        public async Task<IActionResult> Register([FromBody] UserDTO userDto) {
             var result = await _userService.RegisterAsync(userDto);
             return result is ErrorResult ? BadRequest(result) : Ok(result);
         }

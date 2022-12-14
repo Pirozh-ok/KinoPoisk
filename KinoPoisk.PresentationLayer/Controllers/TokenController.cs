@@ -1,4 +1,5 @@
 ﻿using KinoPoisk.DomainLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
@@ -12,6 +13,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpGet("refresh")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetNewTokens([FromQuery]string jwtToken, [FromQuery]string resreshToken) {
             var result = await _tokenService.GetNewTokens(jwtToken, resreshToken);
             return result is ErrorResult ? BadRequest(result) : Ok(result);

@@ -61,7 +61,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return new ErrorResult(new List<string>() { UserResource.InvalidEmailOrPassword });
         }
 
-        public async Task<Result> RegisterAsync(CreateUserDTO dto) {
+        public async Task<Result> RegisterAsync(UserDTO dto) {
             var validatedErrors = ValidateData(dto);
 
             if (validatedErrors.Count() > 0) {
@@ -69,7 +69,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
-
+            user.Id = Guid.Empty; 
             var refreshToken = _tokenService.GenerateRefreshToken();
             user.RefreshToken = refreshToken.Token;
             user.RefreshTokenExpiryDate = refreshToken.ExpirationDate; 
@@ -150,7 +150,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 string.Format(UserResource.TextConfirmEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
         }
 
-        private IEnumerable<string> ValidateData(CreateUserDTO user) {
+        private IEnumerable<string> ValidateData(UserDTO user) {
             var errors = new List<string>();
 
             if (user is null) {

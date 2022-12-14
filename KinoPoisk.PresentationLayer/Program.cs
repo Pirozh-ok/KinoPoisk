@@ -1,3 +1,4 @@
+using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.PresentationLayer.Extensions;
 using System.Text.Json.Serialization;
 
@@ -15,6 +16,15 @@ builder.Services.AddIdentitySettings();
 builder.Services.AddUserServices();
 builder.Services.AddAutoMapper();
 builder.Services.AddJwtAuth(builder.Configuration);
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: "policy", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -25,6 +35,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+app.UseCors("policy"); 
 
 app.UseAuthentication();
 app.UseAuthorization();

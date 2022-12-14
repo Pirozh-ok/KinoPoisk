@@ -6,8 +6,7 @@ using KinoPoisk.DomainLayer.Entities;
 namespace KinoPoisk.DomainLayer.Mapping {
     public class CountryProfile : Profile {
         public CountryProfile() {
-            CreateMap<CreateCountryDTO, Country>();
-            CreateMap<UpdateCountryDTO, Country>();
+            CreateMap<CountryDTO, Country>();
             CreateMap<Country, GetCountryDTO>();
         }
     }

@@ -6,7 +6,7 @@ using AutoMapper.QueryableExtensions;
 using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class GenericService<TEntity, TTypeId> : IService<TTypeId>
+    public abstract class GenericService<TEntity, TEntityDTO, TTypeId> : IService<TTypeId, TEntityDTO>
         where TEntity : class, IEntity<TTypeId>{
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -16,7 +16,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _mapper = mapper;
         }
 
-        public async Task<Result> CreateAsync<T>(T dto) {
+        public async Task<Result> CreateAsync(TEntityDTO dto) {
+            var errors = Validate(dto);
+
+            if (errors.Count > 0) {
+                return new ErrorResult(errors);
+            }
+
             var createObj = _mapper.Map<TEntity>(dto); 
 
             _unitOfWork.GetRepository<TEntity>().Create(createObj);
@@ -58,7 +64,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 new SuccessResult<T>(_mapper.Map<T>(obj));
         }
 
-        public async Task<Result> UpdateAsync<T>(T dto) {
+        public async Task<Result> UpdateAsync(TEntityDTO dto) {
+            var errors = Validate(dto);
+
+            if(errors.Count > 0) {
+                return new ErrorResult(errors);
+            }
+
             var updateObj = _mapper.Map<TEntity>(dto); 
 
             if (!_unitOfWork.GetRepository<TEntity>().Contains(updateObj)) {
@@ -69,5 +81,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             await _unitOfWork.CommitAsync();
             return new SuccessResult<string>(GenericServiceResource.Updated);
         }
+
+        abstract protected List<string> Validate(TEntityDTO dto);
     }
 }
