@@ -1,4 +1,3 @@
-using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.PresentationLayer.Extensions;
 using System.Text.Json.Serialization;
 
@@ -10,12 +9,12 @@ builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions
                 .ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddDbConnection(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddIdentitySettings();
 builder.Services.AddUserServices();
 builder.Services.AddAutoMapper();
 builder.Services.AddJwtAuth(builder.Configuration);
+builder.Services.AddSwaggerOptions(); 
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy(name: "policy", builder =>

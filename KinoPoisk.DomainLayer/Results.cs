@@ -20,5 +20,10 @@
             Errors = errors;
             Success = false;
         }
+
+        public ErrorResult(string error) {
+            Errors = new List<string>() { error};
+            Success = false;
+        }
     }
 }
