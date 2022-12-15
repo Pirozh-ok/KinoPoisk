@@ -1,29 +1,45 @@
 ﻿namespace KinoPoisk.DomainLayer {
-    public abstract class Result {
-        public bool Success { get; protected set; }
-        public bool Failure => !Success;
-    }
+    public class Result {
+        public bool Success { get; private set; }
+        public List<string> Errors { get; private set; }
 
-    public class SuccessResult<T> : Result {
-        public T Data { get; }
-
-        public SuccessResult(T data) {
-            Data = data;
-            Success = true;
+        public bool Failure {
+            get { return !Success; }
         }
-    }
 
-    public class ErrorResult : Result {
-        public IEnumerable<string> Errors { get; }
-
-        public ErrorResult(IEnumerable<string> errors) {
+        protected Result(bool success, List<string> errors) {
+            Success = success;
             Errors = errors;
-            Success = false;
         }
 
-        public ErrorResult(string error) {
-            Errors = new List<string>() { error};
-            Success = false;
+        public static Result Fail(string message) {
+            return new Result(false, new List<string> { message });
+        }
+
+        public static Result Fail(List<string> errors) {
+            return new Result(false, errors);
+        }
+
+        public static Result Ok() {
+            return new Result(true, new List<string>());
+        }
+
+        public static Result<T> Ok<T>(T? value) {
+            return new Result<T>(value, true, new List<string>());
+        }
+    }
+
+    public class Result<T> : Result {
+        public T Value { get; private set; } 
+
+        protected internal Result(T? value, bool success, string error)
+            : base(success, new List<string>() { error } ) {
+            Value = value;
+        }
+
+        protected internal Result(T? value, bool success, List<string> errors)
+            : base(success, errors ) {
+            Value = value;
         }
     }
 }

@@ -6,7 +6,6 @@ using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MimeKit.Cryptography;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class RoleServices : IRoleService {
@@ -18,43 +17,35 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _roleManager = roleManager;
         }
 
-        public async Task<Result> AddRolesToUser(Guid userId, string[] roleNames) {
+        public async Task<Result> AddRolesToUserAsync(Guid userId, string[] roleNames) {
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user is null) {
-                return new ErrorResult(UserResource.NotFound);
+                return Result.Fail(UserResource.NotFound);
             }
 
-            var errors = new List<string>();
-            var existingRoles = _roleManager.Roles
-                .Select(x => x.Name)
-                .ToHashSet();
-
-            foreach (var role in roleNames) {
-                if (existingRoles.Contains(role)) {
-                    errors.Add(string.Format(RoleResource.RoleNotExist, role));
-                }
-            }
+            var errors = RolesIsExist(roleNames);
 
             if (errors.Count > 0) {
-                return new ErrorResult(errors);
+                return Result.Fail(errors);
             }
 
             var result = await _userManager.AddToRolesAsync(user, roleNames);
 
             if (result.Succeeded) {
-                return new SuccessResult<string>(RoleResource.RoleAddedToUser); 
+                return Result.Ok(RoleResource.RoleAddedToUser); 
             }
 
-            return new ErrorResult(result.Errors
-                .Select(x => x.Description)); 
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList()); 
         }
 
         public async Task<Result> CreateRoleAsync(RoleDTO dto) {
             var errors = ValidateRole(dto);
 
             if (errors.Count() > 0) {
-                return new ErrorResult(errors);
+                return Result.Fail(errors);
             }
 
             var result = await _roleManager.CreateAsync(
@@ -63,10 +54,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 });
 
             if (result.Succeeded) {
-                return new SuccessResult<string>(RoleResource.RoleCreated);
+                return Result.Ok(RoleResource.RoleCreated);
             }
 
-            return new ErrorResult(result.Errors.Select(x => x.Description).ToList());
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
         }
 
         public async Task<Result> DeleteRoleByIdAsync(Guid id) {
@@ -74,98 +67,89 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return await DeleteRole(role);              
         }
 
-        public async Task<Result> DeleteRoleByName(string name) {
+        public async Task<Result> DeleteRoleByNameAsync(string name) {
             var role = await _roleManager.FindByNameAsync(name);
             return await DeleteRole(role);
         }
 
-        public async Task<Result> GetRoles() => new SuccessResult<IEnumerable<string>>(await _roleManager.Roles
-            .Select(x => x.Name)
-            .ToListAsync());
+        public async Task<Result> GetRolesAsync() => Result.Ok(await _roleManager.Roles.ToListAsync());
 
-        public async Task<Result> GetUserRoles(Guid userId) {
+        public async Task<Result> GetUserRolesAsync(Guid userId) {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             
             if(user is null) {
-                return new ErrorResult(UserResource.NotFound); 
+                return Result.Fail(UserResource.NotFound); 
             }
 
-            return new SuccessResult<IEnumerable<string>>(await _userManager.GetRolesAsync(user)); 
+            return Result.Ok(await _userManager.GetRolesAsync(user));
         }
 
-        public async Task<Result> RemoveRolesFromUser(Guid userId,string[] roleNames) {
+        public async Task<Result> RemoveRolesFromUserAsync(Guid userId,string[] roleNames) {
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user is null) {
-                return new ErrorResult(UserResource.NotFound);
+                return Result.Fail(UserResource.NotFound);
             }
 
-            var errors = new List<string>();
-            var existingRoles = _roleManager.Roles
-                .Select(x => x.Name)
-                .ToHashSet(); 
-
-            foreach (var role in roleNames) {
-                if (existingRoles.Contains(role)) {
-                    errors.Add(string.Format(RoleResource.RoleNotExist, role));
-                }
-            }
+            var errors = RolesIsExist(roleNames); 
 
             if (errors.Count > 0) {
-                return new ErrorResult(errors);
+                return Result.Fail(errors);
             }
 
             var result = await _userManager.RemoveFromRolesAsync(user, roleNames);
 
             if (result.Succeeded) {
-                return new SuccessResult<string>(RoleResource.RoleAddedToUser);
+                return Result.Ok(RoleResource.RoleAddedToUser);
             }
 
-            return new ErrorResult(result.Errors
-                .Select(x => x.Description));
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
         }
 
-        public async Task<Result> UpdateRole(RoleDTO dto) {
+        public async Task<Result> UpdateRoleAsync(RoleDTO dto) {
             var errors = ValidateRole(dto); 
 
             if(errors.Count() > 0) {
-                return new ErrorResult(errors); 
+                return Result.Fail(errors); 
             }
 
-            var role = await _roleManager.FindByIdAsync(dto.ToString());
+            var role = await _roleManager.FindByIdAsync(dto.Id.ToString());
 
             if(role is null) {
-                return new ErrorResult(RoleResource.NotFound); 
+                return Result.Fail(RoleResource.NotFound); 
             }
 
             role.Name = dto.Name; 
             var result = await _roleManager.UpdateAsync(role);
 
             if (result.Succeeded) {
-                return new SuccessResult<string>(RoleResource.RoleUpdated); 
+                return Result.Ok(RoleResource.RoleUpdated); 
             }
 
-            return new ErrorResult(result.Errors
+            return Result.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList()); 
         }
 
         private async Task<Result> DeleteRole(ApplicationRole role) {
             if (role is null) {
-                return new ErrorResult(RoleResource.NotFound);
+                return Result.Fail(RoleResource.NotFound);
             }
 
             var result = await _roleManager.DeleteAsync(role);
 
             if (result.Succeeded) {
-                return new SuccessResult<string>(RoleResource.RoleDeleted);
+                return Result.Ok(RoleResource.RoleDeleted);
             }
 
-            return new ErrorResult(result.Errors
-                .Select(x => x.Description));
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
         }
 
-        private IEnumerable<string> ValidateRole(RoleDTO dto) {
+        private List<string> ValidateRole(RoleDTO dto) {
             var errors = new List<string>();
 
             if(dto is null) {
@@ -182,6 +166,21 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if(dto.Name.Length < Constants.MinLenOfName) {
                 errors.Add(string.Format(RoleResource.NameLessMinLen, Constants.MinLenOfName));
+            }
+
+            return errors; 
+        }
+
+        private List<string> RolesIsExist(string[] roleNames) {
+            var errors = new List<string>();
+            var existingRoles = _roleManager.Roles
+                .Select(x => x.Name)
+                .ToHashSet();
+
+            foreach (var role in roleNames) {
+                if (existingRoles.Contains(role)) {
+                    errors.Add(string.Format(RoleResource.RoleNotExist, role));
+                }
             }
 
             return errors; 

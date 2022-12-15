@@ -41,7 +41,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user is null) {
-                return new ErrorResult(new List<string>() { UserResource.InvalidEmailOrPassword });
+                return Result.Fail(UserResource.InvalidEmailOrPassword);
             }
 
             if (await _userManager.CheckPasswordAsync(user, dto.Password)) {
@@ -50,22 +50,23 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 user.RefreshTokenExpiryDate = refreshToken.ExpirationDate;
                 await _userManager.UpdateAsync(user);
 
-                return new SuccessResult<AuthResponseDTO<GetUserDTO>>(
-                    new AuthResponseDTO<GetUserDTO> {
-                        Data = _mapper.Map<GetUserDTO>(user),
-                        AccessToken = await _tokenService.GenerateAccessToken(user),
-                        RefreshToken = refreshToken.Token
+                return Result.Ok(
+                    new AuthResponseDTO<GetUserDTO> 
+                    {
+                        Data = _mapper.Map<GetUserDTO>(user), 
+                        AccessToken = await _tokenService.GenerateAccessToken(user), 
+                        RefreshToken = refreshToken.Token 
                     });
             }
 
-            return new ErrorResult(new List<string>() { UserResource.InvalidEmailOrPassword });
+            return Result.Fail(UserResource.InvalidEmailOrPassword);
         }
 
         public async Task<Result> RegisterAsync(UserDTO dto) {
             var validatedErrors = ValidateData(dto);
 
             if (validatedErrors.Count() > 0) {
-                return new ErrorResult(validatedErrors);
+                return Result.Fail(validatedErrors);
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
@@ -80,7 +81,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
                 await SendConfirmationEmail(user);
 
-                return new SuccessResult<AuthResponseDTO<GetUserDTO>>(
+                return Result.Ok(
                     new AuthResponseDTO<GetUserDTO> {
                         Data = _mapper.Map<GetUserDTO>(user),
                         AccessToken = await _tokenService.GenerateAccessToken(user),
@@ -94,31 +95,31 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(error.Description.ToString());
             }
 
-            return new ErrorResult(errors);
+            return Result.Fail(errors);
         }
 
         public async Task<Result> ConfirmEmailAsync(string? userEmail) {
             var user = await _userManager.FindByEmailAsync(userEmail);
 
             if (user.EmailConfirmed) {
-                return new SuccessResult<string>(UserResource.EmailAlreadyConfirmed); 
+                return Result.Ok(UserResource.EmailAlreadyConfirmed); 
             }
 
             await SendConfirmationEmail(user);
-            return new SuccessResult<string>(UserResource.ChechkEmail);
+            return Result.Ok(UserResource.ChechkEmail);
         }
 
         public async Task<Result> VerificationConfirmationToken(string token, string email) {
             var user = await _userManager.FindByEmailAsync(email);
 
             if(user is null) {
-                return new ErrorResult(new List<string> { UserResource.NotFound });
+                return Result.Fail(UserResource.NotFound);
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded) {
-                return new SuccessResult<string>(UserResource.EmailConfirmed);
+                return Result.Ok(UserResource.EmailConfirmed);
             }
 
             var errors = new List<string>();
@@ -127,7 +128,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(error.Description.ToString());
             }
 
-            return new ErrorResult(errors);
+            return Result.Fail(errors);
         }
 
         private async Task SendConfirmationEmail(ApplicationUser user) {
@@ -150,7 +151,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 string.Format(UserResource.TextConfirmEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
         }
 
-        private IEnumerable<string> ValidateData(UserDTO user) {
+        private List<string> ValidateData(UserDTO user) {
             var errors = new List<string>();
 
             if (user is null) {

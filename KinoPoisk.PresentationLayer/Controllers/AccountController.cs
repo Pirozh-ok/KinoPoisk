@@ -23,14 +23,14 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] UserDTO userDto) {
             var result = await _userService.RegisterAsync(userDto);
-            return result is ErrorResult ? BadRequest(result) : Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpGet("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromQuery] LoginDTO loginData) {
             var result = await _userService.LoginAsync(loginData);
-            return result is ErrorResult ? BadRequest(result) : Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPut("confirm-email")]
@@ -38,7 +38,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
             var userEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
 
             if (string.IsNullOrEmpty(userEmail)) {
-                return NotFound(new ErrorResult(new List<string>() { UserResource.NotFound })); 
+                return NotFound(Result.Fail(UserResource.NotFound)); 
             }
 
             var result = await _userService.ConfirmEmailAsync(userEmail);
@@ -49,7 +49,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string token, string email) {
             var result = await _userService.VerificationConfirmationToken(token, email);
-            return result is ErrorResult ? BadRequest(result) : Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
     }
 }

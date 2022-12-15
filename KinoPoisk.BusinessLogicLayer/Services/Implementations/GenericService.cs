@@ -20,7 +20,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var errors = Validate(dto);
 
             if (errors.Count > 0) {
-                return new ErrorResult(errors);
+                return Result.Fail(errors);
             }
 
             var createObj = _mapper.Map<TEntity>(dto); 
@@ -28,19 +28,19 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _unitOfWork.GetRepository<TEntity>().Create(createObj);
             await _unitOfWork.CommitAsync();
 
-            return new SuccessResult<string>(GenericServiceResource.Created);
+            return Result.Ok(GenericServiceResource.Created);
         }
 
         public async Task<Result> DeleteAsync(TTypeId id) {
             var obj = _unitOfWork.GetRepository<TEntity>().GetById(id);
 
             if (obj is null) {
-                return new ErrorResult(new List<string> { GenericServiceResource.NotFound });
+                return Result.Fail(GenericServiceResource.NotFound);
             }
 
             _unitOfWork.GetRepository<TEntity>().Delete(obj);
             await _unitOfWork.CommitAsync();
-            return new SuccessResult<string>(GenericServiceResource.Deleted);
+            return Result.Ok(GenericServiceResource.Deleted);
         }
 
         public async Task<Result> GetAllAsync<T>() {
@@ -49,7 +49,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ProjectTo<T>(_mapper.ConfigurationProvider)
                 .ToList();
 
-            return new SuccessResult<IEnumerable<T>>(objects);
+            return Result.Ok(objects);
         }
 
         public async Task<Result> GetByIdAsync<T>(TTypeId id) {
@@ -60,26 +60,26 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .FirstOrDefault();
 
             return obj is null ?
-                new ErrorResult(new List<string>() { GenericServiceResource.NotFound }) :
-                new SuccessResult<T>(_mapper.Map<T>(obj));
+                Result.Fail(GenericServiceResource.NotFound) :
+                Result.Ok(_mapper.Map<T>(obj));
         }
 
         public async Task<Result> UpdateAsync(TEntityDTO dto) {
             var errors = Validate(dto);
 
             if(errors.Count > 0) {
-                return new ErrorResult(errors);
+                return Result.Fail(errors);
             }
 
             var updateObj = _mapper.Map<TEntity>(dto); 
 
             if (!_unitOfWork.GetRepository<TEntity>().Contains(updateObj)) {
-                return new ErrorResult(new List<string> { GenericServiceResource.NotFound });
+                return Result.Fail(GenericServiceResource.NotFound);
             }
 
             _unitOfWork.GetRepository<TEntity>().Update(updateObj);
             await _unitOfWork.CommitAsync();
-            return new SuccessResult<string>(GenericServiceResource.Updated);
+            return Result.Ok(GenericServiceResource.Updated);
         }
 
         abstract protected List<string> Validate(TEntityDTO dto);

@@ -25,7 +25,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [AllowAnonymous]
         public async Task<IActionResult> GetByIdAsync(TTypeId id) {
             var result = await _service.GetByIdAsync<TGetDto>(id);
-            return result is ErrorResult ? BadRequest(result) : Ok(result);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost]
@@ -37,7 +37,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(TTypeId id) {
             var result = await _service.DeleteAsync(id);
-            return result is ErrorResult ? BadRequest(result) : StatusCode((int)HttpStatusCode.NoContent); 
+            return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result); 
         }
 
         [HttpPut]

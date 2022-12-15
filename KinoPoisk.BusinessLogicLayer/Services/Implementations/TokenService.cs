@@ -49,32 +49,33 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
         public async Task<Result> GetNewTokens(string jwtToken, string refresh) {
             if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(refresh)) {
-                return new ErrorResult(new List<string> { UserResource.InvalidAccessOrRefreshToken });
+                return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
             var id = GetUserIdByJwt(jwtToken);
 
             if (string.IsNullOrEmpty(id)) {
-                return new ErrorResult(new List<string> { UserResource.InvalidAccessOrRefreshToken });
+                return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
             var user = await _userManager.FindByIdAsync(id);
 
-            if(user is null || user.RefreshToken != refresh || user.RefreshTokenExpiryDate < DateTime.Now ) {
-                return new ErrorResult(new List<string> { UserResource.InvalidAccessOrRefreshToken });
+            if (user is null || user.RefreshToken != refresh || user.RefreshTokenExpiryDate < DateTime.Now) {
+                return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
             var newRefreshToken = GenerateRefreshToken();
             var newAccessToken = await GenerateAccessToken(user);
 
             user.RefreshToken = newRefreshToken.Token;
-            user.RefreshTokenExpiryDate = newRefreshToken.ExpirationDate; 
+            user.RefreshTokenExpiryDate = newRefreshToken.ExpirationDate;
             await _userManager.UpdateAsync(user);
 
-            return new SuccessResult<TokensDTO>(new TokensDTO {
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken.Token
-            });
+            return Result.Ok(
+                new TokensDTO {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken.Token
+                });
         }
 
         public RefreshTokenDTO GenerateRefreshToken() {
