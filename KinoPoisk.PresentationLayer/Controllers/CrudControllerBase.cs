@@ -31,7 +31,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] TEntityDTO createDto) {
             var result = await _service.CreateAsync(createDto);
-            return StatusCode((int)HttpStatusCode.Created); 
+            return result.Success ? StatusCode((int)HttpStatusCode.Created) : BadRequest(result); 
         }
 
         [HttpDelete("{id}")]
@@ -43,7 +43,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] TEntityDTO updateDto) {
             var result = await _service.UpdateAsync(updateDto);
-            return StatusCode((int)HttpStatusCode.NoContent); 
+            return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result); 
         }
     }
 }

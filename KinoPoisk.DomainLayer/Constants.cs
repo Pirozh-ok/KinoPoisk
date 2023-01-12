@@ -13,6 +13,9 @@
         public const int MaxLenOfPath = 100;
         public const int MaxLenOfTitleMovie = 100;
         public const int MaxLenOfDecriptionMovie = 500;
-        public const int MaxLenOfComment = 200; 
+        public const int MaxLenOfComment = 200;
+        public const uint MinMinAge = 0;
+        public const uint MaxMinAge = 18;
+        public const uint MaxLenOfValueAgeCategory = 100;
     }
 }

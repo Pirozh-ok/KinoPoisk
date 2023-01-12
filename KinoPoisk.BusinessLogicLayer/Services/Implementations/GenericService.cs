@@ -23,7 +23,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(errors);
             }
 
-            var createObj = _mapper.Map<TEntity>(dto); 
+            var createObj = _mapper.Map<TEntity>(dto);
 
             _unitOfWork.GetRepository<TEntity>().Create(createObj);
             await _unitOfWork.CommitAsync();

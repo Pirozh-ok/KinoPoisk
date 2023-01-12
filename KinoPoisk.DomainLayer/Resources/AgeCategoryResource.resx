@@ -117,16 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="InvalidId" xml:space="preserve">
-    <value>Invalid ID value</value>
+  <data name="EmptyOrNullValue" xml:space="preserve">
+    <value>Description of the age category is required</value>
+  </data>
+  <data name="MinAgeExceedsMaxValue" xml:space="preserve">
+    <value>Starting from the age of 18, all genres of films are available. The maximum age limit is 18 years</value>
+  </data>
+  <data name="MinAgeLessMinValue" xml:space="preserve">
+    <value>The minimum age cannot be less than 0</value>
   </data>
   <data name="NameExceedsMaxLen" xml:space="preserve">
-    <value>Invalid name value. The length of the genre name should not exceed 100 characters</value>
+    <value>Invalid name value. The length of the age category name should not exceed 100 characters</value>
   </data>
   <data name="NameLessMinLen" xml:space="preserve">
-    <value>Invalid name value. The minimum length of the genre name is 3</value>
+    <value>Invalid name value. The minimum length of the age category name is 3</value>
   </data>
   <data name="NullArgument" xml:space="preserve">
     <value>Argument is null</value>
+  </data>
+  <data name="ValueExceedsMaxLen" xml:space="preserve">
+    <value>Invalid value age category. The length of the age category value should not exceed 100 characters</value>
   </data>
 </root>

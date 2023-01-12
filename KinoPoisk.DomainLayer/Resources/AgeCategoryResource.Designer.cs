@@ -22,14 +22,14 @@ namespace KinoPoisk.DomainLayer.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class GenreResource {
+    public class AgeCategoryResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal GenreResource() {
+        internal AgeCategoryResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KinoPoisk.DomainLayer.Resources.GenreResource", typeof(GenreResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KinoPoisk.DomainLayer.Resources.AgeCategoryResource", typeof(AgeCategoryResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,16 +61,34 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid ID value.
+        ///   Looks up a localized string similar to Description of the age category is required.
         /// </summary>
-        public static string InvalidId {
+        public static string EmptyOrNullValue {
             get {
-                return ResourceManager.GetString("InvalidId", resourceCulture);
+                return ResourceManager.GetString("EmptyOrNullValue", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid name value. The length of the genre name should not exceed 100 characters.
+        ///   Looks up a localized string similar to Starting from the age of 18, all genres of films are available. The maximum age limit is 18 years.
+        /// </summary>
+        public static string MinAgeExceedsMaxValue {
+            get {
+                return ResourceManager.GetString("MinAgeExceedsMaxValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The minimum age cannot be less than 0.
+        /// </summary>
+        public static string MinAgeLessMinValue {
+            get {
+                return ResourceManager.GetString("MinAgeLessMinValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid name value. The length of the age category name should not exceed 100 characters.
         /// </summary>
         public static string NameExceedsMaxLen {
             get {
@@ -79,7 +97,7 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid name value. The minimum length of the genre name is 3.
+        ///   Looks up a localized string similar to Invalid name value. The minimum length of the age category name is 3.
         /// </summary>
         public static string NameLessMinLen {
             get {
@@ -93,6 +111,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string NullArgument {
             get {
                 return ResourceManager.GetString("NullArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value age category. The length of the age category value should not exceed 100 characters.
+        /// </summary>
+        public static string ValueExceedsMaxLen {
+            get {
+                return ResourceManager.GetString("ValueExceedsMaxLen", resourceCulture);
             }
         }
     }
