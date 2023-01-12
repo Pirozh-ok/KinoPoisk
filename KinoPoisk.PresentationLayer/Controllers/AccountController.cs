@@ -70,7 +70,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
 
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateUserData([FromBody] UserDTO userDTO) {
+        public async Task<IActionResult> UpdateUserData([FromBody] UpdateUserDTO userDTO) {
             var result = await _userService.UpdateUserData(userDTO);
             return result.Success ? Ok(result) : BadRequest(result); 
         }
@@ -79,6 +79,11 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordData) {
             var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+            if(string.IsNullOrEmpty(userId) ) {
+                return Unauthorized(); 
+            }
+
             var result = await _userService.ChangePassword(changePasswordData, userId);
             return result.Success ? Ok(result) : BadRequest(result); 
         }

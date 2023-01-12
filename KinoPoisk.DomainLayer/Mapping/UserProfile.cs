@@ -6,6 +6,7 @@ namespace KinoPoisk.DomainLayer.Mapping {
     public class UserProfile : Profile{
         public UserProfile() {
             CreateMap<UserDTO, ApplicationUser>();
+            CreateMap<UpdateUserDTO, ApplicationUser>(); 
             CreateMap<ApplicationUser, GetUserDTO>();
         }
     }

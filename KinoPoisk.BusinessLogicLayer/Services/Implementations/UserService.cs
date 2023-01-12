@@ -94,11 +94,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList());
         }
 
-        public async Task<Result> UpdateUserData(UserDTO userDTO) {
-            if(userDTO.Id is null) {
-                return Result.Fail(UserResource.IdIsRequired);
-            }
-
+        public async Task<Result> UpdateUserData(UpdateUserDTO userDTO) {
             var errors = ValidateData(userDTO);
 
             if (errors.Count > 0) {
@@ -111,8 +107,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(UserResource.NotFound);
             }
 
-            var mapUser = _mapper.Map<ApplicationUser>(userDTO); 
-            var result = await _userManager.UpdateAsync(mapUser);
+            user = _mapper.Map(userDTO, user); 
+            var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded) {
                 return Result.Ok();
@@ -350,6 +346,57 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (string.IsNullOrEmpty(user.Password) || user.Password.Length > Constants.MaxLenOfPassword) {
                 errors.Add(UserResource.PasswordExceedsMaxLen);
+            }
+
+            if (user.DateOfBirth < DateTime.UtcNow.AddYears(-100) || user.DateOfBirth > DateTime.UtcNow) {
+                errors.Add(UserResource.IncorrectDateOfBirth);
+            }
+
+            if (user.CountryId is not null && _unitOfWork.GetRepository<Country>().GetById(user.CountryId) is null) {
+                errors.Add(UserResource.NotFoundUserCountry);
+            }
+
+            return errors;
+        }
+
+        private List<string> ValidateData(UpdateUserDTO user) {
+            var errors = new List<string>();
+
+            if (user is null) {
+                errors.Add(UserResource.NullArgument);
+                return errors;
+            }
+
+            if (string.IsNullOrEmpty(user.UserName) || user.UserName.Length < Constants.MinLenOfName) {
+                errors.Add(UserResource.UserNameLessMinLen);
+            }
+
+            if (user.UserName.Length > Constants.MaxLenOfName) {
+                errors.Add(UserResource.UserNameExceedsMaxLen);
+            }
+
+            if (string.IsNullOrEmpty(user.FirstName) || user.FirstName.Length < Constants.MinLenOfName) {
+                errors.Add(UserResource.FirstNameLessMinLen);
+            }
+
+            if (user.FirstName.Length > Constants.MaxLenOfName) {
+                errors.Add(UserResource.FirstNameExceedsMaxLen);
+            }
+
+            if (string.IsNullOrEmpty(user.LastName) || user.LastName.Length < Constants.MinLenOfName) {
+                errors.Add(UserResource.LastNameLessMinLen);
+            }
+
+            if (user.LastName.Length > Constants.MaxLenOfName) {
+                errors.Add(UserResource.LastNameExceedsMaxLen);
+            }
+
+            if (user.Patronymic is not null && user.Patronymic.Length < Constants.MinLenOfName) {
+                errors.Add(UserResource.PatronymicLessMinLen);
+            }
+
+            if (user.Patronymic is not null && user.Patronymic.Length > Constants.MaxLenOfName) {
+                errors.Add(UserResource.PatronymicExceedsMaxLen);
             }
 
             if (user.DateOfBirth < DateTime.UtcNow.AddYears(-100) || user.DateOfBirth > DateTime.UtcNow) {
