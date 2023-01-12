@@ -124,6 +124,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your account password has been changed.
+        /// </summary>
+        public static string EmailPasswordChanged {
+            get {
+                return ResourceManager.GetString("EmailPasswordChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to register, try again later.
         /// </summary>
         public static string FailedRegister {
@@ -147,6 +156,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string FirstNameLessMinLen {
             get {
                 return ResourceManager.GetString("FirstNameLessMinLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id is required.
+        /// </summary>
+        public static string IdIsRequired {
+            get {
+                return ResourceManager.GetString("IdIsRequired", resourceCulture);
             }
         }
         
@@ -223,6 +241,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The password has been successfully changed.
+        /// </summary>
+        public static string PasswordChanged {
+            get {
+                return ResourceManager.GetString("PasswordChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid password value. The length of the password should not exceed 30 characters.
         /// </summary>
         public static string PasswordExceedsMaxLen {
@@ -273,6 +300,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string SubjectConfirmEmail {
             get {
                 return ResourceManager.GetString("SubjectConfirmEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password changed.
+        /// </summary>
+        public static string SubjectPasswordChanged {
+            get {
+                return ResourceManager.GetString("SubjectPasswordChanged", resourceCulture);
             }
         }
         

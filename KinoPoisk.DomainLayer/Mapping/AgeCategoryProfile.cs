@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using KinoPoisk.DomainLayer.DTOs.AgeCategoriesDTO;
+using KinoPoisk.DomainLayer.DTOs.AgeCategoryDTO;
 using KinoPoisk.DomainLayer.Entities;
 
 namespace KinoPoisk.DomainLayer.Mapping {

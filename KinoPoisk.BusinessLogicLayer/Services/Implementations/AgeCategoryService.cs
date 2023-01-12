@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KinoPoisk.DataAccessLayer;
-using KinoPoisk.DomainLayer.DTOs.AgeCategoriesDTO;
+using KinoPoisk.DomainLayer.DTOs.AgeCategoryDTO;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;

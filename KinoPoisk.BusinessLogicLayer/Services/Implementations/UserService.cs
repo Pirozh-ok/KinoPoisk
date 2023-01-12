@@ -8,9 +8,7 @@ using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.IdentityModel.Tokens;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -96,6 +94,35 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList());
         }
 
+        public async Task<Result> UpdateUserData(UserDTO userDTO) {
+            if(userDTO.Id is null) {
+                return Result.Fail(UserResource.IdIsRequired);
+            }
+
+            var errors = ValidateData(userDTO);
+
+            if (errors.Count > 0) {
+                return Result.Fail(errors); 
+            }
+
+            var user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
+
+            if (user is null) {
+                return Result.Fail(UserResource.NotFound);
+            }
+
+            var mapUser = _mapper.Map<ApplicationUser>(userDTO); 
+            var result = await _userManager.UpdateAsync(mapUser);
+
+            if (result.Succeeded) {
+                return Result.Ok();
+            }
+
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList()); 
+        }
+
         public async Task<Result> ConfirmEmailAsync(string? userEmail) {
             var user = await _userManager.FindByEmailAsync(userEmail);
 
@@ -123,6 +150,29 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return Result.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
+        }
+
+        public async Task<Result> ChangePassword(ChangePasswordDTO changePasswordData, string userId) {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if(user is null) {
+                return Result.Fail(UserResource.NotFound); 
+            }
+
+            if(!string.Equals(changePasswordData.NewPassword, changePasswordData.ConfirmNewPassword)) {
+                return Result.Fail(UserResource.PasswordsNotMatch);
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordData.OldPassword, changePasswordData.NewPassword);
+
+            if (result.Succeeded) {
+                await _emailService.SendEmailAsync(user.Email, UserResource.SubjectPasswordChanged, UserResource.EmailPasswordChanged); 
+                return Result.Ok(UserResource.PasswordChanged);
+            }
+
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList()); 
         }
 
         public async Task<Result> SendResetPasswordEmailAsync(string email) {

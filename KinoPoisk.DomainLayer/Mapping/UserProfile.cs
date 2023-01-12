@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using KinoPoisk.DomainLayer.DTOs;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Entities;
 

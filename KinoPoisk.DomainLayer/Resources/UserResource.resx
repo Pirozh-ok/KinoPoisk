@@ -138,6 +138,9 @@
   <data name="EmailNotFound" xml:space="preserve">
     <value>The user's email was not found</value>
   </data>
+  <data name="EmailPasswordChanged" xml:space="preserve">
+    <value>Your account password has been changed</value>
+  </data>
   <data name="FailedRegister" xml:space="preserve">
     <value>Failed to register, try again later</value>
   </data>
@@ -146,6 +149,9 @@
   </data>
   <data name="FirstNameLessMinLen" xml:space="preserve">
     <value>Invalid first name value. The minimum length of the first name  is 2</value>
+  </data>
+  <data name="IdIsRequired" xml:space="preserve">
+    <value>Id is required</value>
   </data>
   <data name="IncorrectDateOfBirth" xml:space="preserve">
     <value>Incorrect date of birth value</value>
@@ -171,6 +177,9 @@
   <data name="NullArgument" xml:space="preserve">
     <value>Null argument</value>
   </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>The password has been successfully changed</value>
+  </data>
   <data name="PasswordExceedsMaxLen" xml:space="preserve">
     <value>Invalid password value. The length of the password should not exceed 30 characters</value>
   </data>
@@ -188,6 +197,9 @@
   </data>
   <data name="SubjectConfirmEmail" xml:space="preserve">
     <value>Confirm your account</value>
+  </data>
+  <data name="SubjectPasswordChanged" xml:space="preserve">
+    <value>Password changed</value>
   </data>
   <data name="TextConfirmEmail" xml:space="preserve">
     <value>Hi {0}!&lt;br&gt;You have been sent this email because you created an account on kinopoisk.&lt;br&gt;Please confirm your account by clicking this link: {1}</value>
