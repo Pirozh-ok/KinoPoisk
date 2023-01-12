@@ -14,16 +14,8 @@ builder.Services.AddIdentitySettings();
 builder.Services.AddUserServices();
 builder.Services.AddAutoMapper();
 builder.Services.AddJwtAuth(builder.Configuration);
-builder.Services.AddSwaggerOptions(); 
-builder.Services.AddCors(opt =>
-{
-    opt.AddPolicy(name: "policy", builder =>
-    {
-        builder.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
+builder.Services.AddSwaggerOptions();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -34,7 +26,7 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
-app.UseCors("policy"); 
+app.UseCors(builder => builder.AllowAnyOrigin());
 
 app.UseAuthentication();
 app.UseAuthorization();
