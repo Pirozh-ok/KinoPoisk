@@ -8,7 +8,9 @@ using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.IdentityModel.Tokens;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -79,7 +81,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (result.Succeeded) {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
-                await SendConfirmationEmail(user);
+                await SendConfirmationEmailAsync(user);
 
                 return Result.Ok(
                     new AuthResponseDTO<GetUserDTO> {
@@ -89,13 +91,9 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                     });
             }
 
-            var errors = new List<string>();
-
-            foreach (var error in result.Errors) {
-                errors.Add(error.Description.ToString());
-            }
-
-            return Result.Fail(errors);
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
         }
 
         public async Task<Result> ConfirmEmailAsync(string? userEmail) {
@@ -105,11 +103,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Ok(UserResource.EmailAlreadyConfirmed); 
             }
 
-            await SendConfirmationEmail(user);
+            await SendConfirmationEmailAsync(user);
             return Result.Ok(UserResource.ChechkEmail);
         }
 
-        public async Task<Result> VerificationConfirmationToken(string token, string email) {
+        public async Task<Result> VerificationConfirmationTokenAsync(string token, string email) {
             var user = await _userManager.FindByEmailAsync(email);
 
             if(user is null) {
@@ -122,16 +120,59 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Ok(UserResource.EmailConfirmed);
             }
 
-            var errors = new List<string>();
-
-            foreach (var error in result.Errors) {
-                errors.Add(error.Description.ToString());
-            }
-
-            return Result.Fail(errors);
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
         }
 
-        private async Task SendConfirmationEmail(ApplicationUser user) {
+        public async Task<Result> SendResetPasswordEmailAsync(string email) {
+            var validateEmail = ValidateEmail(email);
+
+            if (!validateEmail.isValid) {
+                return Result.Fail(validateEmail.message); 
+            }
+
+            var user = await _userManager.FindByEmailAsync(email); 
+            
+            if(user is null) {
+                return Result.Fail(UserResource.NotFound);
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            Console.WriteLine(token);
+            var callbackUrl = $"https://frontend/reset-password?token={token}";
+            
+            await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail,
+                string.Format(UserResource.TextResetEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
+
+            return Result.Ok(); 
+        }
+
+        public async Task<Result> ResetPasswordAsync(ResetPasswordDTO resetPasswordData) {
+            var resultValid = ValidateResetPasswordData(resetPasswordData);
+
+            if (resultValid.Failure) {
+                return resultValid; 
+            }
+
+            var user = await _userManager.FindByEmailAsync(resetPasswordData.Email); 
+
+            if(user is null) {
+                return Result.Fail(UserResource.NotFound); 
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordData.Token, resetPasswordData.NewPassword);
+
+            if (result.Succeeded) {
+                return Result.Ok(); 
+            }
+
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList()); 
+        }
+
+        private async Task SendConfirmationEmailAsync(ApplicationUser user) {
             if(user is null) {
                 return; 
             }
@@ -149,6 +190,60 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail, 
                 string.Format(UserResource.TextConfirmEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
+        }
+
+        private Result ValidateResetPasswordData(ResetPasswordDTO resetPasswordData) {
+            if (resetPasswordData is null) {
+                return Result.Fail(UserResource.NullArgument);
+            }
+
+            var validateNewPassword = ValidatePassword(resetPasswordData.NewPassword);
+
+            if (!validateNewPassword.isValid) {
+                return Result.Fail(validateNewPassword.message);
+            }
+
+            var validateConfirmPassword = ValidatePassword(resetPasswordData.ConfirmPassword);
+
+            if (!validateConfirmPassword.isValid) {
+                return Result.Fail(validateConfirmPassword.message);
+            }
+
+            if (!string.Equals(resetPasswordData.NewPassword, resetPasswordData.ConfirmPassword)) {
+                return Result.Fail(UserResource.PasswordsNotMatch);
+            }
+
+            var validateEmail = ValidateEmail(resetPasswordData.Email);
+
+            if (!validateEmail.isValid) {
+                return Result.Fail(validateEmail.message);
+            }
+
+            return Result.Ok(); 
+        }
+
+        private (bool isValid, string message) ValidateEmail(string email) {
+            if (string.IsNullOrEmpty(email) || email.Length < Constants.MinLenOfEmail) {
+                return (false, UserResource.EmailLessMinLen);
+            }
+
+            if(email.Length > Constants.MaxLenOfEmail) {
+                return (false, UserResource.EmailExceedsMaxLen);
+            }
+
+            return (true, string.Empty); 
+        }
+
+        private (bool isValid, string message) ValidatePassword(string password) {
+            if (string.IsNullOrEmpty(password) || password.Length < Constants.MinLenOfPassword) {
+                return (false, UserResource.PasswordLessMinLen);
+            }
+
+            if (password.Length > Constants.MaxLenOfPassword) {
+                return (false, UserResource.PasswordExceedsMaxLen);
+            }
+
+            return (true, string.Empty);
         }
 
         private List<string> ValidateData(UserDTO user) {

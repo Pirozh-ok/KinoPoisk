@@ -5,6 +5,8 @@ namespace KinoPoisk.DomainLayer.Intarfaces.Services {
         Task<Result> LoginAsync(LoginDTO dto);
         Task<Result> RegisterAsync(UserDTO dto);
         Task<Result> ConfirmEmailAsync(string? userEmail);
-        Task<Result> VerificationConfirmationToken(string token, string email);
+        Task<Result> VerificationConfirmationTokenAsync(string token, string email);
+        Task<Result> SendResetPasswordEmailAsync(string email);
+        Task<Result> ResetPasswordAsync(ResetPasswordDTO resetPasswordData);
     }
 }

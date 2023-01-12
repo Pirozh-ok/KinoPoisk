@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Xml.Linq;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Route("api/Roles/")]

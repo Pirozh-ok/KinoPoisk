@@ -34,22 +34,37 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpPut("confirm-email")]
+        [Authorize]
         public async Task<IActionResult> ConfirmEmail() {
             var userEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
 
             if (string.IsNullOrEmpty(userEmail)) {
-                return NotFound(Result.Fail(UserResource.NotFound)); 
+                return NotFound(Result.Fail(UserResource.NotFound));
             }
 
             var result = await _userService.ConfirmEmailAsync(userEmail);
-            return Ok(result); 
+            return Ok(result);
         }
 
         [HttpGet("confirm-email")]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string token, string email) {
-            var result = await _userService.VerificationConfirmationToken(token, email);
+            var result = await _userService.VerificationConfirmationTokenAsync(token, email);
             return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email) {
+            var result = await _userService.SendResetPasswordEmailAsync(email);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordData) {
+            var result = await _userService.ResetPasswordAsync(resetPasswordData);
+            return result.Success ? Ok(result) : BadRequest(result); 
         }
     }
 }

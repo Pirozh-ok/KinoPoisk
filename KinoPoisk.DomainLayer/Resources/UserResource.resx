@@ -177,6 +177,9 @@
   <data name="PasswordLessMinLen" xml:space="preserve">
     <value>Invalid password value. The minimum length of the password is 6</value>
   </data>
+  <data name="PasswordsNotMatch" xml:space="preserve">
+    <value>The entered passwords do not match</value>
+  </data>
   <data name="PatronymicExceedsMaxLen" xml:space="preserve">
     <value>Invalid patronymic value. The length of the user patronymic should not exceed 50 characters</value>
   </data>
@@ -188,6 +191,9 @@
   </data>
   <data name="TextConfirmEmail" xml:space="preserve">
     <value>Hi {0}!&lt;br&gt;You have been sent this email because you created an account on kinopoisk.&lt;br&gt;Please confirm your account by clicking this link: {1}</value>
+  </data>
+  <data name="TextResetEmail" xml:space="preserve">
+    <value>Hi {0}!&lt;br&gt;You have received this email because you have started password recovery. If it wasn't you, ignore this email.&lt;br&gt;To reset password clicking this link: {1}</value>
   </data>
   <data name="UserNameExceedsMaxLen" xml:space="preserve">
     <value>Invalid username value. The length of the username should not exceed 50 characters</value>

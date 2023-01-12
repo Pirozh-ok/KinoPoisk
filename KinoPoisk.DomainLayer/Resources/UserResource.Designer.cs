@@ -241,6 +241,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The entered passwords do not match.
+        /// </summary>
+        public static string PasswordsNotMatch {
+            get {
+                return ResourceManager.GetString("PasswordsNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid patronymic value. The length of the user patronymic should not exceed 50 characters.
         /// </summary>
         public static string PatronymicExceedsMaxLen {
@@ -273,6 +282,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string TextConfirmEmail {
             get {
                 return ResourceManager.GetString("TextConfirmEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hi {0}!&lt;br&gt;You have received this email because you have started password recovery. If it wasn&apos;t you, ignore this email.&lt;br&gt;To reset password clicking this link: {1}.
+        /// </summary>
+        public static string TextResetEmail {
+            get {
+                return ResourceManager.GetString("TextResetEmail", resourceCulture);
             }
         }
         
