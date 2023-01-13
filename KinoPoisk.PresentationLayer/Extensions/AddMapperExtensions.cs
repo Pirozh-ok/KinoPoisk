@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using KinoPoisk.DomainLayer.Mapping;
+﻿using KinoPoisk.DomainLayer.Mapping;
 
 namespace KinoPoisk.PresentationLayer.Extensions {
     public static class AddMapperExtensions {
@@ -9,7 +8,8 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 typeof(UserProfile), 
                 typeof(AgeCategoryProfile), 
                 typeof(AwardProfile),
-                typeof(MovieRoleProfile)); 
+                typeof(MovieRoleProfile),
+                typeof(MovieCreatorProfile));
         }
     }
 }

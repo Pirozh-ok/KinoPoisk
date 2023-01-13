@@ -1,5 +1,4 @@
 ﻿using KinoPoisk.DomainLayer.Intarfaces;
-using System.Security.Principal;
 
 namespace KinoPoisk.DomainLayer.Entities {
     public enum ContentType {

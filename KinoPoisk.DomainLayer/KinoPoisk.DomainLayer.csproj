@@ -92,7 +92,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\MovieCreatorDTOs\" />
     <Folder Include="DTOs\ContentDTOs\" />
     <Folder Include="DTOs\MovieDTOs\" />
     <Folder Include="DTOs\RatingDTOs\" />
