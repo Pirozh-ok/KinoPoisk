@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
-    [Route("api/[controller]/")]
-    [ApiController]
-    public class TokenController : ControllerBase {
+    public class TokenController : BaseController {
         private ITokenService _tokenService;
 
         public TokenController(ITokenService tokenService) {

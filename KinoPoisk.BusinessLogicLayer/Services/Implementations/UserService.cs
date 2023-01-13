@@ -9,6 +9,9 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using Org.BouncyCastle.Math.EC.Rfc7748;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -101,6 +104,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(errors); 
             }
 
+            if (!IsHasAccess(userDTO.Id.ToString())) {
+                return Result.Fail(UserResource.AccessDenied);
+            }
+
             var user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
 
             if (user is null) {
@@ -119,7 +126,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
-        public async Task<Result> ConfirmEmailAsync(string userId) {
+        public async Task<Result> ConfirmEmailAsync() {
+            var userId = GetAuthUserId(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -152,7 +160,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList());
         }
 
-        public async Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData, string userId) {
+        public async Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData) {
+            var userId = GetAuthUserId(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -174,7 +183,9 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .Select(x => x.Description)
                 .ToList()); 
         }
-        public async Task<Result> ChangeEmailAsync(string userId, string newEmail) {
+
+        public async Task<Result> ChangeEmailAsync(string newEmail) {
+            var userId = GetAuthUserId(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -215,7 +226,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            Console.WriteLine(token);
             var callbackUrl = $"https://frontend/reset-password?token={token}";
             
             await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail,
@@ -297,6 +307,23 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             return Result.Ok(); 
         }
+
+        private string? GetAuthUserId() => _accessor.HttpContext.User.Claims
+            .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+        private bool IsHasAccess(string userId) {
+            var currentUserId = GetAuthUserId();
+            var currentUserRole = GetAuthUserRoles();
+
+            return string.Equals(currentUserId, userId)
+              || currentUserRole.Contains(Constants.NameRoleAdmin);
+        }
+
+        private List<string> GetAuthUserRoles() => _accessor.HttpContext.User.Claims
+            .Where(x => x.Type == ClaimTypes.Role)
+            .Select(x => x.Value)
+            .ToList(); 
+
 
         private (bool isValid, string message) ValidateEmail(string email) {
             if (string.IsNullOrEmpty(email) || email.Length < Constants.MinLenOfEmail) {

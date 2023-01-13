@@ -1,13 +1,10 @@
-﻿using KinoPoisk.DomainLayer;
-using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
-    [Route("api/[controller]/")]
-    [ApiController]
-    public class CrudControllerBase<TService, TEntityDTO , TGetDto, TTypeId>: ControllerBase 
+    public class CrudControllerBase<TService, TEntityDTO , TGetDto, TTypeId>: BaseController 
         where TService : IService<TTypeId,TEntityDTO > {
         protected TService _service;
 

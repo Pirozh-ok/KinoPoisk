@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
-    [Route("api/Roles/")]
     [Authorize(Roles = "Admin")]
-    [ApiController]
-    public class RoleController : ControllerBase {
+    public class RoleController : BaseController {
         private readonly IRoleService _roleService;
 
         public RoleController(RoleManager<ApplicationRole> roleManager,

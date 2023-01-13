@@ -1,23 +1,15 @@
-﻿using KinoPoisk.DomainLayer;
-using KinoPoisk.DomainLayer.DTOs.UserDTO;
+﻿using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
-using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
-    [Route("api/[controller]/")]
-    [ApiController]
     [Authorize]
-    public class AccountController : ControllerBase {
+    public class AccountController : BaseController {
         private readonly IUserService _userService;
-        private readonly IEmailService _emailService;
 
-        public AccountController(IUserService userService, IEmailService emailService) {
+        public AccountController(IUserService userService) {
             _userService = userService;
-            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -35,15 +27,9 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpPut("confirm-email")]
-        [Authorize]
         public async Task<IActionResult> ConfirmEmail() {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
-            if (string.IsNullOrEmpty(userId)) {
-                return Unauthorized();
-            }
-
-            var result = await _userService.ConfirmEmailAsync(userId);
+            var userId = GetAuthUserId();
+            var result = await _userService.ConfirmEmailAsync();
             return Ok(result);
         }
 
@@ -69,35 +55,22 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpPut]
-        [Authorize]
         public async Task<IActionResult> UpdateUserData([FromBody] UpdateUserDTO userDTO) {
             var result = await _userService.UpdateUserDataAsync(userDTO);
             return result.Success ? Ok(result) : BadRequest(result); 
         }
 
         [HttpPut("change-password")]
-        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordData) {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
-            if(string.IsNullOrEmpty(userId) ) {
-                return Unauthorized(); 
-            }
-
-            var result = await _userService.ChangePasswordAsync(changePasswordData, userId);
+            var userId = GetAuthUserId();
+            var result = await _userService.ChangePasswordAsync(changePasswordData);
             return result.Success ? Ok(result) : BadRequest(result); 
         }
 
         [HttpPut("change-email")]
-        [Authorize]
         public async Task<IActionResult> ChangeEmail([FromQuery] string newEmail) {
-            var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
-            if (string.IsNullOrEmpty(userId)) {
-                return Unauthorized();
-            }
-
-            var result = await _userService.ChangeEmailAsync(userId, newEmail);
+            var userId = GetAuthUserId();
+            var result = await _userService.ChangeEmailAsync(newEmail);
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }
