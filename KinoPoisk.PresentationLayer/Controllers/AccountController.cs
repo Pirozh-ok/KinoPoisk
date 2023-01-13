@@ -37,13 +37,13 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPut("confirm-email")]
         [Authorize]
         public async Task<IActionResult> ConfirmEmail() {
-            var userEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
 
-            if (string.IsNullOrEmpty(userEmail)) {
-                return NotFound(Result.Fail(UserResource.NotFound));
+            if (string.IsNullOrEmpty(userId)) {
+                return Unauthorized();
             }
 
-            var result = await _userService.ConfirmEmailAsync(userEmail);
+            var result = await _userService.ConfirmEmailAsync(userId);
             return Ok(result);
         }
 
@@ -71,7 +71,7 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpPut]
         [Authorize]
         public async Task<IActionResult> UpdateUserData([FromBody] UpdateUserDTO userDTO) {
-            var result = await _userService.UpdateUserData(userDTO);
+            var result = await _userService.UpdateUserDataAsync(userDTO);
             return result.Success ? Ok(result) : BadRequest(result); 
         }
 
@@ -84,8 +84,21 @@ namespace KinoPoisk.PresentationLayer.Controllers {
                 return Unauthorized(); 
             }
 
-            var result = await _userService.ChangePassword(changePasswordData, userId);
+            var result = await _userService.ChangePasswordAsync(changePasswordData, userId);
             return result.Success ? Ok(result) : BadRequest(result); 
+        }
+
+        [HttpPut("change-email")]
+        [Authorize]
+        public async Task<IActionResult> ChangeEmail([FromQuery] string newEmail) {
+            var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+            if (string.IsNullOrEmpty(userId)) {
+                return Unauthorized();
+            }
+
+            var result = await _userService.ChangeEmailAsync(userId, newEmail);
+            return result.Success ? Ok(result) : BadRequest(result);
         }
     }
 }

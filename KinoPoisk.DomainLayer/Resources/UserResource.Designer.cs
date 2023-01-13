@@ -70,6 +70,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hi {0}!&lt;br&gt;This email was sent to you because you changed the email address of your kinopoisk account.&lt;br&gt;Please confirm your new email by following this link: {1}.
+        /// </summary>
+        public static string ConfirmUpdatedEmail {
+            get {
+                return ResourceManager.GetString("ConfirmUpdatedEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t log in, try again later.
         /// </summary>
         public static string CouldntLogIn {

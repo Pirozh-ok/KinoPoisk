@@ -90,9 +90,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             var authClaims = new List<Claim> {
                     new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email)
-             };
+            };
 
             foreach (var userRole in userRoles) {
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));

@@ -79,7 +79,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (result.Succeeded) {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
-                await SendConfirmationEmailAsync(user);
+                await SendConfirmationEmailAsync(user, UserResource.TextConfirmEmail);
 
                 return Result.Ok(
                     new AuthResponseDTO<GetUserDTO> {
@@ -94,7 +94,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList());
         }
 
-        public async Task<Result> UpdateUserData(UpdateUserDTO userDTO) {
+        public async Task<Result> UpdateUserDataAsync(UpdateUserDTO userDTO) {
             var errors = ValidateData(userDTO);
 
             if (errors.Count > 0) {
@@ -119,14 +119,18 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
-        public async Task<Result> ConfirmEmailAsync(string? userEmail) {
-            var user = await _userManager.FindByEmailAsync(userEmail);
+        public async Task<Result> ConfirmEmailAsync(string userId) {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if(user is null) {
+                return Result.Fail(UserResource.NotFound); 
+            }
 
             if (user.EmailConfirmed) {
                 return Result.Ok(UserResource.EmailAlreadyConfirmed); 
             }
 
-            await SendConfirmationEmailAsync(user);
+            await SendConfirmationEmailAsync(user, UserResource.TextConfirmEmail);
             return Result.Ok(UserResource.ChechkEmail);
         }
 
@@ -148,7 +152,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList());
         }
 
-        public async Task<Result> ChangePassword(ChangePasswordDTO changePasswordData, string userId) {
+        public async Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData, string userId) {
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -170,6 +174,32 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .Select(x => x.Description)
                 .ToList()); 
         }
+        public async Task<Result> ChangeEmailAsync(string userId, string newEmail) {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if(user is null) {
+                return Result.Fail(UserResource.NotFound);
+            }
+
+            var validateEmail = ValidateEmail(newEmail);
+
+            if (!validateEmail.isValid) {
+                return Result.Fail(validateEmail.message); 
+            }
+         
+            user.Email = newEmail;
+            user.EmailConfirmed = false; 
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded) {
+                await SendConfirmationEmailAsync(user, UserResource.ConfirmUpdatedEmail);
+                return Result.Ok(UserResource.ChechkEmail);
+            }
+            
+            return Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
+        } 
 
         public async Task<Result> SendResetPasswordEmailAsync(string email) {
             var validateEmail = ValidateEmail(email);
@@ -218,7 +248,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
-        private async Task SendConfirmationEmailAsync(ApplicationUser user) {
+        private async Task SendConfirmationEmailAsync(ApplicationUser user, string message) {
             if(user is null) {
                 return; 
             }
@@ -235,7 +265,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var callbackUrl = $"{scheme}://{host}/api/account/confirm-email?token={token}&email={user.Email}";
 
             await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail, 
-                string.Format(UserResource.TextConfirmEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
+                string.Format(message, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
         }
 
         private Result ValidateResetPasswordData(ResetPasswordDTO resetPasswordData) {
