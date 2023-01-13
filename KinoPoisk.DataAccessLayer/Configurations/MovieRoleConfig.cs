@@ -22,7 +22,7 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
-                    Name = "Actors"
+                    Name = "Actor"
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
@@ -30,23 +30,23 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
-                    Name = "ScreenWriters"
+                    Name = "ScreenWriter"
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
-                    Name = "Producers"
+                    Name = "Producer"
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
-                    Name = "Artists"
+                    Name = "Artist"
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
-                    Name = "Operators"
+                    Name = "Operator"
                 },
                 new MovieRole {
                     Id = Guid.NewGuid(),
-                    Name = "Director"
+                    Name = "Editor"
                 });
         }
     }

@@ -1,4 +1,5 @@
-﻿using KinoPoisk.DomainLayer.DTOs;
+﻿using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DomainLayer.DTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Constants.NameRoleAdmin)]
     public class RoleController : BaseController {
         private readonly IRoleService _roleService;
 

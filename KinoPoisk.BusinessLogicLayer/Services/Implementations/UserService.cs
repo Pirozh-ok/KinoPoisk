@@ -9,7 +9,6 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Web;

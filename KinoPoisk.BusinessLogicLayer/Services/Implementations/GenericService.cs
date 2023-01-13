@@ -8,15 +8,15 @@ using KinoPoisk.DomainLayer.Resources;
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public abstract class GenericService<TEntity, TEntityDTO, TTypeId> : IService<TTypeId, TEntityDTO>
         where TEntity : class, IEntity<TTypeId>{
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _mapper;
 
         public GenericService(IUnitOfWork unitOfWork, IMapper mapper) {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<Result> CreateAsync(TEntityDTO dto) {
+        public virtual async Task<Result> CreateAsync(TEntityDTO dto) {
             var errors = Validate(dto);
 
             if (errors.Count > 0) {

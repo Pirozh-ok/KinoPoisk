@@ -7,8 +7,9 @@ namespace KinoPoisk.PresentationLayer.Extensions {
         public static void AddUserServices(this IServiceCollection services) {
             services.AddScoped<GenreService>();
             services.AddScoped<CountryService>();
-            services.AddScoped<CountryService>();
             services.AddScoped<AgeCategoryService>();
+            services.AddScoped<AwardService>();
+            services.AddScoped<MovieRoleService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();

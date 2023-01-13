@@ -19,6 +19,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AgeCategoryResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\AwardResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AwardResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\CountryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -33,6 +38,11 @@
       <DependentUpon>GenreResource.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\MovieRoleResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MovieRoleResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\RoleResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -51,6 +61,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AgeCategoryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AwardResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AwardResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\CountryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CountryResource.Designer.cs</LastGenOutput>
@@ -63,6 +77,10 @@
       <LastGenOutput>GenreResource.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MovieRoleResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MovieRoleResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\RoleResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RoleResource.Designer.cs</LastGenOutput>
@@ -71,6 +89,13 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UserResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\MovieCreatorDTOs\" />
+    <Folder Include="DTOs\ContentDTOs\" />
+    <Folder Include="DTOs\MovieDTOs\" />
+    <Folder Include="DTOs\RatingDTOs\" />
   </ItemGroup>
 
 </Project>
