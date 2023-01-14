@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CommentExceedsMaxLen" xml:space="preserve">
+    <value>Invalid comment value. The length of the rating comment should not exceed 200 characters</value>
+  </data>
   <data name="DescriptionExceedsMaxLen" xml:space="preserve">
     <value>Invalid description value. The length of the movie description should not exceed 500 characters</value>
   </data>
@@ -126,11 +129,17 @@
   <data name="IncorrectDuration" xml:space="preserve">
     <value>Incorrect duration value</value>
   </data>
+  <data name="IncorrectMovieRating" xml:space="preserve">
+    <value>The rating value of the movie should have a value from 0 to 5</value>
+  </data>
   <data name="IncorrectPremiereDate" xml:space="preserve">
     <value>Incorrect premiere date</value>
   </data>
   <data name="IncorrectWorldFees" xml:space="preserve">
     <value>Incorrect world fees</value>
+  </data>
+  <data name="MovieNotFound" xml:space="preserve">
+    <value>Movie not found</value>
   </data>
   <data name="NullArgument" xml:space="preserve">
     <value>Argument is null</value>
@@ -140,5 +149,8 @@
   </data>
   <data name="TitleLessMinLen" xml:space="preserve">
     <value>Invalid movie title value. The minimum length of the title is 2</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found</value>
   </data>
 </root>

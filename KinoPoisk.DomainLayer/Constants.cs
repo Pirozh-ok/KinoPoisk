@@ -20,6 +20,8 @@
         public const uint MaxAllowDurationInMinutes = 1000;
         public const decimal MaxAllowBudgetInDollars = decimal.MaxValue;
         public const decimal MaxAllowWorldFeesInDollars = decimal.MaxValue;
-        public const int CountValidateYear = -200; 
+        public const int CountValidateYear = -200;
+        public const int MinValueRatingMovie = 0;
+        public const int MaxValueRatingMovie = 5;
     }
 }

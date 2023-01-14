@@ -61,6 +61,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid comment value. The length of the rating comment should not exceed 200 characters.
+        /// </summary>
+        public static string CommentExceedsMaxLen {
+            get {
+                return ResourceManager.GetString("CommentExceedsMaxLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid description value. The length of the movie description should not exceed 500 characters.
         /// </summary>
         public static string DescriptionExceedsMaxLen {
@@ -88,6 +97,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The rating value of the movie should have a value from 0 to 5.
+        /// </summary>
+        public static string IncorrectMovieRating {
+            get {
+                return ResourceManager.GetString("IncorrectMovieRating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect premiere date.
         /// </summary>
         public static string IncorrectPremiereDate {
@@ -102,6 +120,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string IncorrectWorldFees {
             get {
                 return ResourceManager.GetString("IncorrectWorldFees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movie not found.
+        /// </summary>
+        public static string MovieNotFound {
+            get {
+                return ResourceManager.GetString("MovieNotFound", resourceCulture);
             }
         }
         
@@ -129,6 +156,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string TitleLessMinLen {
             get {
                 return ResourceManager.GetString("TitleLessMinLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User not found.
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
     }

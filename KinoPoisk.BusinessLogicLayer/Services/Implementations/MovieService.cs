@@ -5,10 +5,14 @@ using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class MovieService : GenericService<Movie, MovieDTO, Guid> {
-        public MovieService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
+        private readonly IHttpContextAccessor _accessor;
+        public MovieService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor accessor) : base(unitOfWork, mapper) {
+            _accessor = accessor;
         }
 
         public async override Task<Result> CreateAsync(MovieDTO dto) {
@@ -55,6 +59,23 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return Result.Ok(GenericServiceResource.Created);
         }
 
+        public async Task<Result> CreateOrUpdateRating(RatingDTO rating) {
+            var errors = ValidateRating(rating);
+
+            if(errors.Count > 0) {
+                return Result.Fail(errors); 
+            }
+
+            var ratingRepository = _unitOfWork.GetRepository<Rating>();
+            var createObj = _mapper.Map<Rating>(rating);
+            createObj.UserId = Guid.Parse(GetAuthUserId());
+
+            ratingRepository.Create(createObj);
+            await _unitOfWork.CommitAsync();
+
+            return Result.Ok();
+        }
+
         protected override List<string> Validate(MovieDTO dto) {
             var errors = new List<string>();
 
@@ -93,5 +114,31 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             return errors; 
         }
+
+        private List<string> ValidateRating(RatingDTO dto) {
+            var errors = new List<string>();
+
+            if(dto is null) {
+                errors.Add(MovieResource.NullArgument);
+                return errors;
+            }
+
+            if(!string.IsNullOrEmpty(dto.Comment) && dto.Comment.Length > Constants.MaxLenOfComment) {
+                errors.Add(MovieResource.CommentExceedsMaxLen);
+            }
+
+            if(dto.MovieRating < Constants.MinValueRatingMovie || dto.MovieRating > Constants.MaxValueRatingMovie) {
+                errors.Add(MovieResource.IncorrectMovieRating);
+            }
+
+            if(_unitOfWork.GetRepository<Movie>().GetById(dto.MovieId) is null) {
+                errors.Add(MovieResource.MovieNotFound);
+            }
+
+            return errors; 
+        }
+
+        private string? GetAuthUserId() => _accessor.HttpContext.User.Claims
+            .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
     }
 }
