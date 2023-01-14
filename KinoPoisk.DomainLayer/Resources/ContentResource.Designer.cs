@@ -22,14 +22,14 @@ namespace KinoPoisk.DomainLayer.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class MovieRoleResource {
+    public class ContentResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MovieRoleResource() {
+        internal ContentResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KinoPoisk.DomainLayer.Resources.MovieRoleResource", typeof(MovieRoleResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KinoPoisk.DomainLayer.Resources.ContentResource", typeof(ContentResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,25 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid name. The length of the movie role name should not exceed 100 characters.
+        ///   Looks up a localized string similar to Invalid content type value. Value should be .
+        /// </summary>
+        public static string IncorrectContentType {
+            get {
+                return ResourceManager.GetString("IncorrectContentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The movie was not found.
+        /// </summary>
+        public static string MovieNotFound {
+            get {
+                return ResourceManager.GetString("MovieNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid name. The length of the content name should not exceed 100 characters.
         /// </summary>
         public static string NameExceedsMaxLen {
             get {
@@ -70,7 +88,7 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid name value. The minimum length of the movie role name is 3.
+        ///   Looks up a localized string similar to Invalid name. The minimum length of the content name is 3.
         /// </summary>
         public static string NameLessMinLen {
             get {
@@ -84,6 +102,24 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string NullArgument {
             get {
                 return ResourceManager.GetString("NullArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid path. The length of the content path should not exceed 100 characters.
+        /// </summary>
+        public static string PathExceedsMaxLen {
+            get {
+                return ResourceManager.GetString("PathExceedsMaxLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid path. The minimum length of the content path is 3.
+        /// </summary>
+        public static string PathLessMinLen {
+            get {
+                return ResourceManager.GetString("PathLessMinLen", resourceCulture);
             }
         }
     }

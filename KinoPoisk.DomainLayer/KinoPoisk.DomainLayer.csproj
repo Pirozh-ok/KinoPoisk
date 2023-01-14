@@ -24,6 +24,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AwardResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ContentResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ContentResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\CountryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -65,6 +70,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AwardResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ContentResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ContentResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\CountryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CountryResource.Designer.cs</LastGenOutput>
@@ -92,7 +101,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\ContentDTOs\" />
     <Folder Include="DTOs\MovieDTOs\" />
     <Folder Include="DTOs\RatingDTOs\" />
   </ItemGroup>

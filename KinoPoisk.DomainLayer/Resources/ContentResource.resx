@@ -117,13 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="IncorrectContentType" xml:space="preserve">
+    <value>Invalid content type value. Value should be </value>
+  </data>
+  <data name="MovieNotFound" xml:space="preserve">
+    <value>The movie was not found</value>
+  </data>
   <data name="NameExceedsMaxLen" xml:space="preserve">
-    <value>Invalid name. The length of the movie role name should not exceed 100 characters</value>
+    <value>Invalid name. The length of the content name should not exceed 100 characters</value>
   </data>
   <data name="NameLessMinLen" xml:space="preserve">
-    <value>Invalid name value. The minimum length of the movie role name is 3</value>
+    <value>Invalid name. The minimum length of the content name is 3</value>
   </data>
   <data name="NullArgument" xml:space="preserve">
     <value>Argument is null</value>
+  </data>
+  <data name="PathExceedsMaxLen" xml:space="preserve">
+    <value>Invalid path. The length of the content path should not exceed 100 characters</value>
+  </data>
+  <data name="PathLessMinLen" xml:space="preserve">
+    <value>Invalid path. The minimum length of the content path is 3</value>
   </data>
 </root>

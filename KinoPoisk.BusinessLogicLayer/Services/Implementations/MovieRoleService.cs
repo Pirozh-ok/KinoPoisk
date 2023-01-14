@@ -12,6 +12,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         protected override List<string> Validate(MovieRoleDTO dto) {
             var errors = new List<string>();
 
+            if(dto is null) {
+                errors.Add(MovieRoleResource.NullArgument); 
+            }
+
             if (string.IsNullOrEmpty(dto.Name) || dto.Name.Length < Constants.MinLenOfName) {
                 errors.Add(MovieRoleResource.NameLessMinLen);
             }
