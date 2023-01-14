@@ -17,5 +17,9 @@
         public const uint MinMinAge = 0;
         public const uint MaxMinAge = 18;
         public const uint MaxLenOfValueAgeCategory = 100;
+        public const uint MaxAllowDurationInMinutes = 1000;
+        public const decimal MaxAllowBudgetInDollars = decimal.MaxValue;
+        public const decimal MaxAllowWorldFeesInDollars = decimal.MaxValue;
+        public const int CountValidateYear = -200; 
     }
 }

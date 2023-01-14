@@ -11,7 +11,8 @@ namespace KinoPoisk.PresentationLayer.Extensions {
             services.AddScoped<AwardService>();
             services.AddScoped<MovieRoleService>();
             services.AddScoped<MovieCreatorService>();
-            services.AddScoped<ContentService>(); 
+            services.AddScoped<ContentService>();
+            services.AddScoped<MovieService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();

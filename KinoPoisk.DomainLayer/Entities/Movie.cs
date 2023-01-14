@@ -9,7 +9,7 @@ namespace KinoPoisk.DomainLayer.Entities {
             Genres = new HashSet<Genre>();
             Awards = new HashSet<Award>();
             Creators_Movies = new HashSet<CreatorMovie>();
-            Content = new HashSet<Content>();
+            Contents = new HashSet<Content>();
             Ratings = new HashSet<Rating>();
         }
 
@@ -26,7 +26,7 @@ namespace KinoPoisk.DomainLayer.Entities {
         public virtual ICollection<Genre> Genres { get; set; }
         public virtual ICollection<Award> Awards { get; set; }
         public virtual ICollection<CreatorMovie> Creators_Movies { get; set; }
-        public virtual ICollection<Content> Content { get; set; }
+        public virtual ICollection<Content> Contents { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
     }
 }

@@ -44,6 +44,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Resources\MovieResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MovieResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\MovieRoleResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -86,6 +91,10 @@
       <LastGenOutput>GenreResource.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\MovieResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MovieResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\MovieRoleResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>MovieRoleResource.Designer.cs</LastGenOutput>
@@ -98,11 +107,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UserResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DTOs\MovieDTOs\" />
-    <Folder Include="DTOs\RatingDTOs\" />
   </ItemGroup>
 
 </Project>

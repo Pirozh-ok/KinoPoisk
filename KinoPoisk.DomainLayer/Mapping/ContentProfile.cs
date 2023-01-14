@@ -6,7 +6,7 @@ namespace KinoPoisk.DomainLayer.Mapping {
     public class ContentProfile : Profile {
         public ContentProfile() {
             CreateMap<ContentDTO, Content>();
-            CreateMap<GetContentDTO, Content>(); 
+            CreateMap<Content, GetContentDTO>(); 
         }
     }
 }

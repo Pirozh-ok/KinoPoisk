@@ -404,7 +404,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(UserResource.PasswordExceedsMaxLen);
             }
 
-            if (user.DateOfBirth < DateTime.UtcNow.AddYears(-100) || user.DateOfBirth > DateTime.UtcNow) {
+            if (user.DateOfBirth < DateTime.UtcNow.AddYears(Constants.CountValidateYear) || user.DateOfBirth > DateTime.UtcNow) {
                 errors.Add(UserResource.IncorrectDateOfBirth);
             }
 
@@ -455,7 +455,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(UserResource.PatronymicExceedsMaxLen);
             }
 
-            if (user.DateOfBirth < DateTime.UtcNow.AddYears(-100) || user.DateOfBirth > DateTime.UtcNow) {
+            if (user.DateOfBirth < DateTime.UtcNow.AddYears(Constants.CountValidateYear) || user.DateOfBirth > DateTime.UtcNow) {
                 errors.Add(UserResource.IncorrectDateOfBirth);
             }
 

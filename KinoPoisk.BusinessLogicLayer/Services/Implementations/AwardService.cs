@@ -43,7 +43,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(AwardResource.NameExceedsMaxLen); 
             }
 
-            if(dto.DateOfAward < DateTime.UtcNow.AddYears(-200) || dto.DateOfAward > DateTime.UtcNow) {
+            if(dto.DateOfAward < DateTime.UtcNow.AddYears(Constants.CountValidateYear) || dto.DateOfAward > DateTime.UtcNow) {
                 errors.Add(AwardResource.IncorrectData); 
             }
 

@@ -14,7 +14,7 @@ namespace KinoPoisk.DataAccessLayer {
         }
 
         public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class {
-            string nameType = typeof(TEntity).GetType().Name;
+            string nameType = typeof(TEntity).Name;
 
             if (!_repositories.ContainsKey(nameType)) {
                 _repositories[nameType] = new GenericRepository<TEntity>(_context.Set<TEntity>());
