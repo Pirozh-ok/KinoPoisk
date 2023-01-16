@@ -13,6 +13,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
             services.AddScoped<MovieCreatorService>();
             services.AddScoped<ContentService>();
             services.AddScoped<MovieService>();
+            services.AddScoped<RatingService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();

@@ -7,6 +7,8 @@ namespace KinoPoisk.DomainLayer.Mapping {
         public MovieProfile() {
             CreateMap<MovieDTO, Movie>();
             CreateMap<Movie, GetMovieDTO>();
+            CreateMap<RatingDTO, Rating>();
+            CreateMap<Rating, GetRatingDTO>();
         }
     }
 }

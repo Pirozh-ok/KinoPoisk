@@ -9,8 +9,6 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -103,7 +101,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(errors); 
             }
 
-            if (!IsHasAccess(userDTO.Id.ToString())) {
+            if (!AuthUserInfo.IsHasAccess(userDTO.Id.ToString(), _accessor)) {
                 return Result.Fail(UserResource.AccessDenied);
             }
 
@@ -126,7 +124,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> ConfirmEmailAsync() {
-            var userId = GetAuthUserId(); 
+            var userId = AuthUserInfo.GetAuthUserId(_accessor); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -160,7 +158,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData) {
-            var userId = GetAuthUserId(); 
+            var userId = AuthUserInfo.GetAuthUserId(_accessor); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -184,7 +182,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> ChangeEmailAsync(string newEmail) {
-            var userId = GetAuthUserId(); 
+            var userId = AuthUserInfo.GetAuthUserId(_accessor); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -306,23 +304,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             return Result.Ok(); 
         }
-
-        private string? GetAuthUserId() => _accessor.HttpContext.User.Claims
-            .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
-        private bool IsHasAccess(string userId) {
-            var currentUserId = GetAuthUserId();
-            var currentUserRole = GetAuthUserRoles();
-
-            return string.Equals(currentUserId, userId)
-              || currentUserRole.Contains(Constants.NameRoleAdmin);
-        }
-
-        private List<string> GetAuthUserRoles() => _accessor.HttpContext.User.Claims
-            .Where(x => x.Type == ClaimTypes.Role)
-            .Select(x => x.Value)
-            .ToList(); 
-
 
         private (bool isValid, string message) ValidateEmail(string email) {
             if (string.IsNullOrEmpty(email) || email.Length < Constants.MinLenOfEmail) {

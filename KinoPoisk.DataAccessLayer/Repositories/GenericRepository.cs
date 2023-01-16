@@ -1,5 +1,6 @@
 ﻿using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KinoPoisk.DataAccessLayer.Repositories {
     public class GenericRepository<TEntity> : IRepository<TEntity>
@@ -10,12 +11,12 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
             _dbSet = dbSet; 
         }
 
-        public bool Contains(TEntity item) {
-            return _dbSet.Contains(item);
+        public async Task<bool> Any(Expression<Func<TEntity, bool>> filter) {
+            return await _dbSet.AnyAsync(filter); 
         }
 
-        public void Create(TEntity item) {
-            _dbSet.Add(item);
+        public async Task Create(TEntity item) {
+            await _dbSet.AddAsync(item);
         }
 
         public void Delete(TEntity item) {
@@ -33,6 +34,18 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
 
         public void Update(TEntity item) {
             _dbSet.Update(item);
+        }
+
+        public async Task<TEntity?> GetByFilter(Expression<Func<TEntity, bool>> filter) {
+            return await _dbSet.SingleOrDefaultAsync(filter);
+        }
+
+        public IQueryable<TEntity> GetAllByFilter(Expression<Func<TEntity, bool>> filter) {
+            return _dbSet.Where(filter);
+        }
+
+        public async Task<bool> Contains(TEntity item) {
+            return await _dbSet.ContainsAsync(item);
         }
     }
 }

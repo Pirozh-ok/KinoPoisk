@@ -53,27 +53,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 }
             }
 
-            _unitOfWork.GetRepository<Movie>().Create(createObj);
+            await _unitOfWork.GetRepository<Movie>().Create(createObj);
             await _unitOfWork.CommitAsync();
 
             return Result.Ok(GenericServiceResource.Created);
-        }
-
-        public async Task<Result> CreateOrUpdateRating(RatingDTO rating) {
-            var errors = ValidateRating(rating);
-
-            if(errors.Count > 0) {
-                return Result.Fail(errors); 
-            }
-
-            var ratingRepository = _unitOfWork.GetRepository<Rating>();
-            var createObj = _mapper.Map<Rating>(rating);
-            createObj.UserId = Guid.Parse(GetAuthUserId());
-
-            ratingRepository.Create(createObj);
-            await _unitOfWork.CommitAsync();
-
-            return Result.Ok();
         }
 
         protected override List<string> Validate(MovieDTO dto) {
@@ -114,31 +97,5 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             return errors; 
         }
-
-        private List<string> ValidateRating(RatingDTO dto) {
-            var errors = new List<string>();
-
-            if(dto is null) {
-                errors.Add(MovieResource.NullArgument);
-                return errors;
-            }
-
-            if(!string.IsNullOrEmpty(dto.Comment) && dto.Comment.Length > Constants.MaxLenOfComment) {
-                errors.Add(MovieResource.CommentExceedsMaxLen);
-            }
-
-            if(dto.MovieRating < Constants.MinValueRatingMovie || dto.MovieRating > Constants.MaxValueRatingMovie) {
-                errors.Add(MovieResource.IncorrectMovieRating);
-            }
-
-            if(_unitOfWork.GetRepository<Movie>().GetById(dto.MovieId) is null) {
-                errors.Add(MovieResource.MovieNotFound);
-            }
-
-            return errors; 
-        }
-
-        private string? GetAuthUserId() => _accessor.HttpContext.User.Claims
-            .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
     }
 }

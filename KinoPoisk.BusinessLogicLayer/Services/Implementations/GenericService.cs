@@ -25,13 +25,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             var createObj = _mapper.Map<TEntity>(dto);
 
-            _unitOfWork.GetRepository<TEntity>().Create(createObj);
+            await _unitOfWork.GetRepository<TEntity>().Create(createObj);
             await _unitOfWork.CommitAsync();
 
             return Result.Ok(GenericServiceResource.Created);
         }
 
-        public async Task<Result> DeleteAsync(TTypeId id) {
+        public virtual async Task<Result> DeleteAsync(TTypeId id) {
             var obj = _unitOfWork.GetRepository<TEntity>().GetById(id);
 
             if (obj is null) {
@@ -52,7 +52,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return Result.Ok(objects);
         }
 
-        public async Task<Result> GetByIdAsync<T>(TTypeId id) {
+        public  async Task<Result> GetByIdAsync<T>(TTypeId id) {
             var obj = _unitOfWork.GetRepository<TEntity>()
                 .GetAll()
                 .Where(x => Equals(x.Id,id)) 
@@ -64,7 +64,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 Result.Ok(_mapper.Map<T>(obj));
         }
 
-        public async Task<Result> UpdateAsync(TEntityDTO dto) {
+        public virtual async Task<Result> UpdateAsync(TEntityDTO dto) {
             var errors = Validate(dto);
 
             if(errors.Count > 0) {
@@ -73,7 +73,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             var updateObj = _mapper.Map<TEntity>(dto); 
 
-            if (!_unitOfWork.GetRepository<TEntity>().Contains(updateObj)) {
+            if (!await _unitOfWork.GetRepository<TEntity>().Contains(updateObj)) {
                 return Result.Fail(GenericServiceResource.NotFound);
             }
 

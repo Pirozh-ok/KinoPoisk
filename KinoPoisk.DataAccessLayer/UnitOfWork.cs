@@ -1,7 +1,6 @@
 ﻿using KinoPoisk.DataAccessLayer.Repositories;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace KinoPoisk.DataAccessLayer {
     public class UnitOfWork : IUnitOfWork { 
