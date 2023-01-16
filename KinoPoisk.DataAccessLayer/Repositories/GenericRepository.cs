@@ -11,11 +11,11 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
             _dbSet = dbSet; 
         }
 
-        public async Task<bool> Any(Expression<Func<TEntity, bool>> filter) {
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> filter) {
             return await _dbSet.AnyAsync(filter); 
         }
 
-        public async Task Create(TEntity item) {
+        public async Task CreateAsync(TEntity item) {
             await _dbSet.AddAsync(item);
         }
 

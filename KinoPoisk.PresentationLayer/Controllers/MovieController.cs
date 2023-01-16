@@ -1,4 +1,5 @@
 ﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -41,6 +42,12 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [HttpGet("{movieId}/ratings")]
         public async Task<IActionResult> GetAllRating(Guid movieId) {
             var result = await _ratingService.GetAllByMovieIdAsync<GetRatingDTO>(movieId);
+            return result.Success ? Ok(result) : BadRequest(result.Errors);
+        }
+
+        [HttpPost("add-creator")]
+        public async Task<IActionResult> AddCreatorToFilm([FromQuery] AddCreatorToMovieDTO dto) {
+            var result = await _service.AddCreatorToMovie(dto);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
     }

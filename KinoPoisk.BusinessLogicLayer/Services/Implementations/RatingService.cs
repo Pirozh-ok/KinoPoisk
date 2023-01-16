@@ -44,7 +44,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (rating is null) {
                 var createObj = _mapper.Map<Rating>(dto);
-                await ratingRepository.Create(createObj);
+                await ratingRepository.CreateAsync(createObj);
             }
             else {
                 rating.MovieRating = dto.MovieRating;

@@ -25,7 +25,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             var createObj = _mapper.Map<TEntity>(dto);
 
-            await _unitOfWork.GetRepository<TEntity>().Create(createObj);
+            await _unitOfWork.GetRepository<TEntity>().CreateAsync(createObj);
             await _unitOfWork.CommitAsync();
 
             return Result.Ok(GenericServiceResource.Created);

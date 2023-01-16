@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
+using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography.X509Certificates;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class MovieService : GenericService<Movie, MovieDTO, Guid> {
@@ -53,10 +55,57 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 }
             }
 
-            await _unitOfWork.GetRepository<Movie>().Create(createObj);
+            await _unitOfWork.GetRepository<Movie>().CreateAsync(createObj);
             await _unitOfWork.CommitAsync();
 
             return Result.Ok(GenericServiceResource.Created);
+        }
+
+        public async Task<Result> AddCreatorToMovie(AddCreatorToMovieDTO dto) {
+
+            if(dto is null) {
+                return Result.Fail(MovieResource.NullArgument);
+            }
+
+            if(!await _unitOfWork.GetRepository<Creator>().AnyAsync(x => x.Id == dto.CreatorId)) {
+                return Result.Fail(GenericServiceResource.NotFound);
+            }
+
+            if(!await _unitOfWork.GetRepository<Movie>().AnyAsync(x => x.Id == dto.MovieId)) {
+                return Result.Fail(MovieResource.MovieNotFound);
+            }
+
+            var obj = await _unitOfWork.GetRepository<CreatorMovie>()
+                .GetByFilter(x => x.CreatorId == dto.CreatorId && x.MovieId == dto.MovieId);
+            var roles = new List<MovieRole>();
+
+            foreach(var id in dto.Roles) {
+                var role = _unitOfWork.GetRepository<MovieRole>().GetById(id);
+                if (role is not null){
+                    roles.Add(role);
+                }
+            }
+
+            if (obj is null) {
+                await _unitOfWork.GetRepository<CreatorMovie>().CreateAsync(
+                    new CreatorMovie() {
+                        CreatorId = dto.CreatorId,
+                        MovieId = dto.MovieId,
+                        Roles = roles
+                    });
+            }
+            else {
+                foreach(var role in roles) {
+                    if(!obj.Roles.Contains(role)) { 
+                        obj.Roles.Add(role);
+                    }
+                }
+
+                _unitOfWork.GetRepository<CreatorMovie>().Update(obj);
+            }
+
+            await _unitOfWork.CommitAsync();
+            return Result.Ok();
         }
 
         protected override List<string> Validate(MovieDTO dto) {
