@@ -8,6 +8,7 @@ namespace KinoPoisk.DomainLayer.Mapping {
             CreateMap<UserDTO, ApplicationUser>();
             CreateMap<UpdateUserDTO, ApplicationUser>(); 
             CreateMap<ApplicationUser, GetUserDTO>();
+            CreateMap<UserDTO, UpdateUserDTO>();
         }
     }
 }

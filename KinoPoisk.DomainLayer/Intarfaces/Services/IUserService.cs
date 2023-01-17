@@ -12,5 +12,7 @@ namespace KinoPoisk.DomainLayer.Intarfaces.Services {
         Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData);
         Task<Result> ChangeEmailAsync(string newEmail);
         Task<Result> DeleteUserAsync(Guid userId);
+        Task<Result> GetAllUsersAsync();
+        Task<Result> GetUserById(Guid id);
     }
 }

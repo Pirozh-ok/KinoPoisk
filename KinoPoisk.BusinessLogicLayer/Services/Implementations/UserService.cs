@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
@@ -9,6 +10,7 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -273,6 +275,19 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
+        public async Task<Result> GetAllUsersAsync() {
+            return Result.Ok(await _userManager.Users
+                .ProjectTo<GetUserDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync()); 
+        }
+
+        public async Task<Result> GetUserById(Guid id) {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            return user is null ? Result.Fail(UserResource.NotFound)
+                : Result.Ok(_mapper.Map<GetUserDTO>(user));
+        }
+
         private async Task SendConfirmationEmailAsync(ApplicationUser user, string message) {
             if(user is null) {
                 return; 
@@ -348,67 +363,17 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         private List<string> ValidateData(UserDTO user) {
-            var errors = new List<string>();
+            var errors = ValidateData(_mapper.Map<UpdateUserDTO>(user));
 
-            if (user is null) {
-                errors.Add(UserResource.NullArgument);
-                return errors; 
+            var emailValidate = ValidateEmail(user.Email);
+            var passwordValidate = ValidatePassword(user.Password);
+
+            if (!emailValidate.isValid) {
+                errors.Add(emailValidate.message);
             }
 
-            if (string.IsNullOrEmpty(user.UserName) || user.UserName.Length < Constants.MinLenOfName) {
-                errors.Add(UserResource.UserNameLessMinLen);
-            }
-
-            if (user.UserName.Length > Constants.MaxLenOfName) {
-                errors.Add(UserResource.UserNameExceedsMaxLen);
-            }
-
-            if (string.IsNullOrEmpty(user.FirstName) || user.FirstName.Length < Constants.MinLenOfName) {
-                errors.Add(UserResource.FirstNameLessMinLen);
-            }
-
-            if (user.FirstName.Length > Constants.MaxLenOfName) {
-                errors.Add(UserResource.FirstNameExceedsMaxLen);
-            }
-
-            if (string.IsNullOrEmpty(user.LastName) || user.LastName.Length < Constants.MinLenOfName) {
-                errors.Add(UserResource.LastNameLessMinLen);
-            }
-
-            if (user.LastName.Length > Constants.MaxLenOfName) {
-                errors.Add(UserResource.LastNameExceedsMaxLen);
-            }
-
-            if (user.Patronymic is not null && user.Patronymic.Length < Constants.MinLenOfName) {
-                errors.Add(UserResource.PatronymicLessMinLen);
-            }
-
-            if (user.Patronymic is not null && user.Patronymic.Length > Constants.MaxLenOfName) {
-                errors.Add(UserResource.PatronymicExceedsMaxLen);
-            }
-
-            if (string.IsNullOrEmpty(user.Email) || user.Email.Length < Constants.MinLenOfEmail) {
-                errors.Add(UserResource.EmailLessMinLen);
-            }
-
-            if (user.Email.Length > Constants.MaxLenOfEmail) {
-                errors.Add(UserResource.EmailExceedsMaxLen);
-            }
-
-            if (string.IsNullOrEmpty(user.Password) || user.Password.Length < Constants.MinLenOfPassword) {
-                errors.Add(UserResource.PasswordLessMinLen);
-            }
-
-            if (string.IsNullOrEmpty(user.Password) || user.Password.Length > Constants.MaxLenOfPassword) {
-                errors.Add(UserResource.PasswordExceedsMaxLen);
-            }
-
-            if (user.DateOfBirth < DateTime.UtcNow.AddYears(Constants.CountValidateYear) || user.DateOfBirth > DateTime.UtcNow) {
-                errors.Add(UserResource.IncorrectDateOfBirth);
-            }
-
-            if (user.CountryId is not null && _unitOfWork.GetRepository<Country>().GetById(user.CountryId) is null) {
-                errors.Add(UserResource.NotFoundUserCountry);
+            if (!passwordValidate.isValid) {
+                errors.Add(passwordValidate.message);
             }
 
             return errors;
