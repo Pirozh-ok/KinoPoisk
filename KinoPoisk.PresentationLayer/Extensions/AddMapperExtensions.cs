@@ -9,7 +9,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 typeof(AgeCategoryProfile), 
                 typeof(AwardProfile),
                 typeof(MovieRoleProfile),
-                typeof(MovieCreatorProfile),
+                typeof(CreatorProfile),
                 typeof(ContentProfile),
                 typeof(MovieProfile));
         }

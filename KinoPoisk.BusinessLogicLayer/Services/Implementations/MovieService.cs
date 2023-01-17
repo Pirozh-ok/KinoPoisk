@@ -76,11 +76,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var obj = await _unitOfWork.GetRepository<CreatorMovie>()
-                .GetByFilter(x => x.CreatorId == dto.CreatorId && x.MovieId == dto.MovieId);
+                .GetByFilterInclude(x => x.CreatorId == dto.CreatorId && x.MovieId == dto.MovieId,
+                x => x.Roles);
             var roles = new List<MovieRole>();
 
             foreach(var id in dto.Roles) {
                 var role = _unitOfWork.GetRepository<MovieRole>().GetById(id);
+
                 if (role is not null){
                     roles.Add(role);
                 }

@@ -40,6 +40,10 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
             return await _dbSet.SingleOrDefaultAsync(filter);
         }
 
+        public async Task<TEntity?> GetByFilterInclude(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>> includeExpression) {
+            return await _dbSet.Include(includeExpression).SingleOrDefaultAsync(filter);
+        }
+
         public IQueryable<TEntity> GetAllByFilter(Expression<Func<TEntity, bool>> filter) {
             return _dbSet.Where(filter);
         }

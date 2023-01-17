@@ -37,7 +37,7 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
                 .HasForeignKey(x => x.MovieId);
 
             builder
-                .HasMany(x => x.Creators_Movies)
+                .HasMany(x => x.CreatorsMovies)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId);
 

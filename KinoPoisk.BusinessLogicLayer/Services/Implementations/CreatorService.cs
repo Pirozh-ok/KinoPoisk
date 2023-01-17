@@ -6,11 +6,11 @@ using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class MovieCreatorService  : GenericService<Creator, MovieCreatorDTO, Guid>{
-        public MovieCreatorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
+    public class CreatorService  : GenericService<Creator, CreatorDTO, Guid>{
+        public CreatorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
-        protected override List<string> Validate(MovieCreatorDTO dto) {
+        protected override List<string> Validate(CreatorDTO dto) {
             var errors = new List<string>();
 
             if (string.IsNullOrEmpty(dto.FirstName) || dto.FirstName.Length < Constants.MinLenOfName) {

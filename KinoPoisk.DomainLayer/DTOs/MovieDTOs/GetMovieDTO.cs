@@ -4,7 +4,6 @@ using KinoPoisk.DomainLayer.DTOs.ContentDTOs;
 using KinoPoisk.DomainLayer.DTOs.CountryDTO;
 using KinoPoisk.DomainLayer.DTOs.GenreDTO;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
-using KinoPoisk.DomainLayer.Entities;
 
 namespace KinoPoisk.DomainLayer.DTOs.MovieDTOs {
     public class GetMovieDTO {
@@ -20,8 +19,8 @@ namespace KinoPoisk.DomainLayer.DTOs.MovieDTOs {
         public virtual ICollection<GetAgeCategoryDTO> AgeCategories { get; set; }
         public virtual ICollection<GetGenreDTO> Genres { get; set; }
         public virtual ICollection<GetAwardDTO> Awards { get; set; }
-        public virtual ICollection<GetMovieCreatorDTO> Creators { get; set; }
+        public virtual ICollection<GetCreatorDTO> Creators { get; set; }
         public virtual ICollection<GetContentDTO> Contents { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public virtual ICollection<GetRatingDTO> Ratings { get; set; }
     }
 }

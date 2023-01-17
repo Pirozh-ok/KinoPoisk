@@ -10,7 +10,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
             services.AddScoped<AgeCategoryService>();
             services.AddScoped<AwardService>();
             services.AddScoped<MovieRoleService>();
-            services.AddScoped<MovieCreatorService>();
+            services.AddScoped<CreatorService>();
             services.AddScoped<ContentService>();
             services.AddScoped<MovieService>();
             services.AddScoped<RatingService>();
