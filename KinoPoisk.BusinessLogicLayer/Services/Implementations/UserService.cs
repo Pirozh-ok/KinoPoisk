@@ -123,6 +123,24 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
+        public async Task<Result> DeleteUserAsync(Guid userId) {
+            if (!AuthUserInfo.IsHasAccess(userId.ToString(), _accessor)) {
+                return Result.Fail(UserResource.AccessDenied);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user is null) {
+                return Result.Fail(UserResource.NotFound);
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded ? Result.Ok() : 
+                Result.Fail(result.Errors
+                .Select(x => x.Description)
+                .ToList());
+        }
+
         public async Task<Result> ConfirmEmailAsync() {
             var userId = AuthUserInfo.GetAuthUserId(_accessor); 
             var user = await _userManager.FindByIdAsync(userId);

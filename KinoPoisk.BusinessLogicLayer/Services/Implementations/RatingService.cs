@@ -85,6 +85,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> GetByIdAsync<T>(Guid userId, Guid movieId) {
+            var validate = await ValidateIds(userId, movieId);
+
+            if (validate.Failure) {
+                return validate; 
+            }
+
             var rating = await _unitOfWork.GetRepository<Rating>()
                 .GetByFilter(x => x.UserId == userId && x.MovieId == movieId);
 
@@ -92,16 +98,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 : Result.Ok(_mapper.Map<GetRatingDTO>(rating));
         }
 
-        public async Task<Result> GetAllByUserIdAsync<T>(Guid userId) {
-            var ratings = await _unitOfWork.GetRepository<Rating>()
-                .GetAllByFilter(x => x.UserId == userId)
-                .ProjectTo<T>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-
-            return Result.Ok(ratings);
-        }
-
         public async Task<Result> GetAllByMovieIdAsync<T>(Guid movieId) {
+            if (!MovieExists(movieId)) {
+                return Result.Fail(MovieResource.MovieNotFound);
+            }
+
             var ratings = await _unitOfWork.GetRepository<Rating>()
                 .GetAllByFilter(x => x.MovieId == movieId)
                 .ProjectTo<T>(_mapper.ConfigurationProvider)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
@@ -7,8 +8,7 @@ using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography.X509Certificates;
+using Microsoft.EntityFrameworkCore;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class MovieService : GenericService<Movie, MovieDTO, Guid> {
@@ -61,18 +61,16 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return Result.Ok(GenericServiceResource.Created);
         }
 
-        public async Task<Result> AddCreatorToMovie(AddCreatorToMovieDTO dto) {
+        public async Task<Result> AddOrUpdateCreatorToMovie(AddCreatorToMovieDTO dto) {
 
             if(dto is null) {
                 return Result.Fail(MovieResource.NullArgument);
             }
 
-            if(!await _unitOfWork.GetRepository<Creator>().AnyAsync(x => x.Id == dto.CreatorId)) {
-                return Result.Fail(GenericServiceResource.NotFound);
-            }
+            var validateResult = await ValidateMovieAndCreatorIdsAsync(dto.MovieId, dto.CreatorId);
 
-            if(!await _unitOfWork.GetRepository<Movie>().AnyAsync(x => x.Id == dto.MovieId)) {
-                return Result.Fail(MovieResource.MovieNotFound);
+            if (validateResult.Failure) {
+                return validateResult;
             }
 
             var obj = await _unitOfWork.GetRepository<CreatorMovie>()
@@ -97,17 +95,44 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                     });
             }
             else {
-                foreach(var role in roles) {
-                    if(!obj.Roles.Contains(role)) { 
-                        obj.Roles.Add(role);
-                    }
-                }
-
+                obj.Roles = roles;
                 _unitOfWork.GetRepository<CreatorMovie>().Update(obj);
             }
 
             await _unitOfWork.CommitAsync();
             return Result.Ok();
+        }
+
+        public async Task<Result> RemoveCreatorFromMovie(Guid movieId, Guid creatorId) {
+            var validateResult = await ValidateMovieAndCreatorIdsAsync(movieId, creatorId);
+
+            if (validateResult.Failure) {
+                return validateResult;
+            }
+
+            var obj = await _unitOfWork.GetRepository<CreatorMovie>()
+                .GetByFilter(x => x.CreatorId == creatorId && x.MovieId == movieId);
+
+            if(obj is null) {
+                return Result.Fail(GenericServiceResource.NotFound);
+            }
+
+            _unitOfWork.GetRepository<CreatorMovie>().Delete(obj);
+            return Result.Ok();
+        }
+
+        public async Task<Result> GetCreaterByMovieAsync(Guid movieId) {
+            if(!await _unitOfWork.GetRepository<Movie>()
+                .AnyAsync(x => x.Id == movieId)) {
+                return Result.Fail(MovieResource.MovieNotFound);
+            }
+
+            var objs = await _unitOfWork.GetRepository<CreatorMovie>()
+                .GetAllByFilter(x => x.MovieId == movieId)
+                .ProjectTo<GetCreatorDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return Result.Ok(objs);
         }
 
         protected override List<string> Validate(MovieDTO dto) {
@@ -147,6 +172,18 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             return errors; 
+        }
+
+        private async Task<Result> ValidateMovieAndCreatorIdsAsync(Guid movieId, Guid creatorId) {
+            if (!await _unitOfWork.GetRepository<Creator>().AnyAsync(x => x.Id == creatorId)) {
+                return Result.Fail(GenericServiceResource.NotFound);
+            }
+
+            if (!await _unitOfWork.GetRepository<Movie>().AnyAsync(x => x.Id == movieId)) {
+                return Result.Fail(MovieResource.MovieNotFound);
+            }
+
+            return Result.Ok(); 
         }
     }
 }

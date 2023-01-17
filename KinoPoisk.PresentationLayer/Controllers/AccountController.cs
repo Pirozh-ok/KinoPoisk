@@ -54,12 +54,6 @@ namespace KinoPoisk.PresentationLayer.Controllers {
             return result.Success ? Ok(result) : BadRequest(result); 
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUserData([FromBody] UpdateUserDTO userDTO) {
-            var result = await _userService.UpdateUserDataAsync(userDTO);
-            return result.Success ? Ok(result) : BadRequest(result); 
-        }
-
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordData) {
             var userId = GetAuthUserId();

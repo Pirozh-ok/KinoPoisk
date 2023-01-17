@@ -10,6 +10,7 @@ namespace KinoPoisk.DomainLayer.Intarfaces.Services {
         Task<Result> ResetPasswordAsync(ResetPasswordDTO resetPasswordData);
         Task<Result> UpdateUserDataAsync(UpdateUserDTO userDTO);
         Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData);
-        Task<Result> ChangeEmailAsync(string newEmail); 
+        Task<Result> ChangeEmailAsync(string newEmail);
+        Task<Result> DeleteUserAsync(Guid userId);
     }
 }

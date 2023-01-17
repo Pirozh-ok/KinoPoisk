@@ -1,15 +1,16 @@
 ﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
-using KinoPoisk.DomainLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Bcpg;
+using System.Data;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
-    //[Authorize(Roles = Constants.NameRoleAdmin)]
+    [Authorize]
     public class MovieController : CrudControllerBase<MovieService, MovieDTO, GetMovieDTO, Guid> {
 
-        private readonly RatingService _ratingService; 
+        private readonly RatingService _ratingService;
 
         public MovieController(MovieService service, RatingService ratingService) : base(service) {
             _ratingService = ratingService;
@@ -33,21 +34,37 @@ namespace KinoPoisk.PresentationLayer.Controllers {
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 
+        [Authorize(Roles = Constants.NameRoleAdmin)]
         [HttpGet("ratings")]
         public async Task<IActionResult> GetAllRating() {
             var result = await _ratingService.GetAllAsync<GetRatingDTO>();
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 
+        [AllowAnonymous]
         [HttpGet("{movieId}/ratings")]
-        public async Task<IActionResult> GetAllRating(Guid movieId) {
+        public async Task<IActionResult> GetAllRatingByMovie(Guid movieId) {
             var result = await _ratingService.GetAllByMovieIdAsync<GetRatingDTO>(movieId);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 
+        [Authorize(Roles = Constants.NameRoleAdmin)]
         [HttpPost("add-creator")]
-        public async Task<IActionResult> AddCreatorToFilm([FromQuery] AddCreatorToMovieDTO dto) {
-            var result = await _service.AddCreatorToMovie(dto);
+        public async Task<IActionResult> AddCreatorToFilm([FromBody] AddCreatorToMovieDTO dto) {
+            var result = await _service.AddOrUpdateCreatorToMovie(dto);
+            return result.Success ? Ok(result) : BadRequest(result.Errors);
+        }
+
+        [Authorize(Roles = Constants.NameRoleAdmin)]
+        [HttpDelete("remove-creator")]
+        public async Task<IActionResult> RemoveCreatorFromFilm([FromQuery] Guid movieId, [FromQuery] Guid creatorId) {
+            var result = await _service.RemoveCreatorFromMovie(movieId, creatorId);
+            return result.Success ? Ok(result) : BadRequest(result.Errors);
+        }
+
+        [HttpGet("{movieId}/creators")]
+        public async Task<IActionResult> GetCreatorsByMovie(Guid movieId) {
+            var result = await _service.GetCreaterByMovieAsync(movieId);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
     }
