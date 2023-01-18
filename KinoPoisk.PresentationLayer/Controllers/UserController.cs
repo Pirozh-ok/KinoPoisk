@@ -34,7 +34,6 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         }
 
         [HttpGet("{userId}")]
-        [Authorize(Roles = Constants.NameRoleAdmin)]
         public async Task<IActionResult> GetUserById(Guid userId) {
             var result = await _userService.GetUserById(userId);
             return result.Success ? Ok(result) : BadRequest(result);
