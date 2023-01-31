@@ -18,6 +18,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IRoleService, RoleServices>();
+            services.AddTransient<IAccessService, AccessService>();
         }
     }
 }

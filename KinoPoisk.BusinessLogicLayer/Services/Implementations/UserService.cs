@@ -20,22 +20,23 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
-        private readonly IHttpContextAccessor _accessor;
+        private readonly IAccessService _accessService;
         private readonly LinkGenerator _generator;
 
-        public UserService(UserManager<ApplicationUser> userManager,
+        public UserService(
+            UserManager<ApplicationUser> userManager,
             ITokenService tokenService,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             IEmailService emailService,
-            IHttpContextAccessor accessor,
+            IAccessService accessService,
             LinkGenerator generator) {
             _userManager = userManager;
             _tokenService = tokenService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _emailService = emailService;
-            _accessor = accessor;
+            _accessService = accessService;
             _generator = generator;
         }
 
@@ -103,7 +104,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(errors); 
             }
 
-            if (!AuthUserInfo.IsHasAccess(userDTO.Id.ToString(), _accessor)) {
+            if (!_accessService.IsHasAccess(userDTO.Id)) {
                 return Result.Fail(UserResource.AccessDenied);
             }
 
@@ -126,7 +127,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> DeleteUserAsync(Guid userId) {
-            if (!AuthUserInfo.IsHasAccess(userId.ToString(), _accessor)) {
+            if (!_accessService.IsHasAccess(userId)) {
                 return Result.Fail(UserResource.AccessDenied);
             }
 
@@ -144,7 +145,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> ConfirmEmailAsync() {
-            var userId = AuthUserInfo.GetAuthUserId(_accessor); 
+            var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -178,7 +179,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData) {
-            var userId = AuthUserInfo.GetAuthUserId(_accessor); 
+            var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -202,7 +203,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<Result> ChangeEmailAsync(string newEmail) {
-            var userId = AuthUserInfo.GetAuthUserId(_accessor); 
+            var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
@@ -300,8 +301,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             //    action: "Confirm-Email",
             //    controller: "Account",
             //    values: new { token = token, email = user.Email });
-            var scheme = _accessor.HttpContext.Request.Scheme;
-            var host = _accessor.HttpContext.Request.Host;
+            var scheme = _accessService.GetSchemeFromRequest();
+            var host = _accessService.GetHostFromRequest();
             var callbackUrl = $"{scheme}://{host}/api/account/confirm-email?token={token}&email={user.Email}";
 
             await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail, 

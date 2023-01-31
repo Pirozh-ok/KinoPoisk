@@ -1,5 +1,5 @@
+using KinoPoisk.DomainLayer.Settings;
 using KinoPoisk.PresentationLayer.Extensions;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,10 @@ builder.Services.AddAutoMapper();
 builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwaggerOptions();
 builder.Services.AddCors();
+builder.Services.AddOptions(); 
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtBearerSettings"));
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 var app = builder.Build();
 

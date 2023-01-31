@@ -14,16 +14,17 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class RatingService {
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _accessor;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAccessService _accessService;
 
-        public RatingService(IUnitOfWork unitOfWork,
+        public RatingService(
+            IUnitOfWork unitOfWork,
             IMapper mapper,
-            IHttpContextAccessor accessor,
+            IAccessService accessService,
             UserManager<ApplicationUser> userManager) {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _accessor = accessor;
+            _accessService = accessService;
             _userManager = userManager;
         }
 
@@ -34,7 +35,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(errors);
             }
 
-            if (!AuthUserInfo.IsHasAccess(dto.UserId.ToString(), _accessor)) {
+            if (!_accessService.IsHasAccess(dto.UserId)) {
                 return Result.Fail(UserResource.AccessDenied);
             }
 
@@ -147,7 +148,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(MovieResource.MovieNotFound);
             }
 
-            if (!AuthUserInfo.IsHasAccess(userId.ToString(), _accessor)) {
+            if (!_accessService.IsHasAccess(userId)) {
                 return Result.Fail(UserResource.AccessDenied);
             }
 

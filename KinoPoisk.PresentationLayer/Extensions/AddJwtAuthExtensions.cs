@@ -15,16 +15,16 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 })
                     .AddJwtBearer(config => {
                         config.TokenValidationParameters = new TokenValidationParameters {
-                            ValidIssuer = configuration["JwtBearer:Issuer"],
-                            ValidAudience = configuration["JwtBearer:Audience"],
+                            ValidIssuer = configuration["JwtBearerSettings:Issuer"],
+                            ValidAudience = configuration["JwtBearerSettings:Audience"],
                             ClockSkew = TimeSpan.Zero,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtBearer:Key"]))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtBearerSettings:Key"]))
                         }; 
                     });
 
                 services.Configure<DataProtectionTokenProviderOptions>(options =>
                 {
-                    options.TokenLifespan = TimeSpan.FromDays(int.Parse(configuration["JwtBearer:ConfirmEmailTokenValidityInDay"]));
+                    options.TokenLifespan = TimeSpan.FromDays(int.Parse(configuration["JwtBearerSettings:ConfirmEmailTokenValidityInDay"]));
                 });
 
                 services.AddScoped<ITokenService, TokenService>(); 

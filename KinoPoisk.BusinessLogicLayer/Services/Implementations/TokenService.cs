@@ -1,10 +1,12 @@
 ﻿using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.TokensDTO;
 using KinoPoisk.DomainLayer.Entities;
+using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
+using KinoPoisk.DomainLayer.Settings;
 using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,33 +14,31 @@ using System.Text;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class TokenService : ITokenService {
-        private string _key;
-        private string _issuer;
-        private string _audience;
-        private string _tokenValidityInSecond;
-        private string _refreshTokenValidityInDays; 
-        private UserManager<ApplicationUser> _userManager; 
+        private readonly IOptions<JwtSettings> _jwtSettings;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TokenService(IConfiguration configuration, UserManager<ApplicationUser> userManager) {
-            _key = configuration["JwtBearer:Key"];
-            _issuer = configuration["JwtBearer:Issuer"];
-            _audience = configuration["JwtBearer:Audience"];
-            _tokenValidityInSecond = configuration["JwtBearer:TokenValidityInSecond"];
-            _refreshTokenValidityInDays = configuration["JwtBearer:RefreshTokenValidityInDays"];
+        public TokenService(
+            IOptions<JwtSettings> jwtSettings,
+            UserManager<ApplicationUser> userManager,
+            IUnitOfWork unitOfWork) {
             _userManager = userManager; 
+            _jwtSettings = jwtSettings;
+            _unitOfWork = unitOfWork;
+           ;
         }
 
         public async Task<string> GenerateAccessToken(ApplicationUser user) {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Value.Key));
             var claims = await GetClaimsByUser(user); 
 
             var tokenDescription = new SecurityTokenDescriptor {
-                Issuer = _issuer,
-                Audience = _audience,
+                Issuer = _jwtSettings.Value.Issuer,
+                Audience = _jwtSettings.Value.Audience,
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(int.Parse(_tokenValidityInSecond)),
+                Expires = DateTime.UtcNow.AddSeconds(int.Parse(_jwtSettings.Value.TokenValidityInSecond)),
                 SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -52,15 +52,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
-            var id = GetUserIdByJwt(jwtToken);
+            var user = await _unitOfWork.GetRepository<ApplicationUser>()
+                .GetByFilter(x => x.RefreshToken == refresh);
 
-            if (string.IsNullOrEmpty(id)) {
+            if (user is null) {
                 return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
-            var user = await _userManager.FindByIdAsync(id);
-
-            if (user is null || user.RefreshToken != refresh || user.RefreshTokenExpiryDate < DateTime.Now) {
+            if (user.RefreshTokenExpiryDate < DateTime.Now) {
                 return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
@@ -81,7 +80,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         public RefreshTokenDTO GenerateRefreshToken() {
             return new RefreshTokenDTO() {
                 Token = Guid.NewGuid().ToString(),
-                ExpirationDate = DateTime.Now.AddDays(int.Parse(_refreshTokenValidityInDays))
+                ExpirationDate = DateTime.UtcNow.AddDays(_jwtSettings.Value.RefreshTokenValidityInDays)
             };
         }
 
@@ -97,18 +96,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             return authClaims; 
-        }
-
-        private string GetUserIdByJwt(string jwtToken) {
-            try {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtSecurityToken = handler.ReadJwtToken(jwtToken);
-                var claim = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti);
-                return claim?.Value;
-            }
-            catch {
-                return string.Empty; 
-            }
         }
     }
 }
