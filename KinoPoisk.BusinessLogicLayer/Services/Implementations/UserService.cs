@@ -7,7 +7,6 @@ using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.PresentationLayer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -147,7 +146,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         public async Task<Result> ConfirmEmailAsync() {
             var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
-
             if(user is null) {
                 return Result.Fail(UserResource.NotFound); 
             }

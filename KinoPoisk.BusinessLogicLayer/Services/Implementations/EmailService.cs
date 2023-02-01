@@ -7,13 +7,10 @@ using MimeKit;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class EmailService : IEmailService {
-        private readonly IConfiguration _configuration;
         private readonly IOptions<SmtpSettings> _smtpSettings;
 
         public EmailService(
-            IConfiguration configuration,
             IOptions<SmtpSettings> smtpSettings) {
-            _configuration = configuration;
             _smtpSettings = smtpSettings;
         }
 

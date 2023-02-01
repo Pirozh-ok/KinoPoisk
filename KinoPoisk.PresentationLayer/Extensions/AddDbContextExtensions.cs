@@ -10,5 +10,15 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 options.UseSqlServer(connectionString);
             });
         }
+
+        public static async Task SeedDataAsync(this IServiceCollection services) {
+            var provider = services.BuildServiceProvider();
+            var roleManager = provider.GetRequiredService<RoleManager<ApplicationRole>>();
+            var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
+            
+            var seedData = new SeedData(userManager, roleManager);
+            await seedData.SeedRoles();
+            await seedData.SeedUsers();
+        }
     }
 }

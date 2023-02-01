@@ -6,7 +6,7 @@ using System.Text;
 
 namespace KinoPoisk.PresentationLayer.Extensions {
     public static class AddAuthExtensions {
-        public static void AddJwtAuth(this IServiceCollection services, IConfiguration configuration) {
+        public static void AddJwtAuth(this IServiceCollection services, IConfigurationSection configuration) {
             {
                 services.AddAuthentication(config => {
                     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -15,17 +15,16 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 })
                     .AddJwtBearer(config => {
                         config.TokenValidationParameters = new TokenValidationParameters {
-                            ValidIssuer = configuration["JwtBearerSettings:Issuer"],
-                            ValidAudience = configuration["JwtBearerSettings:Audience"],
+                            ValidIssuer = configuration["Issuer"],
+                            ValidAudience = configuration["Audience"],
                             ClockSkew = TimeSpan.Zero,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtBearerSettings:Key"]))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Key"])),
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true
                         }; 
                     });
-
-                services.Configure<DataProtectionTokenProviderOptions>(options =>
-                {
-                    options.TokenLifespan = TimeSpan.FromDays(int.Parse(configuration["JwtBearerSettings:ConfirmEmailTokenValidityInDay"]));
-                });
 
                 services.AddScoped<ITokenService, TokenService>(); 
             }

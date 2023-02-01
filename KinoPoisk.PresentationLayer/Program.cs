@@ -1,7 +1,11 @@
 using KinoPoisk.DomainLayer.Settings;
 using KinoPoisk.PresentationLayer.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtBearerSettings"));
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
@@ -14,15 +18,20 @@ builder.Services.AddDbConnection(builder.Configuration.GetConnectionString("Defa
 builder.Services.AddIdentitySettings();
 builder.Services.AddUserServices();
 builder.Services.AddAutoMapper();
-builder.Services.AddJwtAuth(builder.Configuration);
 builder.Services.AddSwaggerOptions();
 builder.Services.AddCors();
-builder.Services.AddOptions(); 
+builder.Services.AddOptions();
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtBearerSettings"));
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+var jwtSection = builder.Configuration.GetSection("JwtBearerSettings");
+builder.Services.AddJwtAuth(jwtSection);
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options => {
+    options.TokenLifespan = TimeSpan.FromDays(int.Parse(builder.Configuration["SmtpSettings:ConfirmEmailTokenValidityInDay"]));
+});
 
 var app = builder.Build();
+
+// Seed necessary data
+await builder.Services.SeedDataAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
