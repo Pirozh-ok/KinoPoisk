@@ -1,7 +1,6 @@
 ﻿using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Settings;
 using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
