@@ -2,9 +2,9 @@
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
+using KinoPoisk.DomainLayer.RequestParameterModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize]
@@ -66,6 +66,12 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         public async Task<IActionResult> GetCreatorsByMovie(Guid movieId) {
             var result = await _service.GetCreaterByMovieAsync(movieId);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("filtering")]
+        public async Task<IActionResult> GetMovieWithConstraint([FromQuery] MovieRequestParameters parameters) {
+            return Ok(await _service.GetWithParameters(parameters));
         }
     }
 }

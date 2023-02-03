@@ -5,7 +5,9 @@ using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.Entities;
+using KinoPoisk.DomainLayer.Extensions;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
+using KinoPoisk.DomainLayer.RequestParameterModels;
 using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -134,6 +136,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             return Result.Ok(objs);
         }
+
+        public async Task<Result> GetWithParameters(MovieRequestParameters parameters) =>
+            Result.Ok( await _unitOfWork.GetRepository<Movie>()
+                .GetAll()
+                .ToPagedFilteredSortedListAsync(parameters));
 
         protected override List<string> Validate(MovieDTO dto) {
             var errors = new List<string>();

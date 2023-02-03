@@ -222,7 +222,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 await SendConfirmationEmailAsync(user, UserResource.ConfirmUpdatedEmail);
                 return Result.Ok(UserResource.ChechkEmail);
             }
-            s
+            
             return Result.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
