@@ -8,7 +8,7 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class AgeCategoryService : BaseService<AgeCategory, AgeCategoryDTO, Guid> {
+    public class AgeCategoryService : BaseEntityService<AgeCategory, Guid, AgeCategoryDTO> {
         public AgeCategoryService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

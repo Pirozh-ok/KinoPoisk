@@ -5,7 +5,6 @@ using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.DataAccessLayer;
-using Microsoft.AspNetCore.Http;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;

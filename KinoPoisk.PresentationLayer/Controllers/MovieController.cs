@@ -1,7 +1,9 @@
-﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+﻿using AutoMapper.Configuration.Annotations;
+using KinoPoisk.BusinessLogicLayer.Services.Implementations;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
+using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.RequestParameterModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -70,8 +72,9 @@ namespace KinoPoisk.PresentationLayer.Controllers {
 
         [AllowAnonymous]
         [HttpGet("filtering")]
-        public async Task<IActionResult> GetMovieWithConstraint([FromQuery] MovieRequestParameters parameters) {
-            return Ok(await _service.GetWithParameters(parameters));
+        public async Task<IActionResult> GetMovieWithConstraint([FromQuery] PageableMovieRequestDto filters) {
+            var result = _service.SearchFor<GetMovieDTO>(filters);
+            return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
     }
 }

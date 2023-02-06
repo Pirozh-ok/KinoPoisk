@@ -8,7 +8,7 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class MovieRoleService : BaseService<MovieRole, MovieRoleDTO, Guid> {
+    public class MovieRoleService : BaseEntityService<MovieRole, Guid, MovieRoleDTO> {
         public MovieRoleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
         protected override List<string> Validate(MovieRoleDTO dto) {

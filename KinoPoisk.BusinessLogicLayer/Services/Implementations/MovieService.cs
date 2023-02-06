@@ -5,17 +5,16 @@ using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
+using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.Entities;
-using KinoPoisk.DomainLayer.Extensions;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
-using KinoPoisk.DomainLayer.RequestParameterModels;
 using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
-{
-    public class MovieService : BaseService<Movie, MovieDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
+    public class MovieService : SearchableEntityService<MovieService, Movie, Guid, MovieDTO, PageableMovieRequestDto>, IMovieService {
         private readonly IHttpContextAccessor _accessor;
         public MovieService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor accessor) : base(unitOfWork, mapper) {
             _accessor = accessor;
@@ -139,10 +138,67 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
             return ServiceResult.Ok(objs);
         }
 
-        public async Task<ServiceResult> GetWithParameters(MovieRequestParameters parameters) =>
-            ServiceResult.Ok( await _unitOfWork.GetRepository<Movie>()
-                .GetAll()
-                .ToPagedFilteredSortedListAsync(parameters));
+        protected override List<Expression<Func<Movie, bool>>> GetAdvancedConditions(PageableMovieRequestDto filters) {
+            var conditions = new List<Expression<Func<Movie, bool>>>();
+
+            if(filters.RatingFrom is not null) {
+                conditions.Add(x => x.Ratings.Sum(x => x.MovieRating) / x.Ratings.Count() > filters.RatingFrom);
+            }
+
+            if (filters.RatingTo is not null) {
+                conditions.Add(x => x.Ratings.Sum(x => x.MovieRating) / x.Ratings.Count() < filters.RatingTo);
+            }
+
+            if(filters.WorldFeesFrom is not null) {
+                conditions.Add(x => x.WorldFeesInDollars > filters.WorldFeesFrom);
+            }
+
+            if (filters.WorldFeesTo is not null) {
+                conditions.Add(x => x.WorldFeesInDollars < filters.WorldFeesTo);
+            }
+
+            if(filters.Genre is not null) {
+                conditions.Add(x => x.Genres.Any(x => x.Name == filters.Genre));
+            }
+
+            if (filters.Country is not null) {
+                conditions.Add(x => x.Countries.Any(x => x.Name == filters.Country));
+            }
+
+            if(filters.AgeTo is not null) {
+                conditions.Add(x => x.AgeCategories.Any(x => x.MinAge <= filters.AgeTo));
+            }
+
+            if(filters.DateYearFrom is not null) {
+                conditions.Add(x => x.PremiereDate.Year > filters.DateYearFrom.Value);
+            }
+
+            if(filters.DateYearTo is not null) {
+                conditions.Add(x => x.PremiereDate.Year < filters.DateYearTo.Value);
+            }
+
+            if (filters.DurationFrom is not null) {
+                conditions.Add(x => x.DurationInMinutes > filters.DurationFrom);
+            }
+
+            if (filters.DurationTo is not null) {
+                conditions.Add(x => x.DurationInMinutes < filters.DurationTo);
+            }
+
+            return conditions;
+        }
+
+        protected override IQueryable<Movie> GetEntityByIdIncludes(IQueryable<Movie> query) {
+            return query
+                .Include(x => x.Genres)
+                .Include(x => x.AgeCategories)
+                .Include(x => x.Awards)
+                .Include(x => x.Contents)
+                .Include(x => x.Countries)
+                .Include(x => x.CreatorsMovies)
+                    .ThenInclude(x => x.Roles)
+                .Include(x => x.Ratings); 
+        }
 
         protected override List<string> Validate(MovieDTO dto) {
             var errors = new List<string>();

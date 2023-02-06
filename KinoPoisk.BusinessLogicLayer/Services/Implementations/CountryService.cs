@@ -7,7 +7,7 @@ using KinoPoisk.BusinessLogicLayer.Services.Base;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class CountryService : BaseService<Country, CountryDTO, Guid> {
+    public class CountryService : BaseEntityService<Country, Guid, CountryDTO>, ICountryService {
         public CountryService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

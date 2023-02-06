@@ -5,6 +5,7 @@ using KinoPoisk.DomainLayer.DTOs.Pageable.Base;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Base {
     public abstract class SearchableEntityService<TService, TEntity, TKey, TDto, TFilters> : BaseEntityService<TEntity, TKey, TDto>,
@@ -28,7 +29,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
 
                 query = ApplyConditions(query, GetAdvancedConditions(filters));
 
-                query = OrderByField(query, filters.OrderBy, filters.DescOrder);
+                query = OrderByField(query, filters?.OrderBy?.ToLower(), filters.DescOrder);
 
                 query = SearchForIncludes(query, filters);
 
@@ -58,7 +59,26 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
         }
 
         protected virtual IQueryable<TEntity> OrderByField(IQueryable<TEntity> query, string fieldName, bool desc) {
-            return query;
+            if(string.IsNullOrEmpty(fieldName)) {
+                return query;
+            }
+
+            try {
+                string command = desc ? "OrderByDescending" : "OrderBy";
+                var type = typeof(TEntity);
+                var defaultFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+                var property = type.GetProperty(fieldName, defaultFlags | BindingFlags.IgnoreCase);
+                var parameter = Expression.Parameter(type, property.ToString());
+                var propertyAccess = Expression.MakeMemberAccess(parameter, property);
+                var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+                var resultExpression = Expression.Call(typeof(Queryable), command, new Type[] {
+                type, property.PropertyType }, query.Expression, Expression.Quote(orderByExpression));
+
+                return query.Provider.CreateQuery<TEntity>(resultExpression);
+            }
+            catch(Exception ex) {
+                return query;
+            }
         }
 
         protected virtual IQueryable<TEntity> SearchForIncludes(IQueryable<TEntity> query, TFilters filters) {

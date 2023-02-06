@@ -50,6 +50,11 @@
             Value = value;
         }
 
+        protected internal ServiceResult(bool success, string message)
+            : base(success, new List<string> { message }) {
+            Value = default!; 
+        }
+
         public static ServiceResult<T> InternalServerError() {
             return new ServiceResult<T>(false, "Internal server error");
         }

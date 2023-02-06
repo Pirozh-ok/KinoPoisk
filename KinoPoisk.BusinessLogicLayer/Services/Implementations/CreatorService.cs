@@ -8,7 +8,7 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class CreatorService  : BaseService<Creator, CreatorDTO, Guid>{
+    public class CreatorService  : BaseEntityService<Creator, Guid, CreatorDTO>{
         public CreatorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

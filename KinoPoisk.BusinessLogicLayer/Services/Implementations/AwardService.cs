@@ -9,7 +9,7 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class AwardService : BaseService<Award, AwardDTO, Guid> {
+    public class AwardService : BaseEntityService<Award, Guid, AwardDTO> {
         public AwardService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

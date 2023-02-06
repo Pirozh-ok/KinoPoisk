@@ -8,7 +8,7 @@ using KinoPoisk.BusinessLogicLayer.Services.Base;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class GenreService : BaseService<Genre, GenreDTO, Guid> {
+    public class GenreService : BaseEntityService<Genre, Guid, GenreDTO> {
         public GenreService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

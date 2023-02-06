@@ -8,7 +8,7 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class ContentService : BaseService<Content, ContentDTO, Guid> {
+    public class ContentService : BaseEntityService<Content, Guid, ContentDTO>, IContentService {
         public ContentService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
