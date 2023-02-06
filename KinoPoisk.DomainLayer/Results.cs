@@ -1,5 +1,5 @@
 ﻿namespace KinoPoisk.DomainLayer {
-    public class Result {
+    public class ServiceResult {
         public bool Success { get; private set; }
         public List<string> Errors { get; private set; }
 
@@ -7,39 +7,51 @@
             get { return !Success; }
         }
 
-        protected Result(bool success, List<string> errors) {
+        protected ServiceResult(bool success, List<string> errors) {
             Success = success;
             Errors = errors;
         }
 
-        public static Result Fail(string message) {
-            return new Result(false, new List<string> { message });
+        public static ServiceResult Fail(string message) {
+            return new ServiceResult(false, new List<string> { message });
         }
 
-        public static Result Fail(List<string> errors) {
-            return new Result(false, errors);
+        public static ServiceResult Fail(List<string> errors) {
+            return new ServiceResult(false, errors);
         }
 
-        public static Result Ok() {
-            return new Result(true, new List<string>());
+        public static ServiceResult<T> Fail<T>(T? value, string message) {
+            return new ServiceResult<T>(value, false, message);
         }
 
-        public static Result<T> Ok<T>(T? value) {
-            return new Result<T>(value, true, new List<string>());
+        public static ServiceResult Ok() {
+            return new ServiceResult(true, new List<string>());
+        }
+
+        public static ServiceResult<T> Ok<T>(T? value) {
+            return new ServiceResult<T>(value, true, new List<string>());
+        }
+
+        public static ServiceResult InternalServerError() {
+            return Fail("Internal server error");
         }
     }
 
-    public class Result<T> : Result {
+    public class ServiceResult<T> : ServiceResult {
         public T Value { get; private set; } 
 
-        protected internal Result(T? value, bool success, string error)
+        protected internal ServiceResult(T? value, bool success, string error)
             : base(success, new List<string>() { error } ) {
             Value = value;
         }
 
-        protected internal Result(T? value, bool success, List<string> errors)
+        protected internal ServiceResult(T? value, bool success, List<string> errors)
             : base(success, errors ) {
             Value = value;
+        }
+
+        public static ServiceResult<T> InternalServerError() {
+            return new ServiceResult<T>(false, "Internal server error");
         }
     }
 }

@@ -2,17 +2,17 @@
 
 namespace KinoPoisk.DomainLayer.Intarfaces.Services {
     public interface IUserService {
-        Task<Result> LoginAsync(LoginDTO dto);
-        Task<Result> RegisterAsync(UserDTO dto);
-        Task<Result> ConfirmEmailAsync();
-        Task<Result> VerificationConfirmationTokenAsync(string token, string email);
-        Task<Result> SendResetPasswordEmailAsync(string email);
-        Task<Result> ResetPasswordAsync(ResetPasswordDTO resetPasswordData);
-        Task<Result> UpdateUserDataAsync(UpdateUserDTO userDTO);
-        Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData);
-        Task<Result> ChangeEmailAsync(string newEmail);
-        Task<Result> DeleteUserAsync(Guid userId);
-        Task<Result> GetAllUsersAsync();
-        Task<Result> GetUserById(Guid id);
+        Task<ServiceResult> LoginAsync(LoginDTO dto);
+        Task<ServiceResult> RegisterAsync(UserDTO dto);
+        Task<ServiceResult> ConfirmEmailAsync();
+        Task<ServiceResult> VerificationConfirmationTokenAsync(string token, string email);
+        Task<ServiceResult> SendResetPasswordEmailAsync(string email);
+        Task<ServiceResult> ResetPasswordAsync(ResetPasswordDTO resetPasswordData);
+        Task<ServiceResult> UpdateUserDataAsync(UpdateUserDTO userDTO);
+        Task<ServiceResult> ChangePasswordAsync(ChangePasswordDTO changePasswordData);
+        Task<ServiceResult> ChangeEmailAsync(string newEmail);
+        Task<ServiceResult> DeleteUserAsync(Guid userId);
+        Task<ServiceResult> GetAllUsersAsync();
+        Task<ServiceResult> GetUserById(Guid id);
     }
 }

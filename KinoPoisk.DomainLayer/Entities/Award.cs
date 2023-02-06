@@ -1,8 +1,7 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Entities.Base;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class Award : IEntity<Guid> {
-        public Guid Id { get; set; } = Guid.Empty;
+    public class Award : BaseEntity<Guid> {
         public string Name { get; set; }
         public DateTime DateOfAward { get; set; }
         public Guid MovieId { get; set; }

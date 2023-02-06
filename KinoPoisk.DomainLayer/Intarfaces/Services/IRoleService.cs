@@ -3,13 +3,13 @@ using KinoPoisk.DomainLayer.DTOs.UserDTO;
 
 namespace KinoPoisk.DomainLayer.Intarfaces.Services {
     public interface IRoleService {
-        Task<Result> CreateRoleAsync(RoleDTO dto);
-        Task<Result> DeleteRoleByIdAsync(Guid id);
-        Task<Result> DeleteRoleByNameAsync(string name);
-        Task<Result> UpdateRoleAsync(RoleDTO dto);
-        Task<Result> GetRolesAsync();
-        Task<Result> AddRolesToUserAsync(Guid userId, string[] roleNames);
-        Task<Result> RemoveRolesFromUserAsync(Guid userId, string[] roleNames);
-        Task<Result> GetUserRolesAsync(Guid userId); 
+        Task<ServiceResult> CreateRoleAsync(RoleDTO dto);
+        Task<ServiceResult> DeleteRoleByIdAsync(Guid id);
+        Task<ServiceResult> DeleteRoleByNameAsync(string name);
+        Task<ServiceResult> UpdateRoleAsync(RoleDTO dto);
+        Task<ServiceResult> GetRolesAsync();
+        Task<ServiceResult> AddRolesToUserAsync(Guid userId, string[] roleNames);
+        Task<ServiceResult> RemoveRolesFromUserAsync(Guid userId, string[] roleNames);
+        Task<ServiceResult> GetUserRolesAsync(Guid userId); 
     }
 }

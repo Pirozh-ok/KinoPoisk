@@ -39,11 +39,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _generator = generator;
         }
 
-        public async Task<Result> LoginAsync(LoginDTO dto) {
+        public async Task<ServiceResult> LoginAsync(LoginDTO dto) {
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user is null) {
-                return Result.Fail(UserResource.InvalidEmailOrPassword);
+                return ServiceResult.Fail(UserResource.InvalidEmailOrPassword);
             }
 
             if (await _userManager.CheckPasswordAsync(user, dto.Password)) {
@@ -52,7 +52,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 user.RefreshTokenExpiryDate = refreshToken.ExpirationDate;
                 await _userManager.UpdateAsync(user);
 
-                return Result.Ok(
+                return ServiceResult.Ok(
                     new AuthResponseDTO<GetUserDTO> 
                     {
                         Data = _mapper.Map<GetUserDTO>(user), 
@@ -61,14 +61,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                     });
             }
 
-            return Result.Fail(UserResource.InvalidEmailOrPassword);
+            return ServiceResult.Fail(UserResource.InvalidEmailOrPassword);
         }
 
-        public async Task<Result> RegisterAsync(UserDTO dto) {
+        public async Task<ServiceResult> RegisterAsync(UserDTO dto) {
             var validatedErrors = ValidateData(dto);
 
             if (validatedErrors.Count() > 0) {
-                return Result.Fail(validatedErrors);
+                return ServiceResult.Fail(validatedErrors);
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
@@ -83,7 +83,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
                 await SendConfirmationEmailAsync(user, UserResource.TextConfirmEmail);
 
-                return Result.Ok(
+                return ServiceResult.Ok(
                     new AuthResponseDTO<GetUserDTO> {
                         Data = _mapper.Map<GetUserDTO>(user),
                         AccessToken = await _tokenService.GenerateAccessToken(user),
@@ -91,127 +91,127 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                     });
             }
 
-            return Result.Fail(result.Errors
+            return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
         }
 
-        public async Task<Result> UpdateUserDataAsync(UpdateUserDTO userDTO) {
+        public async Task<ServiceResult> UpdateUserDataAsync(UpdateUserDTO userDTO) {
             var errors = ValidateData(userDTO);
 
             if (errors.Count > 0) {
-                return Result.Fail(errors); 
+                return ServiceResult.Fail(errors); 
             }
 
             if (!_accessService.IsHasAccess(userDTO.Id)) {
-                return Result.Fail(UserResource.AccessDenied);
+                return ServiceResult.Fail(UserResource.AccessDenied);
             }
 
             var user = await _userManager.FindByIdAsync(userDTO.Id.ToString());
 
             if (user is null) {
-                return Result.Fail(UserResource.NotFound);
+                return ServiceResult.Fail(UserResource.NotFound);
             }
 
             user = _mapper.Map(userDTO, user); 
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded) {
-                return Result.Ok();
+                return ServiceResult.Ok();
             }
 
-            return Result.Fail(result.Errors
+            return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList()); 
         }
 
-        public async Task<Result> DeleteUserAsync(Guid userId) {
+        public async Task<ServiceResult> DeleteUserAsync(Guid userId) {
             if (!_accessService.IsHasAccess(userId)) {
-                return Result.Fail(UserResource.AccessDenied);
+                return ServiceResult.Fail(UserResource.AccessDenied);
             }
 
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user is null) {
-                return Result.Fail(UserResource.NotFound);
+                return ServiceResult.Fail(UserResource.NotFound);
             }
 
             var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded ? Result.Ok() : 
-                Result.Fail(result.Errors
+            return result.Succeeded ? ServiceResult.Ok() : 
+                ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
         }
 
-        public async Task<Result> ConfirmEmailAsync() {
+        public async Task<ServiceResult> ConfirmEmailAsync() {
             var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
             if(user is null) {
-                return Result.Fail(UserResource.NotFound); 
+                return ServiceResult.Fail(UserResource.NotFound); 
             }
 
             if (user.EmailConfirmed) {
-                return Result.Ok(UserResource.EmailAlreadyConfirmed); 
+                return ServiceResult.Ok(UserResource.EmailAlreadyConfirmed); 
             }
 
             await SendConfirmationEmailAsync(user, UserResource.TextConfirmEmail);
-            return Result.Ok(UserResource.ChechkEmail);
+            return ServiceResult.Ok(UserResource.ChechkEmail);
         }
 
-        public async Task<Result> VerificationConfirmationTokenAsync(string token, string email) {
+        public async Task<ServiceResult> VerificationConfirmationTokenAsync(string token, string email) {
             var user = await _userManager.FindByEmailAsync(email);
 
             if(user is null) {
-                return Result.Fail(UserResource.NotFound);
+                return ServiceResult.Fail(UserResource.NotFound);
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded) {
-                return Result.Ok(UserResource.EmailConfirmed);
+                return ServiceResult.Ok(UserResource.EmailConfirmed);
             }
 
-            return Result.Fail(result.Errors
+            return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
         }
 
-        public async Task<Result> ChangePasswordAsync(ChangePasswordDTO changePasswordData) {
+        public async Task<ServiceResult> ChangePasswordAsync(ChangePasswordDTO changePasswordData) {
             var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
-                return Result.Fail(UserResource.NotFound); 
+                return ServiceResult.Fail(UserResource.NotFound); 
             }
 
             if(!string.Equals(changePasswordData.NewPassword, changePasswordData.ConfirmNewPassword)) {
-                return Result.Fail(UserResource.PasswordsNotMatch);
+                return ServiceResult.Fail(UserResource.PasswordsNotMatch);
             }
 
             var result = await _userManager.ChangePasswordAsync(user, changePasswordData.OldPassword, changePasswordData.NewPassword);
 
             if (result.Succeeded) {
                 await _emailService.SendEmailAsync(user.Email, UserResource.SubjectPasswordChanged, UserResource.EmailPasswordChanged); 
-                return Result.Ok(UserResource.PasswordChanged);
+                return ServiceResult.Ok(UserResource.PasswordChanged);
             }
 
-            return Result.Fail(result.Errors
+            return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList()); 
         }
 
-        public async Task<Result> ChangeEmailAsync(string newEmail) {
+        public async Task<ServiceResult> ChangeEmailAsync(string newEmail) {
             var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
 
             if(user is null) {
-                return Result.Fail(UserResource.NotFound);
+                return ServiceResult.Fail(UserResource.NotFound);
             }
 
             var validateEmail = ValidateEmail(newEmail);
 
             if (!validateEmail.isValid) {
-                return Result.Fail(validateEmail.message); 
+                return ServiceResult.Fail(validateEmail.message); 
             }
          
             user.Email = newEmail;
@@ -220,25 +220,25 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (result.Succeeded) {
                 await SendConfirmationEmailAsync(user, UserResource.ConfirmUpdatedEmail);
-                return Result.Ok(UserResource.ChechkEmail);
+                return ServiceResult.Ok(UserResource.ChechkEmail);
             }
             
-            return Result.Fail(result.Errors
+            return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
         } 
 
-        public async Task<Result> SendResetPasswordEmailAsync(string email) {
+        public async Task<ServiceResult> SendResetPasswordEmailAsync(string email) {
             var validateEmail = ValidateEmail(email);
 
             if (!validateEmail.isValid) {
-                return Result.Fail(validateEmail.message); 
+                return ServiceResult.Fail(validateEmail.message); 
             }
 
             var user = await _userManager.FindByEmailAsync(email); 
             
             if(user is null) {
-                return Result.Fail(UserResource.NotFound);
+                return ServiceResult.Fail(UserResource.NotFound);
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -247,10 +247,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             await _emailService.SendEmailAsync(user.Email, UserResource.SubjectConfirmEmail,
                 string.Format(UserResource.TextResetEmail, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
 
-            return Result.Ok(); 
+            return ServiceResult.Ok(); 
         }
 
-        public async Task<Result> ResetPasswordAsync(ResetPasswordDTO resetPasswordData) {
+        public async Task<ServiceResult> ResetPasswordAsync(ResetPasswordDTO resetPasswordData) {
             var resultValid = ValidateResetPasswordData(resetPasswordData);
 
             if (resultValid.Failure) {
@@ -260,31 +260,31 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var user = await _userManager.FindByEmailAsync(resetPasswordData.Email); 
 
             if(user is null) {
-                return Result.Fail(UserResource.NotFound); 
+                return ServiceResult.Fail(UserResource.NotFound); 
             }
 
             var result = await _userManager.ResetPasswordAsync(user, resetPasswordData.Token, resetPasswordData.NewPassword);
 
             if (result.Succeeded) {
-                return Result.Ok(); 
+                return ServiceResult.Ok(); 
             }
 
-            return Result.Fail(result.Errors
+            return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList()); 
         }
 
-        public async Task<Result> GetAllUsersAsync() {
-            return Result.Ok(await _userManager.Users
+        public async Task<ServiceResult> GetAllUsersAsync() {
+            return ServiceResult.Ok(await _userManager.Users
                 .ProjectTo<GetUserDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync()); 
         }
 
-        public async Task<Result> GetUserById(Guid id) {
+        public async Task<ServiceResult> GetUserById(Guid id) {
             var user = await _userManager.FindByIdAsync(id.ToString());
 
-            return user is null ? Result.Fail(UserResource.NotFound)
-                : Result.Ok(_mapper.Map<GetUserDTO>(user));
+            return user is null ? ServiceResult.Fail(UserResource.NotFound)
+                : ServiceResult.Ok(_mapper.Map<GetUserDTO>(user));
         }
 
         private async Task SendConfirmationEmailAsync(ApplicationUser user, string message) {
@@ -307,34 +307,34 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 string.Format(message, user.UserName, $"<a href=\"{callbackUrl}\">link</a>"));
         }
 
-        private Result ValidateResetPasswordData(ResetPasswordDTO resetPasswordData) {
+        private ServiceResult ValidateResetPasswordData(ResetPasswordDTO resetPasswordData) {
             if (resetPasswordData is null) {
-                return Result.Fail(UserResource.NullArgument);
+                return ServiceResult.Fail(UserResource.NullArgument);
             }
 
             var validateNewPassword = ValidatePassword(resetPasswordData.NewPassword);
 
             if (!validateNewPassword.isValid) {
-                return Result.Fail(validateNewPassword.message);
+                return ServiceResult.Fail(validateNewPassword.message);
             }
 
             var validateConfirmPassword = ValidatePassword(resetPasswordData.ConfirmPassword);
 
             if (!validateConfirmPassword.isValid) {
-                return Result.Fail(validateConfirmPassword.message);
+                return ServiceResult.Fail(validateConfirmPassword.message);
             }
 
             if (!string.Equals(resetPasswordData.NewPassword, resetPasswordData.ConfirmPassword)) {
-                return Result.Fail(UserResource.PasswordsNotMatch);
+                return ServiceResult.Fail(UserResource.PasswordsNotMatch);
             }
 
             var validateEmail = ValidateEmail(resetPasswordData.Email);
 
             if (!validateEmail.isValid) {
-                return Result.Fail(validateEmail.message);
+                return ServiceResult.Fail(validateEmail.message);
             }
 
-            return Result.Ok(); 
+            return ServiceResult.Ok(); 
         }
 
         private (bool isValid, string message) ValidateEmail(string email) {

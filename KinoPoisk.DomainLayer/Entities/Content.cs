@@ -1,4 +1,4 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Entities.Base;
 
 namespace KinoPoisk.DomainLayer.Entities {
     public enum ContentType {
@@ -7,7 +7,7 @@ namespace KinoPoisk.DomainLayer.Entities {
         Movie
     }
 
-    public class Content : IEntity<Guid> {
+    public class Content : BaseEntity<Guid> {
         public Guid Id { get; set; } = Guid.Empty;
         public string Name { get; set; }
         public string Path { get; set; }

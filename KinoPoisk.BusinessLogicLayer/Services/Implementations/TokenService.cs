@@ -47,20 +47,20 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<Result> GetNewTokens(string jwtToken, string refresh) {
+        public async Task<ServiceResult> GetNewTokens(string jwtToken, string refresh) {
             if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(refresh)) {
-                return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
+                return ServiceResult.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
             var user = await _unitOfWork.GetRepository<ApplicationUser>()
                 .GetByFilter(x => x.RefreshToken == refresh);
 
             if (user is null) {
-                return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
+                return ServiceResult.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
             if (user.RefreshTokenExpiryDate < DateTime.Now) {
-                return Result.Fail(UserResource.InvalidAccessOrRefreshToken);
+                return ServiceResult.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
             var newRefreshToken = GenerateRefreshToken();
@@ -70,7 +70,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             user.RefreshTokenExpiryDate = newRefreshToken.ExpirationDate;
             await _userManager.UpdateAsync(user);
 
-            return Result.Ok(
+            return ServiceResult.Ok(
                 new TokensDTO {
                     AccessToken = newAccessToken,
                     RefreshToken = newRefreshToken.Token

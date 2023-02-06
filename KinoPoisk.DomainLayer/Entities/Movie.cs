@@ -1,9 +1,8 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Entities.Base;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class Movie : IEntity<Guid> {
+    public class Movie : BaseEntity<Guid> {
         public Movie() {
-            Id = Guid.Empty;
             Countries = new HashSet<Country>();
             AgeCategories = new HashSet<AgeCategory>();
             Genres = new HashSet<Genre>();
@@ -13,7 +12,6 @@ namespace KinoPoisk.DomainLayer.Entities {
             Ratings = new HashSet<Rating>();
         }
 
-        public Guid Id { get; set; } = Guid.Empty;
         public string Title { get; set; }
         public string Description { get; set; }
         public uint DurationInMinutes { get; set; }

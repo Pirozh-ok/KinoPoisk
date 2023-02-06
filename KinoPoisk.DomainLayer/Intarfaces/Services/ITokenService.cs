@@ -7,6 +7,6 @@ namespace KinoPoisk.PresentationLayer {
     public interface ITokenService {
         Task<string> GenerateAccessToken(ApplicationUser user);
         public RefreshTokenDTO GenerateRefreshToken();
-        Task<Result> GetNewTokens(string jwtToken, string refresh); 
+        Task<ServiceResult> GetNewTokens(string jwtToken, string refresh); 
     }
 }

@@ -1,8 +1,9 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Entities.Base;
+using KinoPoisk.DomainLayer.Intarfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class ApplicationRole : IdentityRole<Guid>, IEntity<Guid> {
+    public class ApplicationRole : IdentityRole<Guid> {
         public ApplicationRole() : base() {
         }
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.AwardDTOs;
@@ -6,16 +7,17 @@ using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class AwardService : GenericService<Award, AwardDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class AwardService : BaseService<Award, AwardDTO, Guid> {
         public AwardService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
-        public override async Task<Result> CreateAsync(AwardDTO dto) {
+        public override async Task<ServiceResult> CreateAsync(AwardDTO dto) {
             var errors = Validate(dto);
 
             if (errors.Count > 0) {
-                return Result.Fail(errors);
+                return ServiceResult.Fail(errors);
             }
 
             dto.Id = Guid.Empty; 
@@ -24,7 +26,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             await _unitOfWork.GetRepository<Award>().CreateAsync(createObj);
             await _unitOfWork.CommitAsync();
 
-            return Result.Ok(GenericServiceResource.Created);
+            return ServiceResult.Ok(GenericServiceResource.Created);
         }
 
         protected override List<string> Validate(AwardDTO dto) {

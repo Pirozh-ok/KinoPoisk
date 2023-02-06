@@ -1,12 +1,11 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Entities.Base;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class Creator : IEntity<Guid> {
+    public class Creator : BaseEntity<Guid> {
         public Creator() {
             CreatorsMovies = new HashSet<CreatorMovie>();
         }
 
-        public Guid Id { get; set; } = Guid.Empty;
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Patronymic { get; set; }

@@ -3,9 +3,11 @@ using KinoPoisk.DomainLayer.Intarfaces.Services;
 using AutoMapper;
 using KinoPoisk.DomainLayer.DTOs.CountryDTO;
 using KinoPoisk.DomainLayer.Resources;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class CountryService : GenericService<Country, CountryDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class CountryService : BaseService<Country, CountryDTO, Guid> {
         public CountryService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

@@ -5,7 +5,7 @@ using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     public class CrudControllerBase<TService, TEntityDTO , TGetDto, TTypeId>: BaseController 
-        where TService : IService<TTypeId,TEntityDTO > {
+        where TService : IBaseEntityService<TTypeId,TEntityDTO > {
         protected TService _service;
 
         public CrudControllerBase(TService service) {

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieRoleDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class MovieRoleService : GenericService<MovieRole, MovieRoleDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class MovieRoleService : BaseService<MovieRole, MovieRoleDTO, Guid> {
         public MovieRoleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
         protected override List<string> Validate(MovieRoleDTO dto) {

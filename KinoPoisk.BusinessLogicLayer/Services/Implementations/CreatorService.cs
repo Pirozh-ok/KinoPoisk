@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class CreatorService  : GenericService<Creator, CreatorDTO, Guid>{
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class CreatorService  : BaseService<Creator, CreatorDTO, Guid>{
         public CreatorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

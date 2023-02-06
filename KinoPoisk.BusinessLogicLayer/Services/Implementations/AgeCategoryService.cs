@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.AgeCategoryDTO;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class AgeCategoryService : GenericService<AgeCategory, AgeCategoryDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class AgeCategoryService : BaseService<AgeCategory, AgeCategoryDTO, Guid> {
         public AgeCategoryService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

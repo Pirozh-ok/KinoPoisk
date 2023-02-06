@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
@@ -12,18 +13,19 @@ using KinoPoisk.DomainLayer.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class MovieService : GenericService<Movie, MovieDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class MovieService : BaseService<Movie, MovieDTO, Guid> {
         private readonly IHttpContextAccessor _accessor;
         public MovieService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor accessor) : base(unitOfWork, mapper) {
             _accessor = accessor;
         }
 
-        public async override Task<Result> CreateAsync(MovieDTO dto) {
+        public async override Task<ServiceResult> CreateAsync(MovieDTO dto) {
             var errors = Validate(dto);
 
             if (errors.Count > 0) {
-                return Result.Fail(errors);
+                return ServiceResult.Fail(errors);
             }
 
             dto.Id = Guid.Empty;
@@ -60,13 +62,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             await _unitOfWork.GetRepository<Movie>().CreateAsync(createObj);
             await _unitOfWork.CommitAsync();
 
-            return Result.Ok(GenericServiceResource.Created);
+            return ServiceResult.Ok(GenericServiceResource.Created);
         }
 
-        public async Task<Result> AddOrUpdateCreatorToMovie(AddCreatorToMovieDTO dto) {
+        public async Task<ServiceResult> AddOrUpdateCreatorToMovie(AddCreatorToMovieDTO dto) {
 
             if(dto is null) {
-                return Result.Fail(MovieResource.NullArgument);
+                return ServiceResult.Fail(MovieResource.NullArgument);
             }
 
             var validateResult = await ValidateMovieAndCreatorIdsAsync(dto.MovieId, dto.CreatorId);
@@ -102,10 +104,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             await _unitOfWork.CommitAsync();
-            return Result.Ok();
+            return ServiceResult.Ok();
         }
 
-        public async Task<Result> RemoveCreatorFromMovie(Guid movieId, Guid creatorId) {
+        public async Task<ServiceResult> RemoveCreatorFromMovie(Guid movieId, Guid creatorId) {
             var validateResult = await ValidateMovieAndCreatorIdsAsync(movieId, creatorId);
 
             if (validateResult.Failure) {
@@ -116,17 +118,17 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .GetByFilter(x => x.CreatorId == creatorId && x.MovieId == movieId);
 
             if(obj is null) {
-                return Result.Fail(GenericServiceResource.NotFound);
+                return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
             _unitOfWork.GetRepository<CreatorMovie>().Delete(obj);
-            return Result.Ok();
+            return ServiceResult.Ok();
         }
 
-        public async Task<Result> GetCreaterByMovieAsync(Guid movieId) {
+        public async Task<ServiceResult> GetCreaterByMovieAsync(Guid movieId) {
             if(!await _unitOfWork.GetRepository<Movie>()
                 .AnyAsync(x => x.Id == movieId)) {
-                return Result.Fail(MovieResource.MovieNotFound);
+                return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 
             var objs = await _unitOfWork.GetRepository<CreatorMovie>()
@@ -134,11 +136,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ProjectTo<GetCreatorDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return Result.Ok(objs);
+            return ServiceResult.Ok(objs);
         }
 
-        public async Task<Result> GetWithParameters(MovieRequestParameters parameters) =>
-            Result.Ok( await _unitOfWork.GetRepository<Movie>()
+        public async Task<ServiceResult> GetWithParameters(MovieRequestParameters parameters) =>
+            ServiceResult.Ok( await _unitOfWork.GetRepository<Movie>()
                 .GetAll()
                 .ToPagedFilteredSortedListAsync(parameters));
 
@@ -181,16 +183,16 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return errors; 
         }
 
-        private async Task<Result> ValidateMovieAndCreatorIdsAsync(Guid movieId, Guid creatorId) {
+        private async Task<ServiceResult> ValidateMovieAndCreatorIdsAsync(Guid movieId, Guid creatorId) {
             if (!await _unitOfWork.GetRepository<Creator>().AnyAsync(x => x.Id == creatorId)) {
-                return Result.Fail(GenericServiceResource.NotFound);
+                return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
             if (!await _unitOfWork.GetRepository<Movie>().AnyAsync(x => x.Id == movieId)) {
-                return Result.Fail(MovieResource.MovieNotFound);
+                return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 
-            return Result.Ok(); 
+            return ServiceResult.Ok(); 
         }
     }
 }

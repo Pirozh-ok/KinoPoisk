@@ -28,15 +28,15 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             _userManager = userManager;
         }
 
-        public async Task<Result> CreateOrUpdateRatingAsync(RatingDTO dto) {
+        public async Task<ServiceResult> CreateOrUpdateRatingAsync(RatingDTO dto) {
             var errors = await ValidateRating(dto);
 
             if (errors.Count > 0) {
-                return Result.Fail(errors);
+                return ServiceResult.Fail(errors);
             }
 
             if (!_accessService.IsHasAccess(dto.UserId)) {
-                return Result.Fail(UserResource.AccessDenied);
+                return ServiceResult.Fail(UserResource.AccessDenied);
             }
 
             var ratingRepository = _unitOfWork.GetRepository<Rating>();
@@ -54,10 +54,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             await _unitOfWork.CommitAsync();
-            return Result.Ok();
+            return ServiceResult.Ok();
         }
 
-        public virtual async Task<Result> DeleteAsync(Guid userId, Guid movieId) {
+        public virtual async Task<ServiceResult> DeleteAsync(Guid userId, Guid movieId) {
             var validate = await ValidateIds(userId, movieId);
             
             if (validate.Failure) {
@@ -68,24 +68,24 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .GetByFilter(x => x.UserId == userId && x.MovieId == movieId);
 
             if (obj is null) {
-                return Result.Fail(GenericServiceResource.NotFound);
+                return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
             _unitOfWork.GetRepository<Rating>().Delete(obj);
             await _unitOfWork.CommitAsync();
-            return Result.Ok(GenericServiceResource.Deleted);
+            return ServiceResult.Ok(GenericServiceResource.Deleted);
         }
 
-        public async Task<Result> GetAllAsync<T>() {
+        public async Task<ServiceResult> GetAllAsync<T>() {
             var ratings = await _unitOfWork.GetRepository<Rating>()
                 .GetAll()
                 .ProjectTo<T>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return Result.Ok(ratings);
+            return ServiceResult.Ok(ratings);
         }
 
-        public async Task<Result> GetByIdAsync<T>(Guid userId, Guid movieId) {
+        public async Task<ServiceResult> GetByIdAsync<T>(Guid userId, Guid movieId) {
             var validate = await ValidateIds(userId, movieId);
 
             if (validate.Failure) {
@@ -95,13 +95,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var rating = await _unitOfWork.GetRepository<Rating>()
                 .GetByFilter(x => x.UserId == userId && x.MovieId == movieId);
 
-            return rating is null ? Result.Fail(GenericServiceResource.NotFound) 
-                : Result.Ok(_mapper.Map<GetRatingDTO>(rating));
+            return rating is null ? ServiceResult.Fail(GenericServiceResource.NotFound) 
+                : ServiceResult.Ok(_mapper.Map<GetRatingDTO>(rating));
         }
 
-        public async Task<Result> GetAllByMovieIdAsync<T>(Guid movieId) {
+        public async Task<ServiceResult> GetAllByMovieIdAsync<T>(Guid movieId) {
             if (!MovieExists(movieId)) {
-                return Result.Fail(MovieResource.MovieNotFound);
+                return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 
             var ratings = await _unitOfWork.GetRepository<Rating>()
@@ -109,7 +109,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ProjectTo<T>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return Result.Ok(ratings);
+            return ServiceResult.Ok(ratings);
         }
 
         private async Task<List<string>> ValidateRating(RatingDTO dto) {
@@ -139,20 +139,20 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return errors;
         }
 
-        private async Task<Result> ValidateIds(Guid userId, Guid movieId) {
+        private async Task<ServiceResult> ValidateIds(Guid userId, Guid movieId) {
             if (!await UserExistsAsync(userId)) {
-                return Result.Fail(MovieResource.UserNotFound);
+                return ServiceResult.Fail(MovieResource.UserNotFound);
             }
 
             if (!MovieExists(movieId)) {
-                return Result.Fail(MovieResource.MovieNotFound);
+                return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 
             if (!_accessService.IsHasAccess(userId)) {
-                return Result.Fail(UserResource.AccessDenied);
+                return ServiceResult.Fail(UserResource.AccessDenied);
             }
 
-            return Result.Ok();
+            return ServiceResult.Ok();
         }
 
         private async Task<bool> UserExistsAsync(Guid userId) => await _userManager.FindByIdAsync(userId.ToString()) is not null;

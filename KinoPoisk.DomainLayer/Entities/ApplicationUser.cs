@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class ApplicationUser : IdentityUser<Guid>, IEntity<Guid> {
+    public class ApplicationUser : IdentityUser<Guid> {
         public ApplicationUser() : base() {
             MovieRatings = new HashSet<Rating>();
         }

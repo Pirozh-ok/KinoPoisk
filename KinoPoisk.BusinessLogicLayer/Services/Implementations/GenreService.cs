@@ -4,9 +4,11 @@ using AutoMapper;
 using KinoPoisk.DomainLayer.DTOs.GenreDTO;
 using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.DataAccessLayer;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class GenreService : GenericService<Genre, GenreDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class GenreService : BaseService<Genre, GenreDTO, Guid> {
         public GenreService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 

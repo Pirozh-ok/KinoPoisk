@@ -1,12 +1,11 @@
-﻿using KinoPoisk.DomainLayer.Intarfaces;
+﻿using KinoPoisk.DomainLayer.Entities.Base;
 
 namespace KinoPoisk.DomainLayer.Entities {
-    public class AgeCategory : IEntity<Guid> {
+    public class AgeCategory : BaseEntity<Guid> {
         public AgeCategory() {
             Movies = new HashSet<Movie>();
         }
 
-        public Guid Id { get; set; } = Guid.Empty;
         public string Value { get; set; }
         public uint MinAge { get; set; }
 

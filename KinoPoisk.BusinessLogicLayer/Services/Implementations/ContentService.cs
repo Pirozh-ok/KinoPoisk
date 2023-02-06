@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.ContentDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
 
-namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class ContentService : GenericService<Content, ContentDTO, Guid> {
+namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
+{
+    public class ContentService : BaseService<Content, ContentDTO, Guid> {
         public ContentService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
