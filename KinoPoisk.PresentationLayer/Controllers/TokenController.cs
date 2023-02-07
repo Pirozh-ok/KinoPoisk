@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using KinoPoisk.PresentationLayer.Controllers.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KinoPoisk.PresentationLayer.Controllers {
+namespace KinoPoisk.PresentationLayer.Controllers
+{
     public class TokenController : BaseController {
         private ITokenService _tokenService;
 

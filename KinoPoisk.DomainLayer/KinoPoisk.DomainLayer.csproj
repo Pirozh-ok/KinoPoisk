@@ -109,4 +109,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="RequestParameterModels\" />
+  </ItemGroup>
+
 </Project>

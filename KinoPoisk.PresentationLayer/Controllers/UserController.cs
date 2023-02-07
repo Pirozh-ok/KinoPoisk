@@ -1,10 +1,12 @@
 ﻿using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
+using KinoPoisk.PresentationLayer.Controllers.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KinoPoisk.PresentationLayer.Controllers {
+namespace KinoPoisk.PresentationLayer.Controllers
+{
     [Authorize]
     public class UserController : BaseController {
         private readonly IUserService _userService;
