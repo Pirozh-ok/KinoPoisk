@@ -1,6 +1,5 @@
 ﻿namespace KinoPoisk.DomainLayer.DTOs.GenreDTO {
-    public class GenreDTO {
-        public Guid? Id { get; set; }
+    public class GenreDTO : BaseEntityDto<Guid> {
         public string Name { get; set; }
     }
 }

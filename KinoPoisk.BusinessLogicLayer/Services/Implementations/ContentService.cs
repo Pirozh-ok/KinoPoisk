@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.ContentDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
@@ -12,12 +13,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
         public ContentService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
-        protected override List<string> Validate(ContentDTO dto) {
+        protected override ServiceResult Validate(ContentDTO dto) {
             var errors = new List<string>(); 
 
             if(dto is null) {
                 errors.Add(ContentResource.NullArgument);
-                return errors; 
+                return ServiceResult.Fail(errors); 
             }
 
             if(string.IsNullOrEmpty(dto.Name) || dto.Name.Length < Constants.MinLenOfName) {
@@ -40,11 +41,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 errors.Add(ContentResource.IncorrectContentType); 
             }
 
-            if(_unitOfWork.GetRepository<Movie>().GetById(dto.MovieId) is null) {
+            if(!_unitOfWork.GetRepository<Movie>().Any(x => x.Id == dto.MovieId)) {
                 errors.Add(ContentResource.MovieNotFound); 
             }
 
-            return errors; 
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok(); 
         }
     }
 }

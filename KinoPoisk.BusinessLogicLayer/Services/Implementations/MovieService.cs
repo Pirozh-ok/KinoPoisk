@@ -21,10 +21,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async override Task<ServiceResult> CreateAsync(MovieDTO dto) {
-            var errors = Validate(dto);
+            var validationResult = Validate(dto);
 
-            if (errors.Count > 0) {
-                return ServiceResult.Fail(errors);
+            if (validationResult.Failure) {
+                return validationResult;
             }
 
             dto.Id = Guid.Empty;
@@ -35,7 +35,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             var ageCategoryRepository = _unitOfWork.GetRepository<AgeCategory>();
 
             foreach(var id in dto.CountriesIds) {
-                var country = countryRepository.GetById(id);
+                var country = countryRepository.FindById(id);
                 
                 if(country is not null) {
                     createObj.Countries.Add(country);
@@ -43,7 +43,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             foreach (var id in dto.GenresIds) {
-                var genre = genreRepository.GetById(id);
+                var genre = genreRepository.FindById(id);
 
                 if (genre is not null) {
                     createObj.Genres.Add(genre);
@@ -51,14 +51,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             foreach (var id in dto.AgeCategoriesIds) {
-                var ageCategory = ageCategoryRepository.GetById(id);
+                var ageCategory = ageCategoryRepository.FindById(id);
 
                 if (ageCategory is not null) {
                     createObj.AgeCategories.Add(ageCategory);
                 }
             }
 
-            await _unitOfWork.GetRepository<Movie>().CreateAsync(createObj);
+            _unitOfWork.GetRepository<Movie>().Add(createObj);
             await _unitOfWork.CommitAsync();
 
             return ServiceResult.Ok(GenericServiceResource.Created);
@@ -77,12 +77,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var obj = await _unitOfWork.GetRepository<CreatorMovie>()
-                .GetByFilterInclude(x => x.CreatorId == dto.CreatorId && x.MovieId == dto.MovieId,
-                x => x.Roles);
+                .Get(x => x.CreatorId == dto.CreatorId && x.MovieId == dto.MovieId)
+                .Include(x => x.Roles)
+                .FirstOrDefaultAsync();
+
             var roles = new List<MovieRole>();
 
             foreach(var id in dto.Roles) {
-                var role = _unitOfWork.GetRepository<MovieRole>().GetById(id);
+                var role = _unitOfWork.GetRepository<MovieRole>().FindById(id);
 
                 if (role is not null){
                     roles.Add(role);
@@ -90,7 +92,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             if (obj is null) {
-                await _unitOfWork.GetRepository<CreatorMovie>().CreateAsync(
+                _unitOfWork.GetRepository<CreatorMovie>().Add(
                     new CreatorMovie() {
                         CreatorId = dto.CreatorId,
                         MovieId = dto.MovieId,
@@ -113,25 +115,26 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return validateResult;
             }
 
-            var obj = await _unitOfWork.GetRepository<CreatorMovie>()
-                .GetByFilter(x => x.CreatorId == creatorId && x.MovieId == movieId);
+            var obj = _unitOfWork.GetRepository<CreatorMovie>()
+                .Get(x => x.CreatorId == creatorId && x.MovieId == movieId, true)
+                .FirstOrDefault();
 
             if(obj is null) {
                 return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
-            _unitOfWork.GetRepository<CreatorMovie>().Delete(obj);
+            _unitOfWork.GetRepository<CreatorMovie>().Remove(obj);
             return ServiceResult.Ok();
         }
 
         public async Task<ServiceResult> GetCreaterByMovieAsync(Guid movieId) {
-            if(!await _unitOfWork.GetRepository<Movie>()
-                .AnyAsync(x => x.Id == movieId)) {
+            if(! _unitOfWork.GetRepository<Movie>()
+                .Any(x => x.Id == movieId)) {
                 return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 
             var objs = await _unitOfWork.GetRepository<CreatorMovie>()
-                .GetAllByFilter(x => x.MovieId == movieId)
+                .Get(x => x.MovieId == movieId)
                 .ProjectTo<GetCreatorDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
@@ -173,7 +176,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 conditions.Add(x => x.PremiereDate.Year > filters.DateYearFrom.Value);
             }
 
-            if(filters.DateYearTo is not null) {
+            if (filters.DateYearTo is not null) {
                 conditions.Add(x => x.PremiereDate.Year < filters.DateYearTo.Value);
             }
 
@@ -200,12 +203,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .Include(x => x.Ratings); 
         }
 
-        protected override List<string> Validate(MovieDTO dto) {
+        protected override ServiceResult Validate(MovieDTO dto) {
             var errors = new List<string>();
 
             if(dto is null) {
                 errors.Add(MovieResource.NullArgument);
-                return errors;
+                return ServiceResult.Fail(errors);
             }
 
             if(string.IsNullOrEmpty(dto.Title) || dto.Title.Length < Constants.MinLenOfName) {
@@ -236,15 +239,15 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(MovieResource.IncorrectPremiereDate); 
             }
 
-            return errors; 
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok(); 
         }
 
         private async Task<ServiceResult> ValidateMovieAndCreatorIdsAsync(Guid movieId, Guid creatorId) {
-            if (!await _unitOfWork.GetRepository<Creator>().AnyAsync(x => x.Id == creatorId)) {
+            if (!_unitOfWork.GetRepository<Creator>().Any(x => x.Id == creatorId)) {
                 return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
-            if (!await _unitOfWork.GetRepository<Movie>().AnyAsync(x => x.Id == movieId)) {
+            if (!_unitOfWork.GetRepository<Movie>().Any(x => x.Id == movieId)) {
                 return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 

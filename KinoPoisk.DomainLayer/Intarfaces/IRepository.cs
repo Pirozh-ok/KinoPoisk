@@ -1,18 +1,28 @@
 ﻿using System.Linq.Expressions;
 
 namespace KinoPoisk.DomainLayer.Intarfaces {
-    public interface IRepository<TEntity>
+    public interface IRepository { }
+
+    public interface IRepository<TEntity> : IRepository
         where TEntity : class {
-        IQueryable<TEntity> GetAll();
-        TEntity? GetById<TTypeId>(TTypeId id); 
-        Task CreateAsync(TEntity item);
-        void Update(TEntity item);
-        void Delete(TEntity item);
-        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> filter);
-        Task<TEntity?> GetByFilter(Expression<Func<TEntity, bool>> filter);
-        Task<TEntity?> GetByFilterInclude(Expression<Func<TEntity, bool>> filter, Expression<Func<TEntity, object>> includeExpression);
-        IQueryable<TEntity> GetAllByFilter(Expression<Func<TEntity, bool>> filter);
-        Task<bool> Contains(TEntity item);
+        bool Any(Expression<Func<TEntity, bool>> filter);
+
+        IQueryable<TEntity> Get(bool tracking = false);
+        IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> expression, bool tracking = false);
+
+        TEntity FindTracking(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] inclusions);
+        TEntity FindNoTracking(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] inclusions);
+
+        TEntity? FindById(object id);
+
+        TEntity Add(TEntity item);
+        IEnumerable<TEntity> Add(IEnumerable<TEntity> items);
+
+        TEntity Update(TEntity item);
+        IEnumerable<TEntity> Update(IEnumerable<TEntity> items);
+
+        TEntity Remove(TEntity item);
+        IEnumerable<TEntity> Remove(IEnumerable<TEntity> items);
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using KinoPoisk.DomainLayer;
+using KinoPoisk.DomainLayer.DTOs;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
@@ -8,53 +9,54 @@ using KinoPoisk.DomainLayer.Resources;
 namespace KinoPoisk.BusinessLogicLayer.Services.Base {
     public abstract class BaseEntityService<TEntity, TKey, TDto> : BaseService, IBaseEntityService<TKey, TDto>
         where TEntity : class, IBaseEntity<TKey>, new()
-        where TDto : class
-        where TKey : IEquatable<TKey> {
+        where TDto : BaseEntityDto<TKey>
+        where TKey : IEquatable<TKey>, new() {
 
         public BaseEntityService(
             IUnitOfWork unitOfWork,
             IMapper mapper) : base(unitOfWork, mapper) { }
 
         public virtual async Task<ServiceResult> CreateAsync(TDto dto) {
-            var errors = Validate(dto);
+            var validationResult = Validate(dto);
 
-            if (errors.Count > 0) {
-                return ServiceResult.Fail(errors);
+            if (validationResult.Failure) {
+                return ServiceResult.Fail(validationResult.Errors);
             }
 
-            var createObj = _mapper.Map<TEntity>(dto);
+            var createObj = BuildEntity(dto);
 
-            await _unitOfWork.GetRepository<TEntity>().CreateAsync(createObj);
+            _unitOfWork.GetRepository<TEntity>().Add(createObj);
             await _unitOfWork.CommitAsync();
 
             return ServiceResult.Ok(GenericServiceResource.Created);
         }
 
         public virtual async Task<ServiceResult> DeleteAsync(TKey id) {
-            var obj = _unitOfWork.GetRepository<TEntity>().GetById(id);
+            var obj = _unitOfWork.GetRepository<TEntity>().FindById(id);
 
             if (obj is null) {
                 return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
-            _unitOfWork.GetRepository<TEntity>().Delete(obj);
+            _unitOfWork.GetRepository<TEntity>().Remove(obj);
             await _unitOfWork.CommitAsync();
+
             return ServiceResult.Ok(GenericServiceResource.Deleted);
         }
 
-        public async Task<ServiceResult> GetAllAsync<TGetDto>() {
+        public virtual ServiceResult Get<TGetDto>() {
             var objects = _unitOfWork.GetRepository<TEntity>()
-                .GetAll()
+                .Get(false)
                 .ProjectTo<TGetDto>(_mapper.ConfigurationProvider)
                 .ToList();
 
             return ServiceResult.Ok(objects);
         }
 
-        public async Task<ServiceResult> GetByIdAsync<TGetDto>(TKey id) {
+        public ServiceResult GetById<TGetDto>(TKey id) {
             var obj = _unitOfWork.GetRepository<TEntity>()
-                .GetAll()
-                .Where(x => Equals(x.Id, id))
+                .Get(x => x.Id.Equals(id))
+                .ProjectTo<TGetDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
 
             return obj is not null ?
@@ -63,15 +65,15 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
         }
 
         public virtual async Task<ServiceResult> UpdateAsync(TDto dto) {
-            var errors = Validate(dto);
+            var validationResult = Validate(dto);
 
-            if (errors.Count > 0) {
-                return ServiceResult.Fail(errors);
+            if (validationResult.Failure) {
+                return ServiceResult.Fail(validationResult.Errors);
             }
 
             var updateObj = _mapper.Map<TEntity>(dto);
 
-            if (!await _unitOfWork.GetRepository<TEntity>().Contains(updateObj)) {
+            if (!_unitOfWork.GetRepository<TEntity>().Any(x => x.Id.Equals(dto.Id))) {
                 return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
@@ -80,10 +82,22 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
             return ServiceResult.Ok(GenericServiceResource.Updated);
         }
 
-        abstract protected List<string> Validate(TDto dto);
+        protected virtual TEntity BuildEntity(TDto dto) {
+            var entity = new TEntity();
+            _mapper.Map(dto, entity);
+            entity.Id = GetNewKey(); 
+
+            return entity;
+        }
+
+        abstract protected ServiceResult Validate(TDto dto);
 
         protected virtual IQueryable<TEntity> GetEntityByIdIncludes(IQueryable<TEntity> query) {
             return query;
+        }
+
+        protected virtual TKey GetNewKey() {
+            return new TKey();
         }
     }
 }

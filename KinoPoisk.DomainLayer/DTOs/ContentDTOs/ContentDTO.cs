@@ -1,8 +1,7 @@
 ﻿using KinoPoisk.DomainLayer.Entities;
 
 namespace KinoPoisk.DomainLayer.DTOs.ContentDTOs {
-    public class ContentDTO {
-        public Guid? Id { get; set; } = Guid.Empty;
+    public class ContentDTO : BaseEntityDto<Guid> {
         public string Name { get; set; }
         public string Path { get; set; }
         public ContentType Type { get; set; }

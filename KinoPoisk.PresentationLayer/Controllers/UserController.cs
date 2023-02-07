@@ -2,7 +2,6 @@
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KinoPoisk.PresentationLayer.Controllers {

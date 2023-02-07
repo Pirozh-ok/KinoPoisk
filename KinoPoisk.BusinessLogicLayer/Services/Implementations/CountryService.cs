@@ -4,6 +4,7 @@ using AutoMapper;
 using KinoPoisk.DomainLayer.DTOs.CountryDTO;
 using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.BusinessLogicLayer.Services.Base;
+using KinoPoisk.DomainLayer;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
@@ -11,7 +12,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
         public CountryService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
-        protected override List<string> Validate(CountryDTO dto) {
+        protected override ServiceResult Validate(CountryDTO dto) {
             var errors = new List<string>();
 
             if (string.IsNullOrEmpty(dto.Name) || dto.Name.Length < 3) {
@@ -22,7 +23,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 errors.Add(CountryResource.NameExceedsMaxLen);
             }
 
-            return errors;
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok();
         }
     }
 }

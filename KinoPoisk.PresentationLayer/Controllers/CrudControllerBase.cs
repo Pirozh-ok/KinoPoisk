@@ -14,14 +14,14 @@ namespace KinoPoisk.PresentationLayer.Controllers {
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllAsync() {
-            return Ok(await _service.GetAllAsync<TGetDto>());
+        public IActionResult GetAllAsync() {
+            return Ok(_service.Get<TGetDto>());
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetByIdAsync(TTypeId id) {
-            var result = await _service.GetByIdAsync<TGetDto>(id);
+        public IActionResult GetByIdAsync(TTypeId id) {
+            var result = _service.GetById<TGetDto>(id);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 

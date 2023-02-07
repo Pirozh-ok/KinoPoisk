@@ -39,12 +39,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var ratingRepository = _unitOfWork.GetRepository<Rating>();
-            var rating = await ratingRepository
-                .GetByFilter(x => x.UserId == dto.UserId && x.MovieId == dto.MovieId);
+            var rating = ratingRepository
+                .FindTracking(x => x.UserId == dto.UserId && x.MovieId == dto.MovieId);
 
             if (rating is null) {
                 var createObj = _mapper.Map<Rating>(dto);
-                await ratingRepository.CreateAsync(createObj);
+                ratingRepository.Add(createObj);
             }
             else {
                 rating.MovieRating = dto.MovieRating;
@@ -56,28 +56,28 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return ServiceResult.Ok();
         }
 
-        public virtual async Task<ServiceResult> DeleteAsync(Guid userId, Guid movieId) {
+        public async Task<ServiceResult> DeleteAsync(Guid userId, Guid movieId) {
             var validate = await ValidateIds(userId, movieId);
             
             if (validate.Failure) {
                 return validate; 
             }
 
-            var obj = await _unitOfWork.GetRepository<Rating>()
-                .GetByFilter(x => x.UserId == userId && x.MovieId == movieId);
+            var obj = _unitOfWork.GetRepository<Rating>()
+                .FindTracking(x => x.UserId == userId && x.MovieId == movieId);
 
             if (obj is null) {
                 return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
 
-            _unitOfWork.GetRepository<Rating>().Delete(obj);
+            _unitOfWork.GetRepository<Rating>().Remove(obj);
             await _unitOfWork.CommitAsync();
             return ServiceResult.Ok(GenericServiceResource.Deleted);
         }
 
         public async Task<ServiceResult> GetAllAsync<T>() {
             var ratings = await _unitOfWork.GetRepository<Rating>()
-                .GetAll()
+                .Get()
                 .ProjectTo<T>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
@@ -91,8 +91,9 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return validate; 
             }
 
-            var rating = await _unitOfWork.GetRepository<Rating>()
-                .GetByFilter(x => x.UserId == userId && x.MovieId == movieId);
+            var rating = _unitOfWork.GetRepository<Rating>()
+                .Get(x => x.UserId == userId && x.MovieId == movieId)
+                .FirstOrDefault();
 
             return rating is null ? ServiceResult.Fail(GenericServiceResource.NotFound) 
                 : ServiceResult.Ok(_mapper.Map<GetRatingDTO>(rating));
@@ -104,7 +105,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var ratings = await _unitOfWork.GetRepository<Rating>()
-                .GetAllByFilter(x => x.MovieId == movieId)
+                .Get(x => x.MovieId == movieId)
                 .ProjectTo<T>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
@@ -156,6 +157,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
         private async Task<bool> UserExistsAsync(Guid userId) => await _userManager.FindByIdAsync(userId.ToString()) is not null;
 
-        private bool MovieExists(Guid movieId) => _unitOfWork.GetRepository<Movie>().GetById(movieId) is not null;
+        private bool MovieExists(Guid movieId) => _unitOfWork.GetRepository<Movie>().FindById(movieId) is not null;
     }
 }

@@ -1,20 +1,19 @@
-﻿using AutoMapper.Configuration.Annotations;
-using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.DTOs.Pageable;
-using KinoPoisk.DomainLayer.RequestParameterModels;
+using KinoPoisk.DomainLayer.Intarfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize]
-    public class MovieController : CrudControllerBase<MovieService, MovieDTO, GetMovieDTO, Guid> {
+    public class MovieController : CrudControllerBase<IMovieService, MovieDTO, GetMovieDTO, Guid> {
 
         private readonly RatingService _ratingService;
 
-        public MovieController(MovieService service, RatingService ratingService) : base(service) {
+        public MovieController(IMovieService service, RatingService ratingService) : base(service) {
             _ratingService = ratingService;
         }
 

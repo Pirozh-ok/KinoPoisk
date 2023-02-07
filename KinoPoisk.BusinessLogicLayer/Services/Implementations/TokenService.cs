@@ -52,8 +52,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return ServiceResult.Fail(UserResource.InvalidAccessOrRefreshToken);
             }
 
-            var user = await _unitOfWork.GetRepository<ApplicationUser>()
-                .GetByFilter(x => x.RefreshToken == refresh);
+            var user = _unitOfWork.GetRepository<ApplicationUser>()
+                .FindTracking(x => x.RefreshToken == refresh);
 
             if (user is null) {
                 return ServiceResult.Fail(UserResource.InvalidAccessOrRefreshToken);

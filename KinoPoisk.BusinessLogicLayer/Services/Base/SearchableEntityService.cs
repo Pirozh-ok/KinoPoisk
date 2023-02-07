@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using KinoPoisk.DomainLayer;
+using KinoPoisk.DomainLayer.DTOs;
 using KinoPoisk.DomainLayer.DTOs.Pageable.Base;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
@@ -11,7 +12,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
     public abstract class SearchableEntityService<TService, TEntity, TKey, TDto, TFilters> : BaseEntityService<TEntity, TKey, TDto>,
         ISearchableEntityService<TEntity, TKey, TDto, TFilters>
         where TEntity : class, IBaseEntity<TKey>, new()
-        where TDto : class
+        where TDto : BaseEntityDto<TKey>
         where TFilters : PageableBaseRequestDto
         where TKey : IEquatable<TKey>, new() {
 
@@ -21,7 +22,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
 
         public ServiceResult<PageableBaseResponseDto<T>> SearchFor<T>(TFilters filters) {
             try {
-                var query = _unitOfWork.GetRepository<TEntity>().GetAll();
+                var query = _unitOfWork.GetRepository<TEntity>().Get();
 
                 query = ApplyConditions(query, GetGeneralConditions(filters));
 

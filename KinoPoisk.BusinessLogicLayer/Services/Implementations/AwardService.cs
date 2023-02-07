@@ -9,32 +9,32 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class AwardService : BaseEntityService<Award, Guid, AwardDTO> {
+    public class AwardService : BaseEntityService<Award, Guid, AwardDTO>, IAwardService {
         public AwardService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
         public override async Task<ServiceResult> CreateAsync(AwardDTO dto) {
-            var errors = Validate(dto);
+            var validationResult = Validate(dto);
 
-            if (errors.Count > 0) {
-                return ServiceResult.Fail(errors);
+            if (validationResult.Failure) {
+                return validationResult;
             }
 
             dto.Id = Guid.Empty; 
             var createObj = _mapper.Map<Award>(dto);
 
-            await _unitOfWork.GetRepository<Award>().CreateAsync(createObj);
+            _unitOfWork.GetRepository<Award>().Add(createObj);
             await _unitOfWork.CommitAsync();
 
             return ServiceResult.Ok(GenericServiceResource.Created);
         }
 
-        protected override List<string> Validate(AwardDTO dto) {
+        protected override ServiceResult Validate(AwardDTO dto) {
             var errors = new List<string>();
 
             if(dto is null) {
                 errors.Add(AwardResource.NullArgument);
-                return errors; 
+                return ServiceResult.Fail(errors); 
             }
 
             if(string.IsNullOrEmpty(dto.Name) || dto.Name.Length < Constants.MinLenOfName) {
@@ -49,11 +49,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 errors.Add(AwardResource.IncorrectData); 
             }
 
-            if (_unitOfWork.GetRepository<Movie>().GetById(dto.MovieId) is null) {
+            if (!_unitOfWork.GetRepository<Movie>().Any(x => x.Id == dto.MovieId)) {
                 errors.Add(AwardResource.MovieNotFound); 
             }
 
-            return errors; 
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok();
         }
     }
 }

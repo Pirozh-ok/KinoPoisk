@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
@@ -8,11 +9,11 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class CreatorService  : BaseEntityService<Creator, Guid, CreatorDTO>{
+    public class CreatorService  : BaseEntityService<Creator, Guid, CreatorDTO>, ICreatorService{
         public CreatorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
 
-        protected override List<string> Validate(CreatorDTO dto) {
+        protected override ServiceResult Validate(CreatorDTO dto) {
             var errors = new List<string>();
 
             if (string.IsNullOrEmpty(dto.FirstName) || dto.FirstName.Length < Constants.MinLenOfName) {
@@ -43,7 +44,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 errors.Add(UserResource.IncorrectDateOfBirth);
             }
 
-            return errors;
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok();
         }
     }
 }

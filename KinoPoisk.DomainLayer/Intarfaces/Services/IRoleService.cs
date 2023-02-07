@@ -1,5 +1,4 @@
 ﻿using KinoPoisk.DomainLayer.DTOs;
-using KinoPoisk.DomainLayer.DTOs.UserDTO;
 
 namespace KinoPoisk.DomainLayer.Intarfaces.Services {
     public interface IRoleService {

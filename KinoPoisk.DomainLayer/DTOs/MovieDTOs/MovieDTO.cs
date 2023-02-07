@@ -1,6 +1,5 @@
 ﻿namespace KinoPoisk.DomainLayer.DTOs.MovieDTOs {
-    public class MovieDTO {
-        public Guid? Id { get; set; } = Guid.Empty;
+    public class MovieDTO : BaseEntityDto<Guid> {
         public string Title { get; set; }
         public string Description { get; set; }
         public uint DurationInMinutes { get; set; }

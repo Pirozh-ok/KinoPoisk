@@ -1,6 +1,5 @@
 ﻿namespace KinoPoisk.DomainLayer.DTOs {
-    public class RoleDTO {
-        public Guid Id { get; set; }
+    public class RoleDTO : BaseEntityDto<Guid> {
         public string Name { get; set; }
     }
 }

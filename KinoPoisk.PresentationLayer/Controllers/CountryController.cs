@@ -1,12 +1,12 @@
-﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
-using KinoPoisk.DataAccessLayer;
+﻿using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.CountryDTO;
+using KinoPoisk.DomainLayer.Intarfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize(Roles = Constants.NameRoleAdmin)]
-    public class CountryController : CrudControllerBase<CountryService, CountryDTO, GetCountryDTO, Guid> {
-        public CountryController(CountryService service) : base(service) {
+    public class CountryController : CrudControllerBase<ICountryService, CountryDTO, GetCountryDTO, Guid> {
+        public CountryController(ICountryService service) : base(service) {
         }
     }
 }

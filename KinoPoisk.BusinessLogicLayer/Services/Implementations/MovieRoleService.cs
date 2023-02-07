@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DomainLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieRoleDTOs;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
@@ -8,10 +9,10 @@ using KinoPoisk.DomainLayer.Resources;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
 {
-    public class MovieRoleService : BaseEntityService<MovieRole, Guid, MovieRoleDTO> {
+    public class MovieRoleService : BaseEntityService<MovieRole, Guid, MovieRoleDTO>, IMovieRoleService{
         public MovieRoleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) {
         }
-        protected override List<string> Validate(MovieRoleDTO dto) {
+        protected override ServiceResult Validate(MovieRoleDTO dto) {
             var errors = new List<string>();
 
             if(dto is null) {
@@ -26,7 +27,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
                 errors.Add(MovieRoleResource.NameExceedsMaxLen);
             }
 
-            return errors;
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok();
         }
     }
 }

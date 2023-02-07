@@ -5,19 +5,19 @@ using KinoPoisk.DomainLayer.Intarfaces.Services;
 namespace KinoPoisk.PresentationLayer.Extensions {
     public static class AddServicesExtensions {
         public static void AddUserServices(this IServiceCollection services) {
-            services.AddScoped<GenreService>();
-            services.AddScoped<CountryService>();
-            services.AddScoped<AgeCategoryService>();
-            services.AddScoped<AwardService>();
-            services.AddScoped<MovieRoleService>();
-            services.AddScoped<CreatorService>();
-            services.AddScoped<ContentService>();
-            services.AddScoped<MovieService>();
-            services.AddScoped<RatingService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IRoleService, RoleServices>();
+            services.AddTransient<IGenreService, GenreService>();
+            services.AddTransient<ICountryService, CountryService>();
+            services.AddTransient<IAgeCategoryService, AgeCategoryService>();
+            services.AddTransient<IAwardService, AwardService>();
+            services.AddTransient<IMovieRoleService, MovieRoleService>();
+            services.AddTransient<ICreatorService, CreatorService>();
+            services.AddTransient<IContentService, ContentService>();
+            services.AddTransient<IMovieService, MovieService>();
+            services.AddTransient<RatingService>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IRoleService, RoleServices>();
             services.AddTransient<IAccessService, AccessService>();
         }
     }
