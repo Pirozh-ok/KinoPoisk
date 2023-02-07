@@ -9,15 +9,17 @@ using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class MovieService : SearchableEntityService<MovieService, Movie, Guid, MovieDTO, PageableMovieRequestDto>, IMovieService {
-        private readonly IHttpContextAccessor _accessor;
-        public MovieService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor accessor) : base(unitOfWork, mapper) {
-            _accessor = accessor;
+        private readonly IAccessService _accessService;
+        public MovieService(IUnitOfWork unitOfWork, IMapper mapper, IAccessService accessService) : base(unitOfWork, mapper) {
+            _accessService = accessService;
         }
 
         public async override Task<ServiceResult> CreateAsync(MovieDTO dto) {
@@ -70,7 +72,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return ServiceResult.Fail(MovieResource.NullArgument);
             }
 
-            var validateResult = await ValidateMovieAndCreatorIdsAsync(dto.MovieId, dto.CreatorId);
+            var validateResult = ValidateMovieAndCreatorIdsAsync(dto.MovieId, dto.CreatorId);
 
             if (validateResult.Failure) {
                 return validateResult;
@@ -109,7 +111,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         }
 
         public async Task<ServiceResult> RemoveCreatorFromMovie(Guid movieId, Guid creatorId) {
-            var validateResult = await ValidateMovieAndCreatorIdsAsync(movieId, creatorId);
+            var validateResult = ValidateMovieAndCreatorIdsAsync(movieId, creatorId);
 
             if (validateResult.Failure) {
                 return validateResult;
@@ -124,6 +126,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             _unitOfWork.GetRepository<CreatorMovie>().Remove(obj);
+            await _unitOfWork.CommitAsync();
             return ServiceResult.Ok();
         }
 
@@ -139,6 +142,82 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToListAsync();
 
             return ServiceResult.Ok(objs);
+        }
+
+        public async Task<ServiceResult> AddOrUpdateRatingToMovie(RatingDTO dto) {
+            var validationResult = ValidateRating(dto);
+
+            if (validationResult.Failure) {
+                return validationResult;
+            }
+
+            if (!_accessService.IsHasAccess(dto.UserId)) {
+                return ServiceResult.Fail(UserResource.AccessDenied);
+            }
+
+            var ratingRepository = _unitOfWork.GetRepository<Rating>();
+            var rating = ratingRepository
+                .FindTracking(x => x.UserId == dto.UserId && x.MovieId == dto.MovieId);
+
+            if (rating is null) {
+                var createObj = _mapper.Map<Rating>(dto);
+                ratingRepository.Add(createObj);
+            }
+            else {
+                rating.MovieRating = dto.MovieRating;
+                rating.Comment = dto.Comment;
+                ratingRepository.Update(rating);
+            }
+
+            await _unitOfWork.CommitAsync();
+            return ServiceResult.Ok();
+        }
+
+        public async Task<ServiceResult> RemoveRatingMovie(Guid userId, Guid movieId) {
+            var validationResult = ValidateIds(userId, movieId);
+
+            if (validationResult.Failure) {
+                return validationResult;
+            }
+
+            var obj = _unitOfWork.GetRepository<Rating>()
+                .FindTracking(x => x.UserId == userId && x.MovieId == movieId);
+
+            if (obj is null) {
+                return ServiceResult.Fail(GenericServiceResource.NotFound);
+            }
+
+            _unitOfWork.GetRepository<Rating>().Remove(obj);
+            await _unitOfWork.CommitAsync();
+            return ServiceResult.Ok(GenericServiceResource.Deleted);
+        }
+
+        public ServiceResult GetFullRatingById<TGetDto>(Guid userId, Guid movieId) {
+            var validateResult = ValidateIds(userId, movieId);
+
+            if (validateResult.Failure) {
+                return validateResult;
+            }
+
+            var rating = _unitOfWork.GetRepository<Rating>()
+                .Get(x => x.UserId == userId && x.MovieId == movieId)
+                .FirstOrDefault();
+
+            return rating is null ? ServiceResult.Fail(GenericServiceResource.NotFound)
+                : ServiceResult.Ok(_mapper.Map<TGetDto>(rating));
+        }
+
+        public async Task<ServiceResult> GetRatingsByMovieIdAsync<TGetDto>(Guid movieId) {
+            if (!MovieExists(movieId)) {
+                return ServiceResult.Fail(MovieResource.MovieNotFound);
+            }
+
+            var ratings = await _unitOfWork.GetRepository<Rating>()
+                .Get(x => x.MovieId == movieId)
+                .ProjectTo<TGetDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return ServiceResult.Ok(ratings);
         }
 
         protected override List<Expression<Func<Movie, bool>>> GetAdvancedConditions(PageableMovieRequestDto filters) {
@@ -242,7 +321,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok(); 
         }
 
-        private async Task<ServiceResult> ValidateMovieAndCreatorIdsAsync(Guid movieId, Guid creatorId) {
+        private ServiceResult ValidateMovieAndCreatorIdsAsync(Guid movieId, Guid creatorId) {
             if (!_unitOfWork.GetRepository<Creator>().Any(x => x.Id == creatorId)) {
                 return ServiceResult.Fail(GenericServiceResource.NotFound);
             }
@@ -253,5 +332,54 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             return ServiceResult.Ok(); 
         }
+
+        private ServiceResult ValidateRating(RatingDTO dto) {
+            var errors = new List<string>();
+
+            if (dto is null) {
+                errors.Add(MovieResource.NullArgument);
+                return ServiceResult.Fail(errors);
+            }
+
+            if (!string.IsNullOrEmpty(dto.Comment) && dto.Comment.Length > Constants.MaxLenOfComment) {
+                errors.Add(MovieResource.CommentExceedsMaxLen);
+            }
+
+            if (dto.MovieRating < Constants.MinValueRatingMovie || dto.MovieRating > Constants.MaxValueRatingMovie) {
+                errors.Add(MovieResource.IncorrectMovieRating);
+            }
+
+            if (!MovieExists(dto.MovieId)) {
+                errors.Add(MovieResource.MovieNotFound);
+            }
+
+            if (!UserExistsAsync(dto.UserId)) {
+                errors.Add(MovieResource.UserNotFound);
+            }
+
+            return errors.Count > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok(errors);
+        }
+
+        private ServiceResult ValidateIds(Guid userId, Guid movieId) {
+            if (!UserExistsAsync(userId)) {
+                return ServiceResult.Fail(MovieResource.UserNotFound);
+            }
+
+            if (!MovieExists(movieId)) {
+                return ServiceResult.Fail(MovieResource.MovieNotFound);
+            }
+
+            if (!_accessService.IsHasAccess(userId)) {
+                return ServiceResult.Fail(UserResource.AccessDenied);
+            }
+
+            return ServiceResult.Ok();
+        }
+
+        private bool UserExistsAsync(Guid userId) => _unitOfWork.GetRepository<ApplicationUser>()
+            .Any(x => x.Id == userId);
+
+        private bool MovieExists(Guid movieId) => _unitOfWork.GetRepository<Movie>()
+            .Any(x => x.Id == movieId);
     }
 }

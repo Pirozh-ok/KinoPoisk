@@ -1,4 +1,5 @@
-﻿using KinoPoisk.DomainLayer.DTOs.UserDTO;
+﻿using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
+using KinoPoisk.DomainLayer.DTOs.UserDTO;
 
 namespace KinoPoisk.DomainLayer.Intarfaces.Services {
     public interface IUserService {

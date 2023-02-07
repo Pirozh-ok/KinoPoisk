@@ -11,41 +11,31 @@ namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize]
     public class MovieController : CrudControllerBase<IMovieService, MovieDTO, GetMovieDTO, Guid> {
 
-        private readonly RatingService _ratingService;
-
-        public MovieController(IMovieService service, RatingService ratingService) : base(service) {
-            _ratingService = ratingService;
+        public MovieController(IMovieService service) : base(service) {
         }
 
         [HttpPost("rate-movie")]
         public async Task<IActionResult> RateMovie([FromBody] RatingDTO rating) {
-            var result = await _ratingService.CreateOrUpdateRatingAsync(rating);
+            var result = await _service.AddOrUpdateRatingToMovie(rating);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 
         [HttpDelete("rate-movie")]
         public async Task<IActionResult> DeleteRatingMovie([FromQuery] Guid userId, [FromQuery] Guid movieId) {
-            var result = await _ratingService.DeleteAsync(userId, movieId);
+            var result = await _service.RemoveRatingMovie(userId, movieId);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 
         [HttpGet("rate-movie")]
         public async Task<IActionResult> GetRatingByIds([FromQuery] Guid userId, [FromQuery] Guid movieId) {
-            var result = await _ratingService.GetByIdAsync<GetRatingDTO>(userId, movieId);
-            return result.Success ? Ok(result) : BadRequest(result.Errors);
-        }
-
-        [Authorize(Roles = Constants.NameRoleAdmin)]
-        [HttpGet("ratings")]
-        public async Task<IActionResult> GetAllRating() {
-            var result = await _ratingService.GetAllAsync<GetRatingDTO>();
+            var result = _service.GetFullRatingById<GetRatingDTO>(userId, movieId);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 
         [AllowAnonymous]
         [HttpGet("{movieId}/ratings")]
         public async Task<IActionResult> GetAllRatingByMovie(Guid movieId) {
-            var result = await _ratingService.GetAllByMovieIdAsync<GetRatingDTO>(movieId);
+            var result = await _service.GetRatingsByMovieIdAsync<GetRatingDTO>(movieId);
             return result.Success ? Ok(result) : BadRequest(result.Errors);
         }
 

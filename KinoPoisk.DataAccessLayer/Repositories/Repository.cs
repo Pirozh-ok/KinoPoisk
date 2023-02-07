@@ -42,7 +42,7 @@ namespace KinoPoisk.DataAccessLayer.Repositories {
             return data.FirstOrDefault();
         }
 
-        public TEntity FindNoTracking(Expression<Func<TEntity, bool>> expr, params Expression<Func<TEntity, object>>[] inclusions) {
+        public TEntity? FindNoTracking(Expression<Func<TEntity, bool>> expr, params Expression<Func<TEntity, object>>[] inclusions) {
             var data = _data.AsNoTracking().Where(expr);
 
             data = inclusions.Aggregate(data, (current, inclusion) => current.Include(inclusion));

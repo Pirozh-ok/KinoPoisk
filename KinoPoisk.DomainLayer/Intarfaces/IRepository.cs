@@ -10,8 +10,8 @@ namespace KinoPoisk.DomainLayer.Intarfaces {
         IQueryable<TEntity> Get(bool tracking = false);
         IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> expression, bool tracking = false);
 
-        TEntity FindTracking(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] inclusions);
-        TEntity FindNoTracking(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] inclusions);
+        TEntity? FindTracking(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] inclusions);
+        TEntity? FindNoTracking(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] inclusions);
 
         TEntity? FindById(object id);
 
