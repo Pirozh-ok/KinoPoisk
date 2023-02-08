@@ -21,7 +21,8 @@ namespace KinoPoisk.PresentationLayer.Controllers.Base
         [AllowAnonymous]
         public virtual async Task<IActionResult> GetAllAsync()
         {
-            return Ok(await _service.GetAsync<TGetDto>());
+            var result = await _service.GetAsync<TGetDto>(); 
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -29,28 +30,28 @@ namespace KinoPoisk.PresentationLayer.Controllers.Base
         public virtual async Task<IActionResult> GetByIdAsync(TKey id)
         {
             var result = await _service.GetByIdAsync<TGetDto>(id);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpPost]
         public virtual async Task<IActionResult> CreateAsync([FromBody] TEntityDTO createDto)
         {
             var result = await _service.CreateAsync(createDto);
-            return result.Success ? StatusCode((int)HttpStatusCode.Created) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.Created);
         }
 
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> DeleteAsync(TKey id)
         {
             var result = await _service.DeleteAsync(id);
-            return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
 
         [HttpPut]
         public virtual async Task<IActionResult> UpdateAsync([FromBody] TEntityDTO updateDto)
         {
             var result = await _service.UpdateAsync(updateDto);
-            return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
     }
 }

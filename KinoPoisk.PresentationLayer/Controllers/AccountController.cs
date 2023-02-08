@@ -3,6 +3,7 @@ using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.PresentationLayer.Controllers.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers
 {
@@ -18,56 +19,55 @@ namespace KinoPoisk.PresentationLayer.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] UserDTO userDto) {
             var result = await _userService.CreateAsync(userDto);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.Created);
         }
 
         [HttpGet("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromQuery] LoginDTO loginData) {
             var result = await _userService.LoginAsync(loginData);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpPut("confirm-email")]
         public async Task<IActionResult> ConfirmEmail() {
-            var userId = GetAuthUserId();
             var result = await _userService.ConfirmEmailAsync();
-            return Ok(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
 
         [HttpGet("confirm-email")]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string token, string email) {
             var result = await _userService.VerificationConfirmationTokenAsync(token, email);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpPost("forgot-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromQuery] string email) {
             var result = await _userService.SendResetPasswordEmailAsync(email);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
 
         [HttpPost("reset-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordData) {
             var result = await _userService.ResetPasswordAsync(resetPasswordData);
-            return result.Success ? Ok(result) : BadRequest(result); 
+            return GetResult(result, (int)HttpStatusCode.NoContent); 
         }
 
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordData) {
             var userId = GetAuthUserId();
             var result = await _userService.ChangePasswordAsync(changePasswordData);
-            return result.Success ? Ok(result) : BadRequest(result); 
+            return GetResult(result, (int)HttpStatusCode.NoContent); 
         }
 
         [HttpPut("change-email")]
         public async Task<IActionResult> ChangeEmail([FromQuery] string newEmail) {
             var userId = GetAuthUserId();
             var result = await _userService.ChangeEmailAsync(newEmail);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
     }
 }

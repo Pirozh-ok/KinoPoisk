@@ -12,6 +12,7 @@ using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
@@ -425,6 +426,27 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
             
             return BuildValidateResult(errors);
+        }
+        protected override List<Expression<Func<ApplicationUser, bool>>> GetAdvancedConditions(PageableUserRequestDto filters) {
+            var conditions = new List<Expression<Func<ApplicationUser, bool>>>();
+
+            if(!string.IsNullOrEmpty(filters.Country)) {
+                conditions.Add(x => x.Country != null && x.Country.Name == filters.Country);
+            }
+
+            if(filters.AgeFrom is not null) {
+                conditions.Add(x => DateTime.UtcNow.Year - x.DateOfBirth.Year > filters.AgeFrom);
+            }
+
+            if (filters.AgeTo is not null) {
+                conditions.Add(x => DateTime.UtcNow.Year - x.DateOfBirth.Year < filters.AgeTo);
+            }
+
+            return conditions;
+        }
+
+        protected override IQueryable<ApplicationUser> GetEntityByIdIncludes(IQueryable<ApplicationUser> query) {
+            return query;
         }
     }
 }

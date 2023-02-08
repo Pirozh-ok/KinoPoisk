@@ -1,4 +1,6 @@
 ﻿using KinoPoisk.DataAccessLayer;
+using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
+using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.PresentationLayer.Controllers.Base;
@@ -16,28 +18,35 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         public async Task<IActionResult> GetMyInfo() {
             var currentUserId = GetAuthUserId();
             var result = await _service.GetByIdAsync<GetUserDTO>(Guid.Parse(currentUserId));
-            return GetResult(result);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpPost]
         [AllowAnonymous]
         public override async Task<IActionResult> CreateAsync(UserDTO dto) {
             var result = await _service.CreateAsync(dto);
-            return result.Success ? StatusCode((int)HttpStatusCode.Created) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.Created);
         }
 
         [HttpGet]
         [Authorize(Roles = Constants.NameRoleAdmin)]
         public override async Task<IActionResult> GetAllAsync() {
             var result = await _service.GetAsync<GetUserDTO>();
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpGet("{userId}")]
         [Authorize(Roles = Constants.NameRoleAdmin)]
         public override async Task<IActionResult> GetByIdAsync(Guid userId) {
             var result = await _service.GetByIdAsync<GetUserDTO>(userId);
-            return result.Success ? Ok(result) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("search")]
+        public async Task<IActionResult> GetFilteringUsers([FromQuery] PageableUserRequestDto filters) {
+            var result = _service.SearchFor<GetUserDTO>(filters);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
     }
 }

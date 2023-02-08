@@ -18,19 +18,19 @@ namespace KinoPoisk.PresentationLayer.Controllers
         [HttpGet("user-roles/{id}")]
         public async Task<IActionResult> GetUserRoles(Guid id) {
             var result = await _service.GetUserRolesAsync(id);
-            return result.Success ? Ok(result) : BadRequest(result.Errors);
+            return GetResult(result, (int)HttpStatusCode.OK);
         }
 
         [HttpPut("add-roles")]
         public async Task<IActionResult> AddRolesToUser([FromQuery] Guid userId, [FromQuery] string[] roles) {
             var result = await _service.AddRolesToUserAsync(userId, roles);
-            return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
 
         [HttpPut("remove-roles")]
         public async Task<IActionResult> RemoveRolesFromUser([FromQuery] Guid userId, [FromQuery] string[] roles) {
             var result = await _service.RemoveRolesFromUserAsync(userId, roles);
-            return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
     }
 }
