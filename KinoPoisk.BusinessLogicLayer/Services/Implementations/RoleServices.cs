@@ -80,10 +80,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations
             return await DeleteRole(role);
         }
 
-        public override ServiceResult Get<GetRoleDto>() => 
-            ServiceResult.Ok(_roleManager.Roles.
+        public override async Task<ServiceResult> GetAsync<GetRoleDto>() => 
+            ServiceResult.Ok(await _roleManager.Roles.
                 ProjectTo<GetRoleDto>(_mapper.ConfigurationProvider)
-                .ToList());
+                .ToListAsync());
 
         public async Task<ServiceResult> GetUserRolesAsync(Guid userId) {
             var user = await _userManager.FindByIdAsync(userId.ToString());

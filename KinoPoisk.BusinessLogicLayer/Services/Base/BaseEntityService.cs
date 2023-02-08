@@ -5,6 +5,7 @@ using KinoPoisk.DomainLayer.DTOs;
 using KinoPoisk.DomainLayer.Intarfaces;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
+using Microsoft.EntityFrameworkCore;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Base {
     public abstract class BaseEntityService<TEntity, TKey, TDto> : BaseService, IBaseEntityService<TKey, TDto>
@@ -44,20 +45,20 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
             return ServiceResult.Ok(GenericServiceResource.Deleted);
         }
 
-        public virtual ServiceResult Get<TGetDto>() {
-            var objects = _unitOfWork.GetRepository<TEntity>()
+        public async virtual Task<ServiceResult> GetAsync<TGetDto>() {
+            var objects = await _unitOfWork.GetRepository<TEntity>()
                 .Get(false)
                 .ProjectTo<TGetDto>(_mapper.ConfigurationProvider)
-                .ToList();
+                .ToListAsync();
 
             return ServiceResult.Ok(objects);
         }
 
-        public ServiceResult GetById<TGetDto>(TKey id) {
-            var obj = _unitOfWork.GetRepository<TEntity>()
+        public async virtual Task<ServiceResult> GetByIdAsync<TGetDto>(TKey id) {
+            var obj = await _unitOfWork.GetRepository<TEntity>()
                 .Get(x => x.Id.Equals(id))
                 .ProjectTo<TGetDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return obj is not null ?
                 ServiceResult.Ok(_mapper.Map<TGetDto>(obj)) :
@@ -98,6 +99,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Base {
 
         protected virtual TKey GetNewKey() {
             return new TKey();
+        }
+
+        protected ServiceResult BuildValidateResult(List<string> errors) {
+            return errors.Count() > 0 ? ServiceResult.Fail(errors) : ServiceResult.Ok();
         }
     }
 }

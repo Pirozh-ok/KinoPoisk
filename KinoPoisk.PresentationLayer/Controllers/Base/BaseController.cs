@@ -13,5 +13,6 @@ namespace KinoPoisk.PresentationLayer.Controllers.Base
         protected string? GetAuthUserId() => User.Claims
             .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
         protected bool IsAdministratorRequest() => User.IsInRole(Constants.NameRoleAdmin);
+        protected IActionResult GetResult(ServiceResult result) => result.Success ? Ok(result) : BadRequest(result);
     }
 }

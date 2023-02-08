@@ -4,39 +4,39 @@ using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.PresentationLayer.Controllers.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
-namespace KinoPoisk.PresentationLayer.Controllers
-{
+namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize]
-    public class UserController : BaseController {
-        private readonly IUserService _userService;
-
-        public UserController(IUserService userService) {
-            _userService = userService;
+    public class UserController : CrudControllerBase<IUserService, UserDTO, GetUserDTO, Guid > {
+        public UserController(IUserService userService) : base (userService) {
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser(UpdateUserDTO dto) {
-            var result = await _userService.UpdateUserDataAsync(dto);
-            return result.Success ? Ok(result) : BadRequest(result);
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMyInfo() {
+            var currentUserId = GetAuthUserId();
+            var result = await _service.GetByIdAsync<GetUserDTO>(Guid.Parse(currentUserId));
+            return GetResult(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteUser(Guid userId) {
-            var result = await _userService.DeleteUserAsync(userId);
-            return result.Success ? Ok(result) : BadRequest(result);
+        [HttpPost]
+        [AllowAnonymous]
+        public override async Task<IActionResult> CreateAsync(UserDTO dto) {
+            var result = await _service.CreateAsync(dto);
+            return result.Success ? StatusCode((int)HttpStatusCode.Created) : BadRequest(result);
         }
 
         [HttpGet]
         [Authorize(Roles = Constants.NameRoleAdmin)]
-        public async Task<IActionResult> GetAllUsers() {
-            var result = await _userService.GetAllUsersAsync();
+        public override async Task<IActionResult> GetAllAsync() {
+            var result = await _service.GetAsync<GetUserDTO>();
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserById(Guid userId) {
-            var result = await _userService.GetUserById(userId);
+        [Authorize(Roles = Constants.NameRoleAdmin)]
+        public override async Task<IActionResult> GetByIdAsync(Guid userId) {
+            var result = await _service.GetByIdAsync<GetUserDTO>(userId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }

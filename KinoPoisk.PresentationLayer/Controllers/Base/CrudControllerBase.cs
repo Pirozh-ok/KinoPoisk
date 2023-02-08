@@ -5,8 +5,10 @@ using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers.Base
 {
-    public class CrudControllerBase<TService, TEntityDTO, TGetDto, TTypeId> : BaseController
-        where TService : IBaseEntityService<TTypeId, TEntityDTO>
+    [Authorize]
+    public class CrudControllerBase<TService, TEntityDTO, TGetDto, TKey> : BaseController
+        where TService : IBaseEntityService<TKey, TEntityDTO>
+        where TKey : IEquatable<TKey>
     {
         protected TService _service;
 
@@ -17,35 +19,35 @@ namespace KinoPoisk.PresentationLayer.Controllers.Base
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult GetAllAsync()
+        public virtual async Task<IActionResult> GetAllAsync()
         {
-            return Ok(_service.Get<TGetDto>());
+            return Ok(await _service.GetAsync<TGetDto>());
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public IActionResult GetByIdAsync(TTypeId id)
+        public virtual async Task<IActionResult> GetByIdAsync(TKey id)
         {
-            var result = _service.GetById<TGetDto>(id);
+            var result = await _service.GetByIdAsync<TGetDto>(id);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] TEntityDTO createDto)
+        public virtual async Task<IActionResult> CreateAsync([FromBody] TEntityDTO createDto)
         {
             var result = await _service.CreateAsync(createDto);
             return result.Success ? StatusCode((int)HttpStatusCode.Created) : BadRequest(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(TTypeId id)
+        public virtual async Task<IActionResult> DeleteAsync(TKey id)
         {
             var result = await _service.DeleteAsync(id);
             return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] TEntityDTO updateDto)
+        public virtual async Task<IActionResult> UpdateAsync([FromBody] TEntityDTO updateDto)
         {
             var result = await _service.UpdateAsync(updateDto);
             return result.Success ? StatusCode((int)HttpStatusCode.NoContent) : BadRequest(result);

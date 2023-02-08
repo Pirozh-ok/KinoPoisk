@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
+using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
@@ -13,11 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Web;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
-    public class UserService : IUserService {
+    public class UserService : SearchableEntityService<UserService, ApplicationUser, Guid, UserDTO, PageableUserRequestDto>, IUserService {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITokenService _tokenService;
-        private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
         private readonly IAccessService _accessService;
         private readonly LinkGenerator _generator;
@@ -25,15 +25,13 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         public UserService(
             UserManager<ApplicationUser> userManager,
             ITokenService tokenService,
-            IMapper mapper,
-            IUnitOfWork unitOfWork,
             IEmailService emailService,
             IAccessService accessService,
-            LinkGenerator generator) {
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            LinkGenerator generator) : base(unitOfWork, mapper) {
             _userManager = userManager;
             _tokenService = tokenService;
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
             _emailService = emailService;
             _accessService = accessService;
             _generator = generator;
@@ -64,11 +62,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return ServiceResult.Fail(UserResource.InvalidEmailOrPassword);
         }
 
-        public async Task<ServiceResult> RegisterAsync(UserDTO dto) {
-            var validatedErrors = ValidateData(dto);
+        public override async Task<ServiceResult> CreateAsync(UserDTO dto) {
+            var validationResult = Validate(dto);
 
-            if (validatedErrors.Count() > 0) {
-                return ServiceResult.Fail(validatedErrors);
+            if (validationResult.Failure) {
+                return validationResult;
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
@@ -96,11 +94,11 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList());
         }
 
-        public async Task<ServiceResult> UpdateUserDataAsync(UpdateUserDTO userDTO) {
-            var errors = ValidateData(userDTO);
+        public override async Task<ServiceResult> UpdateAsync(UserDTO userDTO) {
+            var validationResult = Validate(userDTO);
 
-            if (errors.Count > 0) {
-                return ServiceResult.Fail(errors); 
+            if (validationResult.Failure) {
+                return validationResult; 
             }
 
             if (!_accessService.IsHasAccess(userDTO.Id)) {
@@ -113,7 +111,8 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 return ServiceResult.Fail(UserResource.NotFound);
             }
 
-            user = _mapper.Map(userDTO, user); 
+            var updateDto = _mapper.Map<UpdateUserDTO>(userDTO);
+            user = _mapper.Map(updateDto, user); 
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded) {
@@ -125,7 +124,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
-        public async Task<ServiceResult> DeleteUserAsync(Guid userId) {
+        public override async Task<ServiceResult> DeleteAsync(Guid userId) {
             if (!_accessService.IsHasAccess(userId)) {
                 return ServiceResult.Fail(UserResource.AccessDenied);
             }
@@ -274,17 +273,17 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 .ToList()); 
         }
 
-        public async Task<ServiceResult> GetAllUsersAsync() {
-            return ServiceResult.Ok(await _userManager.Users
-                .ProjectTo<GetUserDTO>(_mapper.ConfigurationProvider)
+        public override async Task<ServiceResult> GetAsync<TGetUserDto>(){
+            return ServiceResult.Ok( await _userManager.Users
+                .ProjectTo<TGetUserDto>(_mapper.ConfigurationProvider)
                 .ToListAsync()); 
         }
 
-        public async Task<ServiceResult> GetUserById(Guid id) {
+        public override async Task<ServiceResult> GetByIdAsync<TGetUserDto>(Guid id) {
             var user = await _userManager.FindByIdAsync(id.ToString());
 
             return user is null ? ServiceResult.Fail(UserResource.NotFound)
-                : ServiceResult.Ok(_mapper.Map<GetUserDTO>(user));
+                : ServiceResult.Ok(_mapper.Map<TGetUserDto>(user));
         }
 
         private async Task SendConfirmationEmailAsync(ApplicationUser user, string message) {
@@ -361,29 +360,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return (true, string.Empty);
         }
 
-        private List<string> ValidateData(UserDTO user) {
-            var errors = ValidateData(_mapper.Map<UpdateUserDTO>(user));
-
-            var emailValidate = ValidateEmail(user.Email);
-            var passwordValidate = ValidatePassword(user.Password);
-
-            if (!emailValidate.isValid) {
-                errors.Add(emailValidate.message);
-            }
-
-            if (!passwordValidate.isValid) {
-                errors.Add(passwordValidate.message);
-            }
-
-            return errors;
-        }
-
-        private List<string> ValidateData(UpdateUserDTO user) {
+        protected override ServiceResult Validate(UserDTO user) {
             var errors = new List<string>();
 
             if (user is null) {
                 errors.Add(UserResource.NullArgument);
-                return errors;
+                return BuildValidateResult(errors);
             }
 
             if (string.IsNullOrEmpty(user.UserName) || user.UserName.Length < Constants.MinLenOfName) {
@@ -413,6 +395,9 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             if (user.Patronymic is not null && user.Patronymic.Length < Constants.MinLenOfName) {
                 errors.Add(UserResource.PatronymicLessMinLen);
             }
+            else if(user.Patronymic is null) {
+                user.Patronymic = string.Empty;
+            }
 
             if (user.Patronymic is not null && user.Patronymic.Length > Constants.MaxLenOfName) {
                 errors.Add(UserResource.PatronymicExceedsMaxLen);
@@ -426,7 +411,20 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 errors.Add(UserResource.NotFoundUserCountry);
             }
 
-            return errors;
+            if (user.IsNew) {
+                var emailValidate = ValidateEmail(user.Email);
+                var passwordValidate = ValidatePassword(user.Password);
+
+                if (!emailValidate.isValid) {
+                    errors.Add(emailValidate.message);
+                }
+
+                if (!passwordValidate.isValid) {
+                    errors.Add(passwordValidate.message);
+                }
+            }
+            
+            return BuildValidateResult(errors);
         }
     }
 }
