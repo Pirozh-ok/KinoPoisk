@@ -13,10 +13,10 @@ namespace KinoPoisk.PresentationLayer.Extensions {
             services.AddTransient<ICreatorService, CreatorService>();
             services.AddTransient<IContentService, ContentService>();
             services.AddTransient<IMovieService, MovieService>();
+            services.AddTransient<IRoleService, RoleServices>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IRoleService, RoleServices>();
             services.AddTransient<IAccessService, AccessService>();
         }
     }

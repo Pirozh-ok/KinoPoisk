@@ -11,7 +11,8 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 typeof(MovieRoleProfile),
                 typeof(CreatorProfile),
                 typeof(ContentProfile),
-                typeof(MovieProfile));
+                typeof(MovieProfile),
+                typeof(RoleProfile));
         }
     }
 }
