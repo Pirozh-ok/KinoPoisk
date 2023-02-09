@@ -1,8 +1,11 @@
-﻿using KinoPoisk.DomainLayer.DTOs.UserDTO;
+﻿using Google.Apis.Auth;
+using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.PresentationLayer.Controllers.Base;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Owin.Security.Google;
 using System.Net;
 
 namespace KinoPoisk.PresentationLayer.Controllers
@@ -27,6 +30,29 @@ namespace KinoPoisk.PresentationLayer.Controllers
         public async Task<IActionResult> Login([FromQuery] LoginDTO loginData) {
             var result = await _userService.LoginAsync(loginData);
             return GetResult(result, (int)HttpStatusCode.OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("login-google")]
+        public async Task<IActionResult> GoogleLogin() {
+            //return string for redirect to google authorization
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login-google/{token}")]
+        public async Task<IActionResult> GoogleLogin([FromRoute] string token) {
+            //check got on front data from google and generate access token
+
+            try {
+                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings() {
+                    Audience = new[] { "472924981705-j2oqf1var25oqqr2uh759vcqaeo4avin.apps.googleusercontent.com" }
+                 });
+            }
+            catch {
+
+            }
+            return Ok();
         }
 
         [HttpPut("confirm-email")]
@@ -54,20 +80,6 @@ namespace KinoPoisk.PresentationLayer.Controllers
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordData) {
             var result = await _userService.ResetPasswordAsync(resetPasswordData);
             return GetResult(result, (int)HttpStatusCode.NoContent); 
-        }
-
-        [HttpPut("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordData) {
-            var userId = GetAuthUserId();
-            var result = await _userService.ChangePasswordAsync(changePasswordData);
-            return GetResult(result, (int)HttpStatusCode.NoContent); 
-        }
-
-        [HttpPut("change-email")]
-        public async Task<IActionResult> ChangeEmail([FromQuery] string newEmail) {
-            var userId = GetAuthUserId();
-            var result = await _userService.ChangeEmailAsync(newEmail);
-            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
     }
 }

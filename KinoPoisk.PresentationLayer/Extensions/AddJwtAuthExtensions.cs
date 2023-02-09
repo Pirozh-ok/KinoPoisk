@@ -10,7 +10,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                 services.AddAuthentication(config => {
                     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    config.DefaultScheme= JwtBearerDefaults.AuthenticationScheme;
+                    config.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
                     .AddJwtBearer(config => {
                         config.TokenValidationParameters = new TokenValidationParameters {
@@ -22,7 +22,7 @@ namespace KinoPoisk.PresentationLayer.Extensions {
                             ValidateAudience = true,
                             ValidateLifetime = true,
                             ValidateIssuerSigningKey = true
-                        }; 
+                        };
                     });
 
                 services.AddScoped<ITokenService, TokenService>(); 

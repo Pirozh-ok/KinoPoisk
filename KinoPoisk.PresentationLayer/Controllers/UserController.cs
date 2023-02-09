@@ -1,4 +1,5 @@
-﻿using KinoPoisk.DataAccessLayer;
+﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
+using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
@@ -47,6 +48,20 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         public async Task<IActionResult> GetFilteringUsers([FromQuery] PageableUserRequestDto filters) {
             var result = _service.SearchFor<GetUserDTO>(filters);
             return GetResult(result, (int)HttpStatusCode.OK);
+        }
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordData) {
+            var userId = GetAuthUserId();
+            var result = await _service.ChangePasswordAsync(changePasswordData);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
+        }
+
+        [HttpPut("change-email")]
+        public async Task<IActionResult> ChangeEmail([FromQuery] string newEmail) {
+            var userId = GetAuthUserId();
+            var result = await _service.ChangeEmailAsync(newEmail);
+            return GetResult(result, (int)HttpStatusCode.NoContent);
         }
     }
 }

@@ -22,6 +22,12 @@ builder.Services.AddSwaggerOptions();
 builder.Services.AddCors();
 builder.Services.AddOptions();
 
+builder.Services.AddAuthentication()
+    .AddGoogle(options => {
+        options.ClientId = builder.Configuration["GoogleAuth:ClientId"];
+        options.ClientSecret = builder.Configuration["GoogleAuth:ClientSecret"];
+    });
+
 var jwtSection = builder.Configuration.GetSection("JwtBearerSettings");
 builder.Services.AddJwtAuth(jwtSection);
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options => {
@@ -38,6 +44,8 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseGoogleAuthentication()
 
 app.UseHttpsRedirection();
 app.UseCors(builder => builder.AllowAnyOrigin()
