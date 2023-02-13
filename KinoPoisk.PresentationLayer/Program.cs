@@ -45,8 +45,6 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-app.UseGoogleAuthentication()
-
 app.UseHttpsRedirection();
 app.UseCors(builder => builder.AllowAnyOrigin()
     .AllowAnyHeader()

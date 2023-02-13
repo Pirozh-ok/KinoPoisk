@@ -1,4 +1,5 @@
-﻿using KinoPoisk.DomainLayer.DTOs.Pageable;
+﻿using Google.Apis.Auth;
+using KinoPoisk.DomainLayer.DTOs.Pageable;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Entities;
 
@@ -11,5 +12,6 @@ namespace KinoPoisk.DomainLayer.Intarfaces.Services {
         Task<ServiceResult> ResetPasswordAsync(ResetPasswordDTO resetPasswordData);
         Task<ServiceResult> ChangePasswordAsync(ChangePasswordDTO changePasswordData);
         Task<ServiceResult> ChangeEmailAsync(string newEmail);
+        Task<ServiceResult> AuthorizationWithGoogle(string? token);
     }
 }

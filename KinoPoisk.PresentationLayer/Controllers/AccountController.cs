@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Auth;
 using KinoPoisk.DomainLayer.DTOs.UserDTO;
+using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.PresentationLayer.Controllers.Base;
 using Microsoft.AspNetCore.Authentication;
@@ -43,16 +44,8 @@ namespace KinoPoisk.PresentationLayer.Controllers
         [HttpPost("login-google/{token}")]
         public async Task<IActionResult> GoogleLogin([FromRoute] string token) {
             //check got on front data from google and generate access token
-
-            try {
-                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings() {
-                    Audience = new[] { "472924981705-j2oqf1var25oqqr2uh759vcqaeo4avin.apps.googleusercontent.com" }
-                 });
-            }
-            catch {
-
-            }
-            return Ok();
+            var result = await _userService.AuthorizationWithGoogle(token);
+            return GetResult(result, (int)HttpStatusCode.Created);
         }
 
         [HttpPut("confirm-email")]

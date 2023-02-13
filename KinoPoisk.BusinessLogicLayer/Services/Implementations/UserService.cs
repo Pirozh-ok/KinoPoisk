@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Google.Apis.Auth;
 using KinoPoisk.BusinessLogicLayer.Services.Base;
 using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer;
@@ -71,7 +72,6 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             }
 
             var user = _mapper.Map<ApplicationUser>(dto);
-            user.Id = Guid.Empty; 
             var refreshToken = _tokenService.GenerateRefreshToken();
             user.RefreshToken = refreshToken.Token;
             user.RefreshTokenExpiryDate = refreshToken.ExpirationDate; 
@@ -93,6 +93,61 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             return ServiceResult.Fail(result.Errors
                 .Select(x => x.Description)
                 .ToList());
+        }
+
+        public async Task<ServiceResult> AuthorizationWithGoogle(string token) {
+            try {
+                var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings() {
+                    Audience = new[] { "472924981705-q8f6fdn4b64k2oceq417ur0n10q2gcr0.apps.googleusercontent.com" }
+                });
+
+                if (googleUser is null) {
+                    return ServiceResult.Fail("Data is null");
+                }
+
+                var user = await _userManager.FindByEmailAsync(googleUser.Email);
+                var refreshToken = _tokenService.GenerateRefreshToken();
+
+                if (user is not null) {
+                    return ServiceResult.Ok(
+                    new AuthResponseDTO<GetUserDTO> {
+                        Data = _mapper.Map<GetUserDTO>(user),
+                        AccessToken = await _tokenService.GenerateAccessToken(user),
+                        RefreshToken = refreshToken.Token
+                    });
+                }
+
+                user = new ApplicationUser() {
+                    UserName = googleUser.Name,
+                    FirstName = googleUser.GivenName,
+                    LastName = googleUser.FamilyName,
+                    Email = googleUser.Email,
+                    DateOfBirth = default,
+                    RefreshToken = refreshToken.Token,
+                    RefreshTokenExpiryDate = refreshToken.ExpirationDate
+                };
+
+                var result = await _userManager.CreateAsync(user);
+
+                if (result.Succeeded) {
+                    await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
+                    //ToDO send mail to user google email
+
+                    return ServiceResult.Ok(
+                    new AuthResponseDTO<GetUserDTO> {
+                        Data = _mapper.Map<GetUserDTO>(user),
+                        AccessToken = await _tokenService.GenerateAccessToken(user),
+                        RefreshToken = refreshToken.Token
+                    });
+                }
+
+                return ServiceResult.Fail(result.Errors
+                    .Select(x => x.Description)
+                    .ToList());
+            }
+            catch {
+                return ServiceResult.Fail("Failed authentification with google");
+            }
         }
 
         public override async Task<ServiceResult> UpdateAsync(UserDTO userDTO) {
