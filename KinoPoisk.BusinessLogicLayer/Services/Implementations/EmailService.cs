@@ -1,8 +1,10 @@
 ﻿using KinoPoisk.DomainLayer.Intarfaces.Services;
+using KinoPoisk.DomainLayer.Resources;
 using KinoPoisk.DomainLayer.Settings;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Org.BouncyCastle.Crypto.Operators;
 
 namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
     public class EmailService : IEmailService {
@@ -29,6 +31,12 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 await client.DisconnectAsync(true);
             }
         }
+
+        public async Task SendEmailResultAuthentificationWithGoogle(string email) {
+            await SendEmailAsync(email, UserResource.SubjectAuthWithGoogle, UserResource.MessageAuthWithGoogle); 
+        }
+
+
 
     }
 }

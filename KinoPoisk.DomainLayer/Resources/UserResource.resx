@@ -147,6 +147,9 @@
   <data name="EmailPasswordChanged" xml:space="preserve">
     <value>Your account password has been changed</value>
   </data>
+  <data name="FailAuthentificationWithGoogle" xml:space="preserve">
+    <value>Failed authentification with google</value>
+  </data>
   <data name="FailedRegister" xml:space="preserve">
     <value>Failed to register, try again later</value>
   </data>
@@ -174,6 +177,9 @@
   <data name="LastNameLessMinLen" xml:space="preserve">
     <value>Invalid last name value. The minimum length of the lastname  is 2</value>
   </data>
+  <data name="MessageAuthWithGoogle" xml:space="preserve">
+    <value>You have received this email because you have logged in to KinoPoisk from your google account</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>User not found</value>
   </data>
@@ -200,6 +206,9 @@
   </data>
   <data name="PatronymicLessMinLen" xml:space="preserve">
     <value>Invalid patronymic value. The minimum length of the patronymic is 2</value>
+  </data>
+  <data name="SubjectAuthWithGoogle" xml:space="preserve">
+    <value>Log in to KinoPoisk through your google account</value>
   </data>
   <data name="SubjectConfirmEmail" xml:space="preserve">
     <value>Confirm your account</value>

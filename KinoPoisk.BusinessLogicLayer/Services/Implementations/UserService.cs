@@ -9,10 +9,12 @@ using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Entities;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.DomainLayer.Resources;
+using KinoPoisk.DomainLayer.Settings;
 using KinoPoisk.PresentationLayer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 using System.Web;
 
@@ -23,6 +25,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         private readonly IEmailService _emailService;
         private readonly IAccessService _accessService;
         private readonly LinkGenerator _generator;
+        private readonly IOptions<GoogleAuthSettings> _googleSettings;
 
         public UserService(
             UserManager<ApplicationUser> userManager,
@@ -31,12 +34,14 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
             IAccessService accessService,
             IUnitOfWork unitOfWork,
             IMapper mapper,
+            IOptions<GoogleAuthSettings> googleSettings,
             LinkGenerator generator) : base(unitOfWork, mapper) {
             _userManager = userManager;
             _tokenService = tokenService;
             _emailService = emailService;
             _accessService = accessService;
             _generator = generator;
+            _googleSettings = googleSettings;
         }
 
         public async Task<ServiceResult> LoginAsync(LoginDTO dto) {
@@ -98,15 +103,16 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         public async Task<ServiceResult> AuthorizationWithGoogle(string token) {
             try {
                 var googleUser = await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings() {
-                    Audience = new[] { "472924981705-q8f6fdn4b64k2oceq417ur0n10q2gcr0.apps.googleusercontent.com" }
+                    Audience = new[] { _googleSettings.Value.ClientId }
                 });
 
                 if (googleUser is null) {
-                    return ServiceResult.Fail("Data is null");
+                    return ServiceResult.Fail(UserResource.NotFound);
                 }
 
                 var user = await _userManager.FindByEmailAsync(googleUser.Email);
                 var refreshToken = _tokenService.GenerateRefreshToken();
+                await _emailService.SendEmailResultAuthentificationWithGoogle(user.Email);
 
                 if (user is not null) {
                     return ServiceResult.Ok(
@@ -118,20 +124,20 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 }
 
                 user = new ApplicationUser() {
-                    UserName = googleUser.Name,
+                    UserName = googleUser.Email,
                     FirstName = googleUser.GivenName,
                     LastName = googleUser.FamilyName,
                     Email = googleUser.Email,
                     DateOfBirth = default,
                     RefreshToken = refreshToken.Token,
-                    RefreshTokenExpiryDate = refreshToken.ExpirationDate
+                    RefreshTokenExpiryDate = refreshToken.ExpirationDate,
+                    EmailConfirmed = true
                 };
 
                 var result = await _userManager.CreateAsync(user);
 
                 if (result.Succeeded) {
                     await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
-                    //ToDO send mail to user google email
 
                     return ServiceResult.Ok(
                     new AuthResponseDTO<GetUserDTO> {
@@ -146,7 +152,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                     .ToList());
             }
             catch {
-                return ServiceResult.Fail("Failed authentification with google");
+                return ServiceResult.Fail(UserResource.FailAuthentificationWithGoogle);
             }
         }
 
@@ -201,6 +207,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         public async Task<ServiceResult> ConfirmEmailAsync() {
             var userId = _accessService.GetUserIdFromRequest().ToString(); 
             var user = await _userManager.FindByIdAsync(userId);
+
             if(user is null) {
                 return ServiceResult.Fail(UserResource.NotFound); 
             }

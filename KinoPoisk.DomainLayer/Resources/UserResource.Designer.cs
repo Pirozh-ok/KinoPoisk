@@ -151,6 +151,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed authentification with google.
+        /// </summary>
+        public static string FailAuthentificationWithGoogle {
+            get {
+                return ResourceManager.GetString("FailAuthentificationWithGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to register, try again later.
         /// </summary>
         public static string FailedRegister {
@@ -232,6 +241,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have received this email because you have logged in to KinoPoisk from your google account.
+        /// </summary>
+        public static string MessageAuthWithGoogle {
+            get {
+                return ResourceManager.GetString("MessageAuthWithGoogle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User not found.
         /// </summary>
         public static string NotFound {
@@ -309,6 +327,15 @@ namespace KinoPoisk.DomainLayer.Resources {
         public static string PatronymicLessMinLen {
             get {
                 return ResourceManager.GetString("PatronymicLessMinLen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log in to KinoPoisk through your google account.
+        /// </summary>
+        public static string SubjectAuthWithGoogle {
+            get {
+                return ResourceManager.GetString("SubjectAuthWithGoogle", resourceCulture);
             }
         }
         
