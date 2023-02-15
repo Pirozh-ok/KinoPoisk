@@ -1,16 +1,11 @@
-﻿using Google.Apis.Auth;
-using KinoPoisk.DomainLayer.DTOs.UserDTO;
-using KinoPoisk.DomainLayer.Entities;
+﻿using KinoPoisk.DomainLayer.DTOs.UserDTO;
 using KinoPoisk.DomainLayer.Intarfaces.Services;
 using KinoPoisk.PresentationLayer.Controllers.Base;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Owin.Security.Google;
 using System.Net;
 
-namespace KinoPoisk.PresentationLayer.Controllers
-{
+namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize]
     public class AccountController : BaseController {
         private readonly IUserService _userService;

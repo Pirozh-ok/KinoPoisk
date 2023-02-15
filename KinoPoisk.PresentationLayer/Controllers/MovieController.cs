@@ -1,5 +1,4 @@
-﻿using KinoPoisk.BusinessLogicLayer.Services.Implementations;
-using KinoPoisk.DataAccessLayer;
+﻿using KinoPoisk.DataAccessLayer;
 using KinoPoisk.DomainLayer.DTOs.MovieCreatorDTOs;
 using KinoPoisk.DomainLayer.DTOs.MovieDTOs;
 using KinoPoisk.DomainLayer.DTOs.Pageable;
@@ -9,8 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace KinoPoisk.PresentationLayer.Controllers
-{
+namespace KinoPoisk.PresentationLayer.Controllers {
     [Authorize]
     public class MovieController : CrudControllerBase<IMovieService, MovieDTO, GetMovieDTO, Guid> {
 
@@ -66,6 +64,13 @@ namespace KinoPoisk.PresentationLayer.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> GetMovieWithConstraint([FromQuery] PageableMovieRequestDto filters) {
             var result = _service.SearchFor<GetMovieDTO>(filters);
+            return GetResult(result, (int)HttpStatusCode.OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetMoviesForDashBoard() {
+            var result = await _service.GetAsync<GetMovieForDashBoardDto>();
             return GetResult(result, (int)HttpStatusCode.OK);
         }
     }

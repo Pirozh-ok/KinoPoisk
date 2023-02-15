@@ -19,6 +19,9 @@ namespace KinoPoisk.DomainLayer.Mapping {
                 .ForMember(x => x.FirstName, c => c.MapFrom(m => m.Creator.FirstName))
                 .ForMember(x => x.LastName, c => c.MapFrom(m => m.Creator.LastName))
                 .ForMember(x => x.Patronymic, c => c.MapFrom(m => m.Creator.Patronymic));
+
+            CreateMap<Movie, GetMovieForDashBoardDto>()
+                .ForMember(x => x.ImagePath, c => c.MapFrom(m => m.Contents.SingleOrDefault(x => x.Type == ContentType.Poster).Path));
         }
     }
 }
