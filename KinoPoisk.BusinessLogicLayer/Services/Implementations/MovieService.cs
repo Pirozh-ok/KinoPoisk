@@ -220,6 +220,10 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
         protected override List<Expression<Func<Movie, bool>>> GetAdvancedConditions(PageableMovieRequestDto filters) {
             var conditions = new List<Expression<Func<Movie, bool>>>();
 
+            if (!string.IsNullOrEmpty(filters.SearchText)) {
+                conditions.Add(x => x.Title.Contains(filters.SearchText));
+            }
+
             if(filters.RatingFrom is not null) {
                 conditions.Add(x => x.Ratings.Sum(x => x.MovieRating) / x.Ratings.Count() > filters.RatingFrom);
             }

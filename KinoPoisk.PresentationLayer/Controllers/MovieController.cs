@@ -63,15 +63,15 @@ namespace KinoPoisk.PresentationLayer.Controllers {
         [AllowAnonymous]
         [HttpGet("search")]
         public async Task<IActionResult> GetMovieWithConstraint([FromQuery] PageableMovieRequestDto filters) {
-            var result = _service.SearchFor<GetMovieDTO>(filters);
+            var result = _service.SearchFor<GetMovieForDashBoardDto>(filters);
             return GetResult(result, (int)HttpStatusCode.OK);
         }
 
-        [AllowAnonymous]
-        [HttpGet("dashboard")]
-        public async Task<IActionResult> GetMoviesForDashBoard() {
-            var result = await _service.GetAsync<GetMovieForDashBoardDto>();
-            return GetResult(result, (int)HttpStatusCode.OK);
-        }
+        //[AllowAnonymous]
+        //[HttpGet("dashboard")]
+        //public async Task<IActionResult> GetMoviesForDashBoard() {
+        //    var result = await _service.GetAsync<GetMovieForDashBoardDto>();
+        //    return GetResult(result, (int)HttpStatusCode.OK);
+        //}
     }
 }

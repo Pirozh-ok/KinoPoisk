@@ -12,7 +12,7 @@
     "KinoPoisk.ServerStaticFiles": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "https://localhost:7023",
       "applicationUrl": "https://localhost:7023;http://localhost:10000",
       "environmentVariables": {
