@@ -8,7 +8,8 @@ namespace KinoPoisk.DomainLayer.Mapping {
         public MovieProfile() {
             CreateMap<MovieDTO, Movie>();
             CreateMap<Movie, GetMovieDTO>()
-                .ForMember(x => x.Creators, c => c.MapFrom(m => m.CreatorsMovies));
+                .ForMember(x => x.Creators, c => c.MapFrom(m => m.CreatorsMovies))
+                .ForMember(x => x.AvgRating, c => c.MapFrom(m => m.Ratings.Average(x => x.MovieRating)));
 
             CreateMap<RatingDTO, Rating>();
             CreateMap<Rating, GetRatingDTO>();

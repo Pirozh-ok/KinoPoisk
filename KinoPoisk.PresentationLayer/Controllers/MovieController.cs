@@ -33,10 +33,11 @@ namespace KinoPoisk.PresentationLayer.Controllers {
             return GetResult(result, (int)HttpStatusCode.OK);
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("{movieId}/ratings")]
-        public async Task<IActionResult> GetAllRatingByMovie(Guid movieId) {
-            var result = await _service.GetRatingsByMovieIdAsync<GetRatingDTO>(movieId);
+        public async Task<IActionResult> GetAllRatingByMovie([FromQuery]PageableRatingRequestDto parameters, Guid movieId) {
+            parameters.MovieId= movieId;
+            var result = await _service.GetRatingsByMovieIdAsync(parameters);
             return GetResult(result, (int)HttpStatusCode.OK);
         }
 

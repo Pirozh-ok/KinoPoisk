@@ -204,17 +204,26 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
                 : ServiceResult.Ok(_mapper.Map<TGetDto>(rating));
         }
 
-        public async Task<ServiceResult> GetRatingsByMovieIdAsync<TGetDto>(Guid movieId) {
-            if (!MovieExists(movieId)) {
+        public async Task<ServiceResult> GetRatingsByMovieIdAsync(PageableRatingRequestDto parameters) {
+            if (!MovieExists((Guid)parameters.MovieId)) {
                 return ServiceResult.Fail(MovieResource.MovieNotFound);
             }
 
+            var userId = _accessService.GetUserIdFromRequest();
+            var userRating = await _unitOfWork.GetRepository<Rating>()
+                .Get(x => x.MovieId == parameters.MovieId && x.UserId == userId).SingleOrDefaultAsync();
+
             var ratings = await _unitOfWork.GetRepository<Rating>()
-                .Get(x => x.MovieId == movieId)
-                .ProjectTo<TGetDto>(_mapper.ConfigurationProvider)
+                .Get(x => x.MovieId == parameters.MovieId && x.UserId != userId)
+                .Skip((int)parameters.Skip)
+                .Take((int)parameters.Take)
+                .ProjectTo<GetRatingDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return ServiceResult.Ok(ratings);
+            return ServiceResult.Ok(new AboutMovieRatingsDTO() {
+                UserRating = _mapper.Map<GetRatingDTO>(userRating),
+                Ratings = ratings
+            });
         }
 
         protected override List<Expression<Func<Movie, bool>>> GetAdvancedConditions(PageableMovieRequestDto filters) {

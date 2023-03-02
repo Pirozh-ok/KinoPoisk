@@ -25,6 +25,6 @@ namespace KinoPoisk.DomainLayer.Entities {
         public virtual ICollection<Award> Awards { get; set; }
         public virtual ICollection<CreatorMovie> CreatorsMovies { get; set; }
         public virtual ICollection<Content> Contents { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public virtual ICollection<Rating?> Ratings { get; set; }
     }
 }

@@ -15,12 +15,12 @@ namespace KinoPoisk.DomainLayer.DTOs.MovieDTOs {
         public decimal WorldFeesInDollars { get; set; }
         public DateTime PremiereDate { get; set; }
 
-        public virtual ICollection<GetCountryDTO> Countries { get; set; }
-        public virtual ICollection<GetAgeCategoryDTO> AgeCategories { get; set; }
-        public virtual ICollection<GetGenreDTO> Genres { get; set; }
-        public virtual ICollection<GetAwardDTO> Awards { get; set; }
-        public virtual ICollection<GetCreatorDTO> Creators { get; set; }
-        public virtual ICollection<GetContentDTO> Contents { get; set; }
-        public virtual ICollection<GetRatingDTO> Ratings { get; set; }
+        public IEnumerable<GetCountryDTO> Countries { get; set; }
+        public IEnumerable<GetAgeCategoryDTO> AgeCategories { get; set; }
+        public IEnumerable<GetGenreDTO> Genres { get; set; }
+        public IEnumerable<GetAwardDTO> Awards { get; set; }
+        public IEnumerable<GetCreatorDTO> Creators { get; set; }
+        public IEnumerable<GetContentDTO> Contents { get; set; }
+        public double? AvgRating { get; set; }
     }
 }
