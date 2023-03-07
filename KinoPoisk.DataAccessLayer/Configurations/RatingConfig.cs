@@ -10,6 +10,9 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
             builder.Property(x => x.MovieRating)
                 .HasDefaultValue(0);
 
+            builder.Property(x => x.UpdateDate)
+                 .HasDefaultValueSql("getdate()");
+
             builder.Property(x => x.Comment)
                 .HasDefaultValue(string.Empty)
                 .HasMaxLength(Constants.MaxLenOfComment);

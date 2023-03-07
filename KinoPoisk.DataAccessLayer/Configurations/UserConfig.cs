@@ -38,6 +38,11 @@ namespace KinoPoisk.DataAccessLayer.Configurations {
                 .HasMany(x => x.UserRoles)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
+
+            builder
+                .HasOne(x => x.Country)
+                .WithMany(x => x.Users)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

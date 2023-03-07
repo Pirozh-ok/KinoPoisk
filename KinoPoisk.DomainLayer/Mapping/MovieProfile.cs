@@ -12,7 +12,8 @@ namespace KinoPoisk.DomainLayer.Mapping {
                 .ForMember(x => x.AvgRating, c => c.MapFrom(m => m.Ratings.Average(x => x.MovieRating)));
 
             CreateMap<RatingDTO, Rating>();
-            CreateMap<Rating, GetRatingDTO>();
+            CreateMap<Rating, GetRatingDTO>()
+                .ForMember(x => x.UserName, c => c.MapFrom(m => m.User.UserName));
 
             CreateMap<CreatorMovie, GetCreatorDTO>()
                 .ForMember(x => x.Id, c => c.MapFrom(m => m.Creator.Id))

@@ -4,6 +4,7 @@
         public string? Comment { get; set; }
         public Guid MovieId { get; set; }
         public Guid UserId { get; set; }
+        public DateTime UpdateDate { get; set; }
 
         public Movie Movie { get; set; }
         public ApplicationUser User { get; set; }
