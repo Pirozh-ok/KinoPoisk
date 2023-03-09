@@ -85,7 +85,7 @@ namespace KinoPoisk.BusinessLogicLayer.Services.Implementations {
 
             if (result.Succeeded) {
                 await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
-                await SendConfirmationEmailAsync(user, UserResource.TextConfirmEmail);
+                //await SendConfirmationEmailAsync(user, UserResource.TextConfirmEmail);
 
                 return ServiceResult.Ok(
                     new AuthResponseDTO<GetUserDTO> {

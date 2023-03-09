@@ -44,7 +44,8 @@ namespace KinoPoisk.DataAccessLayer {
                 var result = await _userManager.CreateAsync(user, "password");
 
                 if (result.Succeeded) {
-                    await _userManager.AddToRoleAsync(user, Constants.NameRoleUser); 
+                    await _userManager.AddToRoleAsync(user, Constants.NameRoleUser);
+                    await _userManager.AddToRoleAsync(user, Constants.NameRoleAdmin);
                 }
             }
         }
